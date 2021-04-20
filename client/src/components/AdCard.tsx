@@ -48,13 +48,11 @@ const AdCard: React.FC<Ad> = (props) => {
     return (
       <div className={classes.root}>
         <Paper elevation={3}>
-            <div style={{display: "inline-block", overflow: "hidden"}}>
-                <img style={{float: "left", height: 300, width: 300}} src={props.file} alt="Ad screenshot"/>
-                <p style={{fontSize: "30px", float: "right"}}>{props.bot}</p>
-                <p style={{marginLeft: "10px", float: "inline-end"}}>{moment(props.dateTime).format("dddd h:mma D MMM YYYY")}</p>
-            </div>
             <div>
-                <a href={props.headline}>{props.headline}</a>
+                <img style={{float: "left", height: 300, width: 300, paddingLeft: "10px"}} src={props.file} alt="Ad screenshot"/>
+                <p style={{position: "relative", float: "right", paddingRight: "10px"}}>Date: {moment(props.dateTime).format("dddd h:mma D MMM YYYY")}</p>
+                <p style={{fontSize: "30px"}}>Bot: {props.bot}</p>
+                <a style={{fontSize: "20px"}} href={props.headline}>{props.headline}</a>
             </div>
         </Paper>
       </div>
