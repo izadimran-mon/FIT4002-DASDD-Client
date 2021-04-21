@@ -3,9 +3,10 @@ interface Ad{
     dateTime: Date;
     file: string;
     headline: string;
+    category: CategoryData[];
 }
 
 interface CategoryData{
     name: string;
-    select: boolean;
+    selection: boolean;
 }

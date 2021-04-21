@@ -3,6 +3,7 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import "./styles/AdCard.css";
+import AdChip from "./AdChip"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,6 +41,9 @@ const AdCard: React.FC<Ad> = (props) => {
                 <p className="dateStyle"> Date: {moment(props.dateTime).format("dddd h:mma D MMM YYYY")} </p>
                 <p className="botStyle">Bot: {props.bot}</p>
                 <a className="headlineStyle" href={props.headline}>{props.headline}</a>
+                <div className="AdChipStyle">
+                  <AdChip {...props}/>
+                </div>
             </div>
         </Paper>
       </div>

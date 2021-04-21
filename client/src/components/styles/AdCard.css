@@ -21,9 +21,20 @@
 }
 
 .botStyle {
+    display: block;
     font-size: 30px;
+    margin-left: 28.5%;
 }
 
 .headlineStyle {
+    display: block;
     font-size: 20px;
+    margin-left: 28.5%;
+}
+
+.AdChipStyle {
+
+    display: block;
+    margin-top: 3%;
+    margin-right: 40%;
 }
