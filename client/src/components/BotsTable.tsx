@@ -178,14 +178,16 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
+function stableSort<T>(array: any, comparator: (a: any, b: any) => number) {
+  const stabilizedThis = array.map(
+    (el: T, index: number) => [el, index] as [T, number]
+  );
+  stabilizedThis.sort((a: number[], b: number[]) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis.map((el: any[]) => el[0]);
 }
 
 interface HeadCell {
@@ -217,9 +219,9 @@ const headCells: HeadCell[] = [
     id: "location",
     numeric: true,
     disablePadding: false,
-    label: "Protein (g)",
+    label: "Location",
   },
-  { id: "status", numeric: false, disablePadding: false, label: "Protein (g)" },
+  { id: "status", numeric: false, disablePadding: false, label: "Status" },
 ];
 
 interface EnhancedTableProps {
@@ -476,18 +478,18 @@ export default function EnhancedTable() {
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+                .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row.name);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.username)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.username}
                       selected={isItemSelected}
                     >
                       <TableCell padding='checkbox'>
@@ -502,12 +504,16 @@ export default function EnhancedTable() {
                         scope='row'
                         padding='none'
                       >
-                        {row.name}
+                        {row.username}
                       </TableCell>
-                      <TableCell align='right'>{row.calories}</TableCell>
-                      <TableCell align='right'>{row.fat}</TableCell>
-                      <TableCell align='right'>{row.carbs}</TableCell>
-                      <TableCell align='right'>{row.protein}</TableCell>
+                      <TableCell align='right'>{row.name}</TableCell>
+                      <TableCell align='right'>{row.adcount}</TableCell>
+                      <TableCell align='right'>{row.ranking}</TableCell>
+                      <TableCell align='right'>{row.dob}</TableCell>
+                      <TableCell align='right'>{row.gender}</TableCell>
+                      <TableCell align='right'>{row.password}</TableCell>
+                      <TableCell align='right'>{row.location}</TableCell>
+                      <TableCell align='right'>{row.status}</TableCell>
                     </TableRow>
                   );
                 })}
