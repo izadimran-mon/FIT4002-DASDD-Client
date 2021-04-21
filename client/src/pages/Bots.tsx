@@ -4,6 +4,7 @@ const Bots = () => {
   return (
     <div id='main'>
       <h1>Bots</h1>
+
       <BotsTable />
     </div>
   );

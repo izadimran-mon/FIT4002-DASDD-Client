@@ -76,9 +76,20 @@ const rows = [
     "idle"
   ),
   createData(
+    "Elonmusky12",
+    "John Smith",
+    41,
+    0,
+    "04/02/1993",
+    "M",
+    "huntff",
+    [-37, 145],
+    "idle"
+  ),
+  createData(
     "BotMcBotFace",
     "John Smith",
-    154,
+    20,
     4,
     "04/02/1992",
     "M",
@@ -89,18 +100,7 @@ const rows = [
   createData(
     "BotMcBotFace",
     "John Smith",
-    154,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    154,
+    15,
     4,
     "04/02/1992",
     "M",
@@ -267,7 +267,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.id === "username" ? "left" : "center"}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -342,7 +342,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           id='tableTitle'
           component='div'
         >
-          Nutrition
+          Bots
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -408,7 +408,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.username);
       setSelected(newSelecteds);
       return;
     }
@@ -475,11 +475,11 @@ export default function EnhancedTable() {
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
-            <TableBody>
+            <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: any, index: number) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.username);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -489,7 +489,7 @@ export default function EnhancedTable() {
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.username}
+                      key={Math.random()}
                       selected={isItemSelected}
                     >
                       <TableCell padding='checkbox'>
@@ -503,17 +503,18 @@ export default function EnhancedTable() {
                         id={labelId}
                         scope='row'
                         padding='none'
+                        align='left'
                       >
                         {row.username}
                       </TableCell>
-                      <TableCell align='right'>{row.name}</TableCell>
-                      <TableCell align='right'>{row.adcount}</TableCell>
-                      <TableCell align='right'>{row.ranking}</TableCell>
-                      <TableCell align='right'>{row.dob}</TableCell>
-                      <TableCell align='right'>{row.gender}</TableCell>
-                      <TableCell align='right'>{row.password}</TableCell>
-                      <TableCell align='right'>{row.location}</TableCell>
-                      <TableCell align='right'>{row.status}</TableCell>
+                      <TableCell align='center'>{row.name}</TableCell>
+                      <TableCell align='center'>{row.adcount}</TableCell>
+                      <TableCell align='center'>{row.ranking}</TableCell>
+                      <TableCell align='center'>{row.dob}</TableCell>
+                      <TableCell align='center'>{row.gender}</TableCell>
+                      <TableCell align='center'>{row.password}</TableCell>
+                      <TableCell align='center'>{row.location}</TableCell>
+                      <TableCell align='center'>{row.status}</TableCell>
                     </TableRow>
                   );
                 })}
