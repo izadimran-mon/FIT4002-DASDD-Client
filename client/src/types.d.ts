@@ -4,3 +4,8 @@ interface Ad{
     file: string;
     headline: string;
 }
+
+interface CategoryData{
+    name: string;
+    select: boolean;
+}

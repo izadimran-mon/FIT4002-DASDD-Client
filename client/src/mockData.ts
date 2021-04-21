@@ -12,3 +12,26 @@ export const mockData:Array<Ad> = [
         headline: "www.google.com"
     },
 ]
+
+export const mockCategoryData:Array<CategoryData> =[
+    {
+        name: "Sport",
+        select: true,
+    },
+    {
+        name: "Gaming",
+        select: false,
+    },
+    {
+        name: "Food",
+        select: false,
+    },
+    {
+        name: "Government",
+        select: false,
+    },
+    {
+        name: "Loan",
+        select: false,
+    },
+]
