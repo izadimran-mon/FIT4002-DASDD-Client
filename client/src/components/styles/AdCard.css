@@ -1,0 +1,29 @@
+.cardStyle {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1px;
+    width: 150px;
+    height: 50px;
+}
+
+.imageStyle {
+    height: 300px;
+    width: 300px;
+    float: left;
+    padding-left: 10px;
+}
+
+.dateStyle {
+    position: relative;
+    float: right; 
+    padding-right: 10px;
+}
+
+.botStyle {
+    font-size: 30px;
+}
+
+.headlineStyle {
+    font-size: 20px;
+}
