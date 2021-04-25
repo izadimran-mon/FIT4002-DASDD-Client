@@ -17,7 +17,6 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -39,31 +38,6 @@ interface Data {
   type: string;
 }
 
-function createData(
-  username: string,
-  name: string,
-  adcount: number,
-  ranking: number,
-  /*  searchterms:[string], */
-  dob: string,
-  gender: string,
-  password: string,
-  location: [number, number],
-  type: string
-): Data {
-  return {
-    username,
-    name,
-    adcount,
-    ranking,
-    dob,
-    gender,
-    password,
-    location,
-    type,
-  };
-}
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -80,9 +54,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string }
+  ) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -136,12 +110,10 @@ const headCells: HeadCell[] = [
 
 interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
-  numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
     property: keyof Data
   ) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
@@ -150,10 +122,8 @@ interface EnhancedTableProps {
 function EnhancedTableHead(props: EnhancedTableProps) {
   const {
     classes,
-    onSelectAllClick,
     order,
     orderBy,
-    numSelected,
     rowCount,
     onRequestSort,
   } = props;
@@ -166,19 +136,12 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding='checkbox'>
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.id === "username" ? "left" : "center"}
-            padding={headCell.disablePadding ? "none" : "default"}
+            // align={headCell.id === "username" ? "left" : "center"}
+            align="left"
+            padding={headCell.disablePadding ? "default" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -209,13 +172,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
         : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
     title: {
       flex: "1 1 100%",
     },
@@ -314,7 +277,6 @@ export default function EnhancedTable() {
     });
   }, []);
 
-  console.log(bots);
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -322,35 +284,6 @@ export default function EnhancedTable() {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      /*   const newSelecteds = bots.map((n) => n.username);
-      setSelected(newSelecteds); */
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -368,8 +301,6 @@ export default function EnhancedTable() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
-
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
@@ -386,10 +317,8 @@ export default function EnhancedTable() {
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={bots.length}
             />
@@ -397,46 +326,34 @@ export default function EnhancedTable() {
               {stableSort(bots, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: any, index: number) => {
-                  const isItemSelected = isSelected(row.username);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.username)}
-                      role='checkbox'
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
                       key={Math.random()}
-                      selected={isItemSelected}
                     >
-                      <TableCell padding='checkbox'>
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
                       <TableCell
                         component='th'
                         id={labelId}
                         scope='row'
-                        padding='none'
+                        padding='default'
                         align='left'
                       >
                         {row.username}
                       </TableCell>
-                      <TableCell align='center'>
+                      <TableCell align='left'>
                         {row.fName + " " + row.lName}
                       </TableCell>
                       {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
                       {/* <TableCell align='center'>{row.ranking}</TableCell> */}
-                      <TableCell align='center'>{row.dob}</TableCell>
-                      <TableCell align='center'>{row.gender}</TableCell>
-                      <TableCell align='center'>{row.password}</TableCell>
-                      <TableCell align='center'>
-                        {row.locLat + "," + row.locLong}
+                      <TableCell align='left'>{row.dob}</TableCell>
+                      <TableCell align='left'>{row.gender}</TableCell>
+                      <TableCell align='left'>{row.password}</TableCell>
+                      <TableCell align='left'>
+                        {row.locLat + ", " + row.locLong}
                       </TableCell>
-                      <TableCell align='center'>{row.type}</TableCell>
+                      <TableCell align='left'>{row.type}</TableCell>
                     </TableRow>
                   );
                 })}
