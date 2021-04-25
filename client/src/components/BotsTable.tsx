@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import {
   createStyles,
@@ -24,6 +24,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import axios from "axios";
 
 interface Data {
   username: string;
@@ -35,7 +36,7 @@ interface Data {
   gender: string;
   password: string;
   location: [number, number];
-  status: string;
+  type: string;
 }
 
 function createData(
@@ -48,7 +49,7 @@ function createData(
   gender: string,
   password: string,
   location: [number, number],
-  status: string
+  type: string
 ): Data {
   return {
     username,
@@ -59,100 +60,9 @@ function createData(
     gender,
     password,
     location,
-    status,
+    type,
   };
 }
-
-const rows = [
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    154,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "Elonmusky12",
-    "John Smith",
-    41,
-    0,
-    "04/02/1993",
-    "M",
-    "huntff",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    20,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    15,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    154,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    154,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    154,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-  createData(
-    "BotMcBotFace",
-    "John Smith",
-    154,
-    4,
-    "04/02/1992",
-    "M",
-    "hunterabc",
-    [-37, 145],
-    "idle"
-  ),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -205,13 +115,13 @@ const headCells: HeadCell[] = [
     label: "Username",
   },
   { id: "name", numeric: false, disablePadding: false, label: "Name" },
-  { id: "adcount", numeric: true, disablePadding: false, label: "Ad Count" },
-  {
+  /* { id: "adcount", numeric: true, disablePadding: false, label: "Ad Count" }, */
+  /*  {
     id: "ranking",
     numeric: true,
     disablePadding: false,
     label: "Political Ranking",
-  },
+  }, */
   { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
   { id: "gender", numeric: false, disablePadding: false, label: "Gender" },
   { id: "password", numeric: false, disablePadding: false, label: "Password" },
@@ -221,7 +131,7 @@ const headCells: HeadCell[] = [
     disablePadding: false,
     label: "Location",
   },
-  { id: "status", numeric: false, disablePadding: false, label: "Status" },
+  { id: "type", numeric: false, disablePadding: false, label: "Type" },
 ];
 
 interface EnhancedTableProps {
@@ -396,7 +306,15 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [bots, setBots] = React.useState([]);
 
+  useEffect(() => {
+    axios.get("/bots").then((res) => {
+      setBots(res.data);
+    });
+  }, []);
+
+  console.log(bots);
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -408,8 +326,8 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.username);
-      setSelected(newSelecteds);
+      /*   const newSelecteds = bots.map((n) => n.username);
+      setSelected(newSelecteds); */
       return;
     }
     setSelected([]);
@@ -453,7 +371,7 @@ export default function EnhancedTable() {
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -473,10 +391,10 @@ export default function EnhancedTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={bots.length}
             />
             <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(bots, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row.username);
@@ -507,14 +425,18 @@ export default function EnhancedTable() {
                       >
                         {row.username}
                       </TableCell>
-                      <TableCell align='center'>{row.name}</TableCell>
-                      <TableCell align='center'>{row.adcount}</TableCell>
-                      <TableCell align='center'>{row.ranking}</TableCell>
+                      <TableCell align='center'>
+                        {row.fName + " " + row.lName}
+                      </TableCell>
+                      {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
+                      {/* <TableCell align='center'>{row.ranking}</TableCell> */}
                       <TableCell align='center'>{row.dob}</TableCell>
                       <TableCell align='center'>{row.gender}</TableCell>
                       <TableCell align='center'>{row.password}</TableCell>
-                      <TableCell align='center'>{row.location}</TableCell>
-                      <TableCell align='center'>{row.status}</TableCell>
+                      <TableCell align='center'>
+                        {row.locLat + "," + row.locLong}
+                      </TableCell>
+                      <TableCell align='center'>{row.type}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -529,7 +451,7 @@ export default function EnhancedTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component='div'
-          count={rows.length}
+          count={bots.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
