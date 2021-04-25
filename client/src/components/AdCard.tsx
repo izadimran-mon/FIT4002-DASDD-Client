@@ -38,7 +38,7 @@ const AdCard: React.FC<Ad> = (props) => {
         <Paper elevation={3}>
             <div>
                 <img className="imageStyle" src={props.file} alt="Ad screenshot"/>
-                <p className="dateStyle"> Date: {moment(props.dateTime).format("dddd h:mma D MMM YYYY")} </p>
+                <p className="dateStyle"> Date: {moment(props.dateTime).format("YYYY-MMM-D dddd h:mma")} </p>
                 <p className="botStyle">Bot: {props.bot}</p>
                 <a className="headlineStyle" href={props.headline}>{props.headline}</a>
                 <div className="AdChipStyle">
