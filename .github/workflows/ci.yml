@@ -3,21 +3,18 @@ name: FIT4002 DASDD Client CI
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  static_analysis:
-    name: Static Analyzer
+  install_dependencies:
+    name: Install dependencies
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
       - run: npm install
         working-directory: ./client
-      - name: Run ESLint on React Client
-        run: npm run lint
-        working-directory: ./client
   publish:
     name: Publish Images to Docker Hub
     needs:
-      - static_analysis
+      - install_dependencies
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -37,7 +34,7 @@ jobs:
   deploy:
     name: Deploy to AWS Elastic Beanstalk
     needs:
-      - static_analysis
+      - install_dependencies
       - publish
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
