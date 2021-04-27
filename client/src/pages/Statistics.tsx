@@ -1,10 +1,10 @@
 import { Box, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import "react-calendar/dist/Calendar.css";
+import { getBotAlignmentStats } from "../api/api";
 import AdCountLineChart from "../components/AdCountLineChart";
 import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
-import Calendar, { YearView } from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import MonthPicker from "../components/MonthPicker";
 
 // TODO: replace with data from API call
@@ -28,44 +28,6 @@ const mockCategoryData = [
     id: "null",
     name: "Uncategorised",
     count: 6000,
-  },
-];
-
-const mockBotAlignmentData = [
-  {
-    label: "right",
-    count: 9,
-  },
-  {
-    label: "left",
-    count: 11,
-  },
-  {
-    label: "neutral",
-    count: 6,
-  },
-];
-
-const mockBotAlignmentData2 = [
-  {
-    label: "15-25",
-    count: 2,
-  },
-  {
-    label: "25-35",
-    count: 8,
-  },
-  {
-    label: "35-45",
-    count: 6,
-  },
-  {
-    label: "45-55",
-    count: 6,
-  },
-  {
-    label: "55+",
-    count: 2,
   },
 ];
 
@@ -121,6 +83,35 @@ const useStyles = makeStyles((theme) => ({
 const Statistics = () => {
   const classes = useStyles();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [botPoliticalAlignmentData, setBotPoliticalAlignmentData] = useState(
+    []
+  );
+  const [botGenderAlignmentData, setBotGenderAlignmentData] = useState([]);
+
+  useEffect(() => {
+    getBotAlignmentStats().then((res) => {
+      for (const e of res) {
+        const data = e.data.map((element: any) => ({
+          count: parseFloat(element.count),
+          label: element.label,
+        }));
+        // TODO: type checking and avoid hard-coded values?
+        switch (e.type) {
+          case "political ranking":
+            setBotPoliticalAlignmentData(data);
+            break;
+
+          case "gender":
+            setBotGenderAlignmentData(data);
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
+  }, []);
+
   const onClickMonth = (value: Date) => {
     console.log(value);
     // TODO: fetch new data based on the selected month
@@ -129,7 +120,7 @@ const Statistics = () => {
   const botPieChart1 = (
     <Paper className={classes.paper}>
       <BotAlignmentPieChart
-        data={mockBotAlignmentData}
+        data={botPoliticalAlignmentData}
         title="Bot alignment by political beliefs"
       />
     </Paper>
@@ -138,7 +129,7 @@ const Statistics = () => {
   const botPieChart2 = (
     <Paper className={classes.paper}>
       <BotAlignmentPieChart
-        data={mockBotAlignmentData2}
+        data={botGenderAlignmentData}
         title="Bot alignment by age groups"
       />
     </Paper>
