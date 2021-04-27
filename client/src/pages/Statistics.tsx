@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Paper } from "@material-ui/core";
+import { Box, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import AdCountLineChart from "../components/AdCountLineChart";
 import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
@@ -88,6 +88,25 @@ const mockAdCountData = [
   },
 ];
 
+const mockAdStat = [
+  {
+    header: "Total",
+    content: 449,
+  },
+  {
+    header: "Tagged",
+    content: 426,
+  },
+  {
+    header: "Average ads per bot",
+    content: 33,
+  },
+  {
+    header: "Total scraping uptime",
+    content: "850h 8m",
+  },
+];
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -103,8 +122,9 @@ const Statistics = () => {
   const classes = useStyles();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const onClickMonth = (value: Date) => {
-    setSelectedMonth(value);
     console.log(value);
+    // TODO: fetch new data based on the selected month
+    setSelectedMonth(value);
   };
   const botPieChart1 = (
     <Paper className={classes.paper}>
@@ -135,12 +155,20 @@ const Statistics = () => {
       <Grid container spacing={3}>
         <Grid item xs={8}>
           <Paper className={classes.paper}>
-            <MonthPicker onClickMonth={onClickMonth} date={selectedMonth} />
+            <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+              <Box p={1}>
+                <MonthPicker onClickMonth={onClickMonth} date={selectedMonth} />
+              </Box>
+            </Box>
             <AdCountLineChart data={mockAdCountData} />
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          <Paper className={classes.paper}></Paper>
+          {mockAdStat.map((e) => (
+            <Box p={1}>
+              <AdStatRow header={e.header} content={e.content} />
+            </Box>
+          ))}
         </Grid>
       </Grid>
     </Paper>
@@ -164,6 +192,21 @@ const Statistics = () => {
         </Grid>
       </Grid>
     </div>
+  );
+};
+
+type AdStatRowProp = {
+  header: string;
+  content: string | number;
+};
+const AdStatRow = (props: AdStatRowProp) => {
+  return (
+    <>
+      <Paper>
+        <Typography variant="h6">{props.header}</Typography>
+        <Typography variant="h4">{props.content}</Typography>
+      </Paper>
+    </>
   );
 };
 

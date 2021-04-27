@@ -37,7 +37,7 @@ const AdCountLineChart = (props: AdCountLineChartProps) => {
       size: 0,
     },
     title: {
-      text: title !== null ? title : "Ads scraped",
+      text: title ? title : "Ads scraped",
       align: "left",
     },
     yaxis: {
