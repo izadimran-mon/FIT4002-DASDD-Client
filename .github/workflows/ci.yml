@@ -16,7 +16,7 @@ jobs:
     needs:
       - install_dependencies
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
       - name: Login to Docker Hub
