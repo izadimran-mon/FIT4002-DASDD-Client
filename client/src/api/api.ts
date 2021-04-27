@@ -15,3 +15,8 @@ export const getBotAlignmentStats = async () => {
   const res = await baseApi.get(`/stats/bot-alignment`);
   return res.data;
 };
+
+export const getAdCategoryStats = async () => {
+  const res = await baseApi.get(`/stats/category`);
+  return res.data;
+};

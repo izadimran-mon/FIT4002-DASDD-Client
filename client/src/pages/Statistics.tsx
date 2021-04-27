@@ -1,36 +1,13 @@
 import { Box, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
-import { getBotAlignmentStats } from "../api/api";
+import { getAdCategoryStats, getBotAlignmentStats } from "../api/api";
 import AdCountLineChart from "../components/AdCountLineChart";
 import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
 import MonthPicker from "../components/MonthPicker";
 
 // TODO: replace with data from API call
-const mockCategoryData = [
-  {
-    id: 1,
-    name: "Technology",
-    count: 349,
-  },
-  {
-    id: 2,
-    name: "Food",
-    count: 1893,
-  },
-  {
-    id: 3,
-    name: "Entertainments",
-    count: 600,
-  },
-  {
-    id: "null",
-    name: "Uncategorised",
-    count: 6000,
-  },
-];
-
 const mockAdCountData = [
   {
     date: new Date("2021-04-27").getTime(),
@@ -83,10 +60,13 @@ const useStyles = makeStyles((theme) => ({
 const Statistics = () => {
   const classes = useStyles();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
-  const [botPoliticalAlignmentData, setBotPoliticalAlignmentData] = useState(
+  const [botPoliticalAlignmentData, setBotPoliticalAlignmentData] = useState<
+    any[]
+  >([]);
+  const [botGenderAlignmentData, setBotGenderAlignmentData] = useState<any[]>(
     []
   );
-  const [botGenderAlignmentData, setBotGenderAlignmentData] = useState([]);
+  const [adCategoryData, setAdCategoryData] = useState<any[]>([]);
 
   useEffect(() => {
     getBotAlignmentStats().then((res) => {
@@ -110,6 +90,15 @@ const Statistics = () => {
         }
       }
     });
+
+    getAdCategoryStats().then((res) => {
+      if (!res) return;
+      const data = res.map((element: any) => ({
+        count: parseFloat(element.count),
+        label: element.label,
+      }));
+      setAdCategoryData(data);
+    });
   }, []);
 
   const onClickMonth = (value: Date) => {
@@ -130,14 +119,14 @@ const Statistics = () => {
     <Paper className={classes.paper}>
       <BotAlignmentPieChart
         data={botGenderAlignmentData}
-        title="Bot alignment by age groups"
+        title="Bot alignment by gender"
       />
     </Paper>
   );
 
   const categoryChart = (
     <Paper className={classes.paper}>
-      <CategoryTreeMapChart data={mockCategoryData} />
+      <CategoryTreeMapChart data={adCategoryData} />
     </Paper>
   );
 

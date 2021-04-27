@@ -20,8 +20,8 @@ const options: ApexCharts.ApexOptions = {
 };
 
 interface CategoryDataItem {
-  id: number | string;
-  name: string;
+  id?: number | string;
+  label: string;
   count: number;
 }
 type CategoryTreeMapChartProps = {
@@ -32,7 +32,7 @@ const CategoryTreeMapChart = (props: CategoryTreeMapChartProps) => {
   const { data, height } = props;
   const chartData = data.map((dataPoint) => ({
     id: dataPoint.id,
-    x: dataPoint.name,
+    x: dataPoint.label,
     y: dataPoint.count,
   }));
   const chartSeries = [{ data: chartData }];
