@@ -4,6 +4,7 @@ interface Ad{
     file: string;
     headline: string;
     category: CategoryData[];
+    seenOn: string;
 }
 
 interface CategoryData{

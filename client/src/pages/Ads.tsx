@@ -1,5 +1,6 @@
 import React from "react";
 import AdCard from "../components/AdCard"
+import { DataGrid } from '@material-ui/data-grid';
 import {mockData} from "../mockData"
 
 const Ads = () => {

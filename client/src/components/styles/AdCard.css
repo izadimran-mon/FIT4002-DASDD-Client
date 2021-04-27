@@ -1,40 +1,77 @@
 .cardStyle {
-    justify-content: center;
-    display: flex;
-    flex-wrap: wrap;
-    margin: 1px;
-    width: 150px;
-    height: 50px;
+    padding-top: 10px;
 }
 
+
 .imageStyle {
-    height: 300px;
-    width: 300px;
-    float: left;
-    padding-left: 10px;
+    display: block;
+    height: 250px;
+    width: 250px;
+
 }
 
 .dateStyle {
-    position: relative;
-    float: right; 
-    padding-right: 10px;
+
+}
+
+.SeenOnStyle {
+
 }
 
 .botStyle {
-    display: block;
-    font-size: 30px;
-    margin-left: 28.5%;
+
 }
 
 .headlineStyle {
-    display: block;
     font-size: 20px;
-    margin-left: 28.5%;
+}
+
+.headlineDiv {
+    padding-top: 18px;
 }
 
 .AdChipStyle {
-
     display: block;
     margin-top: 3%;
-    margin-right: 40%;
+    margin-right: 39%;
+}
+
+
+
+* {
+    box-sizing: border-box;
+}
+
+.overallDivStyle {
+    margin: 0px;
+    padding: 10px;
+}
+
+.imageSection {
+    padding: 20px;
+    float: left;
+    height: 300px;
+    width: 300px;
+    align-items: center;
+}
+
+.mainSection {
+    float: left;
+    height: 150px;
+    width: 44%;
+}
+
+.sideSection {
+    float: left;
+    width: 30%;
+    height: 150px;
+}
+
+.categorySection {
+    float: left;
+    width: 74%;
+    height: 230px;
+    border-style: solid;
+    border-radius: 10px;
+    border-width: thin;
 }
