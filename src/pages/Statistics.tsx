@@ -147,8 +147,8 @@ const Statistics = () => {
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          {adStatData.map((e) => (
-            <Box p={1}>
+          {adStatData.map((e, i) => (
+            <Box p={1} key={i}>
               <AdStatRow header={e.header} content={e.content} />
             </Box>
           ))}
