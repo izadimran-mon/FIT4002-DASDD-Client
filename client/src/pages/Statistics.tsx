@@ -12,27 +12,6 @@ import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
 import MonthPicker from "../components/MonthPicker";
 
-// TODO: replace with data from API call
-
-const mockAdStat = [
-  {
-    header: "Total",
-    content: 449,
-  },
-  {
-    header: "Tagged",
-    content: 426,
-  },
-  {
-    header: "Average ads per bot",
-    content: 33,
-  },
-  {
-    header: "Total scraping uptime",
-    content: "850h 8m",
-  },
-];
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -87,16 +66,6 @@ const Statistics = () => {
         label: element.label,
       }));
       setAdCategoryData(data);
-    });
-
-    getAdCountStats(selectedMonth.getTime()).then((res) => {
-      if (!res) return;
-      const data = res.map((element: any) => ({
-        count: parseFloat(element.count),
-        date: new Date(element.date).getTime(),
-      }));
-
-      setAdCountData(data);
     });
 
     getAdStats().then((res) => {
