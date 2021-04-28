@@ -27,3 +27,8 @@ export const getAdCountStats = async (startDateTimestamp?: number) => {
   });
   return res.data;
 };
+
+export const getAdStats = async () => {
+  const res = await baseApi.get(`/stats/ad-stat`);
+  return res.data;
+};

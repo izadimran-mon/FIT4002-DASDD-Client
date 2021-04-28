@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import {
   getAdCategoryStats,
   getAdCountStats,
+  getAdStats,
   getBotAlignmentStats,
 } from "../api/api";
 import AdCountLineChart from "../components/AdCountLineChart";
@@ -12,24 +13,6 @@ import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
 import MonthPicker from "../components/MonthPicker";
 
 // TODO: replace with data from API call
-const mockAdCountData = [
-  {
-    date: new Date("2021-04-27").getTime(),
-    count: 30,
-  },
-  {
-    date: new Date("2021-04-28").getTime(),
-    count: 21,
-  },
-  {
-    date: new Date("2021-04-29").getTime(),
-    count: 36,
-  },
-  {
-    date: new Date("2021-04-30").getTime(),
-    count: 45,
-  },
-];
 
 const mockAdStat = [
   {
@@ -72,6 +55,7 @@ const Statistics = () => {
   );
   const [adCategoryData, setAdCategoryData] = useState<any[]>([]);
   const [adCountData, setAdCountData] = useState<any[]>([]);
+  const [adStatData, setAdStatData] = useState<any[]>([]);
 
   useEffect(() => {
     getBotAlignmentStats().then((res) => {
@@ -114,6 +98,30 @@ const Statistics = () => {
 
       setAdCountData(data);
     });
+
+    getAdStats().then((res) => {
+      if (!res) return;
+      const data = [
+        {
+          header: "Total",
+          content: res.adTotal,
+        },
+        {
+          header: "Tagged",
+          content: res.adTagged,
+        },
+        {
+          header: "Average ads per bot",
+          content: res.adPerBot,
+        },
+        {
+          header: "Total scraping uptime",
+          content: res.uptime ? res.uptime : "N/A",
+        },
+      ];
+
+      setAdStatData(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -130,7 +138,6 @@ const Statistics = () => {
 
   const onClickMonth = (value: Date) => {
     console.log(value);
-    // TODO: fetch new data based on the selected month
     setSelectedMonth(value);
   };
   const botPieChart1 = (
@@ -171,7 +178,7 @@ const Statistics = () => {
           </Paper>
         </Grid>
         <Grid item xs={4}>
-          {mockAdStat.map((e) => (
+          {adStatData.map((e) => (
             <Box p={1}>
               <AdStatRow header={e.header} content={e.content} />
             </Box>
@@ -211,7 +218,11 @@ const AdStatRow = (props: AdStatRowProp) => {
     <>
       <Paper>
         <Typography variant="h6">{props.header}</Typography>
-        <Typography variant="h4">{props.content}</Typography>
+        <Typography variant="h4">
+          {typeof props.content === "number"
+            ? Math.floor(props.content)
+            : props.content}
+        </Typography>
       </Paper>
     </>
   );
