@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  DatePicker,
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
