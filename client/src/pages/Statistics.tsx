@@ -1,7 +1,11 @@
 import { Box, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
-import { getAdCategoryStats, getBotAlignmentStats } from "../api/api";
+import {
+  getAdCategoryStats,
+  getAdCountStats,
+  getBotAlignmentStats,
+} from "../api/api";
 import AdCountLineChart from "../components/AdCountLineChart";
 import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
@@ -67,6 +71,7 @@ const Statistics = () => {
     []
   );
   const [adCategoryData, setAdCategoryData] = useState<any[]>([]);
+  const [adCountData, setAdCountData] = useState<any[]>([]);
 
   useEffect(() => {
     getBotAlignmentStats().then((res) => {
@@ -99,7 +104,29 @@ const Statistics = () => {
       }));
       setAdCategoryData(data);
     });
+
+    getAdCountStats(selectedMonth.getTime()).then((res) => {
+      if (!res) return;
+      const data = res.map((element: any) => ({
+        count: parseFloat(element.count),
+        date: new Date(element.date).getTime(),
+      }));
+
+      setAdCountData(data);
+    });
   }, []);
+
+  useEffect(() => {
+    getAdCountStats(selectedMonth.getTime()).then((res) => {
+      if (!res) return;
+      const data = res.map((element: any) => ({
+        count: parseFloat(element.count),
+        date: new Date(element.date).getTime(),
+      }));
+
+      setAdCountData(data);
+    });
+  }, [selectedMonth]);
 
   const onClickMonth = (value: Date) => {
     console.log(value);
@@ -140,7 +167,7 @@ const Statistics = () => {
                 <MonthPicker onClickMonth={onClickMonth} date={selectedMonth} />
               </Box>
             </Box>
-            <AdCountLineChart data={mockAdCountData} />
+            <AdCountLineChart data={adCountData} />
           </Paper>
         </Grid>
         <Grid item xs={4}>

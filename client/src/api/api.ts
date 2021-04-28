@@ -20,3 +20,10 @@ export const getAdCategoryStats = async () => {
   const res = await baseApi.get(`/stats/category`);
   return res.data;
 };
+
+export const getAdCountStats = async (startDateTimestamp?: number) => {
+  const res = await baseApi.get(`/stats/ad-count`, {
+    params: { startDate: startDateTimestamp },
+  });
+  return res.data;
+};
