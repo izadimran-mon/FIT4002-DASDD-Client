@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const AdChip = (props: Ad) => {
+const AdChip = (props: any) => {
   const classes = useStyles();
   const [categoryData, setCategoryData] = useState<CategoryData[]>(
     props.category
