@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
+import { mockCategoryData1 } from "../mockData";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,10 +15,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const AdChip = (props: any) => {
+const AdChip = () => {
   const classes = useStyles();
   const [categoryData, setCategoryData] = useState<CategoryData[]>(
-    props.category
+    mockCategoryData1
   );
 
   const handleClick = (categoryIndex: number) => {

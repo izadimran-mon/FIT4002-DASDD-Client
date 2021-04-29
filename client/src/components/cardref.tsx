@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import moment from "moment";
 import "./styles/AdCard.css";
 import AdChip from "./AdChip";
-import { Grid, Card, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,67 +32,57 @@ const useStyles = makeStyles((theme: Theme) =>
 //   );
 // }
 
-const AdCard = (props: any) => {
+const cardref = (props: any) => {
   const classes = useStyles();
   return (
-    <Card style={{ height: 350, marginBottom: 20, padding: 15 }}>
-      <Grid container style={{ height: "100%" }}>
-        <Grid item xs={4}>
-          <img
-            style={{ maxWidth: 300 }}
-            src={props.image}
-            alt='Ad screenshot'
-            onClick={() => {
-              window.open(props.image, "_blank");
-            }}
-          />
-        </Grid>
-        <Grid item xs={8}>
-          <Grid container style={{ height: "100%" }}>
-            <Grid item xs={6}>
-              {props.headline ? (
-                <Typography
-                  style={{ textOverflow: "ellipsis", overflow: "hidden" }}
-                >
-                  <a
-                    href={`https://${props.headline} `}
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    {props.headline}
-                  </a>
-                </Typography>
-              ) : (
-                <Typography style={{ fontSize: 18, fontWeight: 600 }}>
-                  {" "}
-                  No Link Available
-                </Typography>
-              )}
+    <div>
+      <Grid container style={{ display: "flex", flexDirection: "row" }}>
+        {" "}
+        <Paper elevation={3}>
+          <div>
+            <Grid item xs={4}>
+              <img src={props.image} alt='Ad screenshot' />
             </Grid>
-            <Grid item xs={6}>
-              {" "}
-              <Typography>
-                {" "}
-                Date: {moment(props.createdAt).format(
-                  "YYYY-MMM-D dddd h:mma"
-                )}{" "}
-              </Typography>
-              <Typography>Seen bot: {props.botId}</Typography>
-              <Typography>
-                Seen on: <a href={props.seenOn}>{props.seenOn}</a>
-              </Typography>
+            <Grid item xs={8}>
+              <Grid container>
+                <Grid item xs={6}>
+                  <a href={props.headline}>{props.headline}</a>
+                </Grid>
+                <Grid item xs={6}>
+                  <p>
+                    {" "}
+                    Date:{" "}
+                    {moment(props.createdAt).format(
+                      "YYYY-MMM-D dddd h:mma"
+                    )}{" "}
+                  </p>
+                  <p>Seen bot: {props.botId}</p>
+                  <p>
+                    Seen on: <a href={props.seenOn}>{props.seenOn}</a>
+                  </p>
+                </Grid>
+                <Grid item xs={12}>
+                  <div>{/*  <AdChip {...props}/> */}</div>
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              style={{ border: "1px solid #b2b2b2", borderRadius: 10 }}
-            >
-              <div>{<AdChip />}</div>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Card>
+
+            {/* <div className="middleBlock">
+                <p className="botStyle">Bot: {props.bot}</p>
+                <a className="headlineStyle" href={props.headline}>{props.headline}</a>
+              </div>
+              <div>
+                <p className="dateStyle"> Date: {moment(props.dateTime).format("YYYY-MMM-D dddd h:mma")} </p>
+                <p className="seenOnStlye">Seen on: <a href={props.seenOn}>{props.seenOn}</a></p>
+              </div>
+
+              <div className="AdChipStyle">
+                <AdChip {...props}/>
+              </div> */}
+          </div>{" "}
+        </Paper>
+      </Grid>{" "}
+    </div>
   );
 };
 
@@ -141,4 +131,4 @@ const AdCard = (props: any) => {
 //     );
 //   }
 
-export default AdCard;
+export {};
