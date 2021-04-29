@@ -90,7 +90,12 @@ const AdCard = (props: any) => {
           }}
         >
           {" "}
-          <CardActionArea style={{ height: "100%" }}>
+          <CardActionArea
+            style={{ height: "100%" }}
+            onClick={() => {
+              handleClickOpen();
+            }}
+          >
             <img
               style={{
                 width: "auto",
@@ -100,9 +105,6 @@ const AdCard = (props: any) => {
               }}
               src={props.image}
               alt='Ad screenshot'
-              onClick={() => {
-                handleClickOpen();
-              }}
             />{" "}
           </CardActionArea>
         </Grid>
