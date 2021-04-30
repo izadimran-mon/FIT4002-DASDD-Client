@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AdCard from "../components/AdCard";
+import AdCardSkeleton from "../components/AdCardSkeleton";
 import Pagination from "@material-ui/lab/Pagination";
 import { mockData } from "../mockData";
 import axios from "axios";
@@ -13,6 +14,7 @@ const Ads = () => {
   const [page, setPage] = useState(
     storedPageNumber ? JSON.parse(storedPageNumber) : 1
   );
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   axios.get(`/ads?offset${(page-1)*limit}&limit${limit}`).then((res: any) => {
@@ -21,10 +23,12 @@ const Ads = () => {
   // }, []);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}`)
       .then((res: any) => {
         setAds(res.data);
+        setLoading(false);
       });
   }, [page, limit]);
 
@@ -34,25 +38,29 @@ const Ads = () => {
   };
   console.log(ads);
   return (
-    <div id='main'>
+    <div id="main">
       <h1>Ads</h1>
-      <Grid container justify='flex-end' style={{ marginBottom: 15 }}>
+      <Grid container justify="flex-end" style={{ marginBottom: 15 }}>
         <Pagination
           count={4334}
           page={page}
           onChange={handleChange}
-          size='large'
+          size="large"
         />
       </Grid>
-      {ads.map((data, i) => {
-        return <AdCard {...data} key={i} />;
-      })}
-      <Grid container justify='flex-end'>
+      {loading
+        ? Array(3)
+            .fill(null)
+            .map((_, i) => <AdCardSkeleton key={i} />)
+        : ads.map((data, i) => {
+            return <AdCard {...data} key={i} />;
+          })}
+      <Grid container justify="flex-end">
         <Pagination
           count={4334}
           page={page}
           onChange={handleChange}
-          size='large'
+          size="large"
         />
       </Grid>
     </div>

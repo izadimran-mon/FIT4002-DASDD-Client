@@ -2,6 +2,7 @@ import React from "react";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Tooltip from "@material-ui/core/Tooltip";
+import Fade from "@material-ui/core/Fade";
 import moment from "moment";
 import "./styles/AdCard.css";
 import AdChip from "./AdChip";
@@ -50,7 +51,7 @@ const ImageDialog = (props: any) => {
   return (
     <Dialog
       onClose={props.handleClose}
-      aria-labelledby='simple-dialog-title'
+      aria-labelledby="simple-dialog-title"
       open={props.open}
     >
       <DialogContent>
@@ -60,7 +61,7 @@ const ImageDialog = (props: any) => {
             height: "100%",
           }}
           src={props.image}
-          alt='Ad screenshot full'
+          alt="Ad screenshot full"
         />
       </DialogContent>
     </Dialog>
@@ -89,7 +90,6 @@ const AdCard = (props: any) => {
             background: "#f7f7f7",
           }}
         >
-          {" "}
           <CardActionArea
             style={{ height: "100%" }}
             onClick={() => {
@@ -104,8 +104,8 @@ const AdCard = (props: any) => {
                 maxHeight: 320,
               }}
               src={props.image}
-              alt='Ad screenshot'
-            />{" "}
+              alt="Ad screenshot"
+            />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -113,7 +113,7 @@ const AdCard = (props: any) => {
             container
             style={{ height: "100%", marginLeft: 15, width: "auto" }}
           >
-            <Grid container direction='row' style={{ height: "42%" }}>
+            <Grid container direction="row" style={{ height: "42%" }}>
               <Grid item xs={6}>
                 {props.headline ? (
                   <div>
@@ -123,32 +123,29 @@ const AdCard = (props: any) => {
                       }
                     >
                       <Button
-                        variant='contained'
-                        color='primary'
+                        variant="contained"
+                        color="primary"
                         href={`https://${props.headline} `}
-                        target='_blank'
-                        rel='noreferrer'
+                        target="_blank"
+                        rel="noreferrer"
                       >
-                        Goto Ad Link
+                        Visit Ad Link
                       </Button>
                     </Tooltip>
                   </div>
                 ) : (
                   <Typography style={{ fontSize: 18, fontWeight: 600 }}>
-                    {" "}
                     No Link Available
                   </Typography>
                 )}
               </Grid>
               <Grid item xs={6}>
-                {" "}
                 <Typography style={{ marginTop: 5 }}>
-                  {" "}
-                  <span style={{ fontWeight: "bold" }}>Date:</span>{" "}
-                  {moment(props.createdAt).format("YYYY-MMM-D dddd h:mma")}{" "}
+                  <span style={{ fontWeight: "bold" }}>Date:</span>
+                  {moment(props.createdAt).format("YYYY-MMM-D dddd h:mma")}
                 </Typography>
                 <Typography style={{ marginTop: 5 }}>
-                  <span style={{ fontWeight: "bold" }}>Seen bot:</span>{" "}
+                  <span style={{ fontWeight: "bold" }}>Seen bot:</span>
                   {props.botId}
                 </Typography>
                 {props.seenOn ? (
@@ -156,16 +153,15 @@ const AdCard = (props: any) => {
                     <Grid container style={{ marginTop: 5 }}>
                       <Grid item>
                         <Typography style={{ fontWeight: "bold" }}>
-                          Seen on:{" "}
+                          Seen on:
                         </Typography>
-                      </Grid>{" "}
+                      </Grid>
                       <Grid item>
-                        {" "}
                         <Tooltip
                           title={<Typography>{props.seenOn}</Typography>}
                         >
                           <Button
-                            variant='contained'
+                            variant="contained"
                             style={{
                               background: "#167070",
                               marginLeft: 10,
@@ -174,10 +170,9 @@ const AdCard = (props: any) => {
                               paddingRight: 10,
                             }}
                             href={props.seenOn}
-                            target='_blank'
-                            rel='noreferrer'
+                            target="_blank"
+                            rel="noreferrer"
                           >
-                            {" "}
                             <Typography
                               style={{
                                 color: "#fff",
@@ -185,20 +180,19 @@ const AdCard = (props: any) => {
                                 fontSize: 14,
                               }}
                             >
-                              {" "}
                               {processLink(props.seenOn)}
                             </Typography>
                           </Button>
                         </Tooltip>
                       </Grid>
-                    </Grid>{" "}
+                    </Grid>
                   </div>
                 ) : (
                   <Typography> No Link</Typography>
                 )}
               </Grid>
-            </Grid>{" "}
-            <Grid container direction='row' style={{ height: "58%" }}>
+            </Grid>
+            <Grid container direction="row" style={{ height: "58%" }}>
               <Grid
                 item
                 xs={12}
@@ -209,7 +203,7 @@ const AdCard = (props: any) => {
                 }}
               >
                 <div>{<AdChip />}</div>
-              </Grid>{" "}
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
