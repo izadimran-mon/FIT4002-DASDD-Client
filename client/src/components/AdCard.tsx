@@ -188,7 +188,18 @@ const AdCard = (props: any) => {
                     </Grid>
                   </div>
                 ) : (
-                  <Typography> No Link</Typography>
+                  <div>
+                    <Grid container style={{ marginTop: 5 }}>
+                      <Grid item>
+                          <Typography style={{ fontWeight: "bold" }}>
+                            Seen on:
+                          </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography style={{marginLeft: 10}}> No Link</Typography>
+                      </Grid>
+                    </Grid>
+                  </div>
                 )}
               </Grid>
             </Grid>
