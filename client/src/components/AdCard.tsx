@@ -1,20 +1,18 @@
-import React from "react";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Tooltip from "@material-ui/core/Tooltip";
-import Fade from "@material-ui/core/Fade";
-import moment from "moment";
-import "./styles/AdCard.css";
-import AdChip from "./AdChip";
 import {
-  Grid,
-  Card,
-  Typography,
   Button,
+  Card,
+  CardActionArea,
   Dialog,
   DialogContent,
-  CardActionArea,
+  Grid,
+  Typography,
 } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import moment from "moment";
+import React from "react";
+import AdChip from "./AdChip";
+import "./styles/AdCard.css";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,6 +76,7 @@ const AdCard = (props: any) => {
     setOpen(false);
   };
 
+  //@ts-ignore
   const classes = useStyles();
   return (
     <Card className="cardStyle">
@@ -96,11 +95,7 @@ const AdCard = (props: any) => {
               handleClickOpen();
             }}
           >
-            <img
-              className="imageStyle"
-              src={props.image}
-              alt="Ad screenshot"
-            />
+            <img className="imageStyle" src={props.image} alt="Ad screenshot" />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -186,12 +181,15 @@ const AdCard = (props: any) => {
                   <div>
                     <Grid container style={{ marginTop: 5 }}>
                       <Grid item>
-                          <Typography style={{ fontWeight: "bold" }}>
-                            Seen on:
-                          </Typography>
+                        <Typography style={{ fontWeight: "bold" }}>
+                          Seen on:
+                        </Typography>
                       </Grid>
                       <Grid item>
-                        <Typography style={{marginLeft: 10}}> No Link</Typography>
+                        <Typography style={{ marginLeft: 10 }}>
+                          {" "}
+                          No Link
+                        </Typography>
                       </Grid>
                     </Grid>
                   </div>

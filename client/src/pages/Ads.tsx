@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { Grid } from "@material-ui/core";
+import Pagination from "@material-ui/lab/Pagination";
+import React, { useEffect, useState } from "react";
+import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
-import Pagination from "@material-ui/lab/Pagination";
-import { mockData } from "../mockData";
-import axios from "axios";
-import { Grid } from "@material-ui/core";
-import { baseApi } from "../api/api";
 
 //ads?offset=0&limit=30
 const Ads = () => {
