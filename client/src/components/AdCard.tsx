@@ -134,10 +134,25 @@ const AdCard = (props: any) => {
                   <span style={{ fontWeight: "bold" }}>Date: </span>
                   {moment(props.createdAt).format("YYYY-MMM-D dddd h:mma")}
                 </Typography>
-                <Typography style={{ marginTop: 5 }}>
-                  <span style={{ fontWeight: "bold" }}>Seen bot: </span>
-                  {props.bot.username}
-                </Typography>
+                <Tooltip
+                  title={
+                    <>
+                      <Typography>
+                        Political ranking: {props.bot.politicalRanking}
+                      </Typography>
+                      <Typography>
+                        Other terms: {props.bot.otherTermsCategory}
+                      </Typography>
+                      <Typography>Gender: {props.bot.gender}</Typography>
+                      <Typography>DOB: {props.bot.dob}</Typography>
+                    </>
+                  }
+                >
+                  <Typography style={{ marginTop: 5 }}>
+                    <span style={{ fontWeight: "bold" }}>Seen bot: </span>
+                    {props.bot.username}
+                  </Typography>
+                </Tooltip>
                 {props.seenOn ? (
                   <div>
                     <Grid container style={{ marginTop: 5 }}>
