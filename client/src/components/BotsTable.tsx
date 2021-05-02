@@ -272,7 +272,7 @@ export default function EnhancedTable() {
   const [bots, setBots] = React.useState([]);
 
   useEffect(() => {
-    axios.get("/bots").then((res) => {
+    axios.get("/api/bots").then((res) => {
       setBots(res.data);
     });
   }, []);
