@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
+import { Ad } from "../types";
 
-//ads?offset=0&limit=30
 const Ads = () => {
   let storedPageNumber = localStorage.getItem("adsPage");
   const [limit, setLimit] = useState(30);
-  const [ads, setAds] = useState([]);
+  const [ads, setAds] = useState<Ad[]>([]);
   const [page, setPage] = useState(
     storedPageNumber ? JSON.parse(storedPageNumber) : 1
   );
