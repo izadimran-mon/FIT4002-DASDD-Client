@@ -1,77 +1,36 @@
 .cardStyle {
-    padding-top: 10px;
+    height: 350px;
+    margin-bottom: 20px;
+    padding: 15px;
 }
 
+
+.overallContainerStyle {
+    height: 100%;
+}
+
+.cardActionAreaStyle {
+    height: 100%;
+}
 
 .imageStyle {
-    display: block;
-    height: 250px;
-    width: 250px;
-
+    width: auto;
+    height: auto;
+    max-width: 300px;
+    max-height: 320px;
 }
 
-.dateStyle {
-
+.informationContainerStyle {
+    height: 100%;
+    margin-left: 15px;
+    width: auto;
 }
 
-.SeenOnStyle {
-
+.adLinkContainerStyle {
+    height: 42%;
 }
 
-.botStyle {
-
-}
-
-.headlineStyle {
-    font-size: 20px;
-}
-
-.headlineDiv {
-    padding-top: 18px;
-}
-
-.AdChipStyle {
-    display: block;
-    margin-top: 3%;
-    margin-right: 39%;
-}
-
-
-
-* {
-    box-sizing: border-box;
-}
-
-.overallDivStyle {
-    margin: 0px;
-    padding: 10px;
-}
-
-.imageSection {
-    padding: 20px;
-    float: left;
-    height: 300px;
-    width: 300px;
-    align-items: center;
-}
-
-.mainSection {
-    float: left;
-    height: 150px;
-    width: 44%;
-}
-
-.sideSection {
-    float: left;
-    width: 30%;
-    height: 150px;
-}
-
-.categorySection {
-    float: left;
-    width: 74%;
-    height: 230px;
-    border-style: solid;
-    border-radius: 10px;
-    border-width: thin;
+.adFontStyle {
+    font-size: 18px;
+    font-weight: 600px;
 }

@@ -80,8 +80,8 @@ const AdCard = (props: any) => {
 
   const classes = useStyles();
   return (
-    <Card style={{ height: 350, marginBottom: 20, padding: 15 }}>
-      <Grid container style={{ height: "100%" }}>
+    <Card className="cardStyle">
+      <Grid container className="overallContainerStyle">
         <Grid
           item
           xs={4}
@@ -91,18 +91,13 @@ const AdCard = (props: any) => {
           }}
         >
           <CardActionArea
-            style={{ height: "100%" }}
+            className="cardActionAreaStyle"
             onClick={() => {
               handleClickOpen();
             }}
           >
             <img
-              style={{
-                width: "auto",
-                height: "auto",
-                maxWidth: 300,
-                maxHeight: 320,
-              }}
+              className="imageStyle"
               src={props.image}
               alt="Ad screenshot"
             />
@@ -113,7 +108,7 @@ const AdCard = (props: any) => {
             container
             style={{ height: "100%", marginLeft: 15, width: "auto" }}
           >
-            <Grid container direction="row" style={{ height: "42%" }}>
+            <Grid container direction="row" className="adLinkContainerStyle">
               <Grid item xs={6}>
                 {props.headline ? (
                   <div>
