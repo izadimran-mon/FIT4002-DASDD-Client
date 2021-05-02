@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
-import { Ad } from "../types";
 
 const Ads = () => {
   let storedPageNumber = localStorage.getItem("adsPage");

@@ -7,7 +7,7 @@
 //   seenOn: string;
 // }
 
-export interface Ad {
+interface Ad {
   adLink: string;
   botId: string;
   createdAt: string;
@@ -21,7 +21,7 @@ export interface Ad {
   bot: Bot;
 }
 
-export interface Bot {
+interface Bot {
   dob: string;
   fName: string;
   gender: string;
