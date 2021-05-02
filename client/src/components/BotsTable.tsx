@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
-import clsx from "clsx";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import IconButton from "@material-ui/core/IconButton";
+import Paper from "@material-ui/core/Paper";
 import {
   createStyles,
   lighten,
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
+import Switch from "@material-ui/core/Switch";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,15 +17,13 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import axios from "axios";
+import clsx from "clsx";
+import React, { useEffect } from "react";
+import { baseApi } from "../api/api";
 
 interface Data {
   username: string;
@@ -54,9 +54,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string }
-  ) => number {
+  a: { [key in Key]: number | string },
+  b: { [key in Key]: number | string }
+) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -120,13 +120,7 @@ interface EnhancedTableProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    classes,
-    order,
-    orderBy,
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property: keyof Data) => (
     event: React.MouseEvent<unknown>
   ) => {
@@ -172,13 +166,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
         : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
     title: {
       flex: "1 1 100%",
     },
@@ -202,31 +196,31 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       {numSelected > 0 ? (
         <Typography
           className={classes.title}
-          color='inherit'
-          variant='subtitle1'
-          component='div'
+          color="inherit"
+          variant="subtitle1"
+          component="div"
         >
           {numSelected} selected
         </Typography>
       ) : (
         <Typography
           className={classes.title}
-          variant='h6'
-          id='tableTitle'
-          component='div'
+          variant="h6"
+          id="tableTitle"
+          component="div"
         >
           Bots
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title='Delete'>
-          <IconButton aria-label='delete'>
+        <Tooltip title="Delete">
+          <IconButton aria-label="delete">
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title='Filter list'>
-          <IconButton aria-label='filter list'>
+        <Tooltip title="Filter list">
+          <IconButton aria-label="filter list">
             <FilterListIcon />
           </IconButton>
         </Tooltip>
@@ -272,7 +266,7 @@ export default function EnhancedTable() {
   const [bots, setBots] = React.useState([]);
 
   useEffect(() => {
-    axios.get("/api/bots").then((res) => {
+    baseApi.get("/bots").then((res) => {
       setBots(res.data);
     });
   }, []);
@@ -311,9 +305,9 @@ export default function EnhancedTable() {
         <TableContainer>
           <Table
             className={classes.table}
-            aria-labelledby='tableTitle'
+            aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
-            aria-label='enhanced table'
+            aria-label="enhanced table"
           >
             <EnhancedTableHead
               classes={classes}
@@ -329,31 +323,28 @@ export default function EnhancedTable() {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow
-                      hover
-                      key={Math.random()}
-                    >
+                    <TableRow hover key={Math.random()}>
                       <TableCell
-                        component='th'
+                        component="th"
                         id={labelId}
-                        scope='row'
-                        padding='default'
-                        align='left'
+                        scope="row"
+                        padding="default"
+                        align="left"
                       >
                         {row.username}
                       </TableCell>
-                      <TableCell align='left'>
+                      <TableCell align="left">
                         {row.fName + " " + row.lName}
                       </TableCell>
                       {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
                       {/* <TableCell align='center'>{row.ranking}</TableCell> */}
-                      <TableCell align='left'>{row.dob}</TableCell>
-                      <TableCell align='left'>{row.gender}</TableCell>
-                      <TableCell align='left'>{row.password}</TableCell>
-                      <TableCell align='left'>
+                      <TableCell align="left">{row.dob}</TableCell>
+                      <TableCell align="left">{row.gender}</TableCell>
+                      <TableCell align="left">{row.password}</TableCell>
+                      <TableCell align="left">
                         {row.locLat + ", " + row.locLong}
                       </TableCell>
-                      <TableCell align='left'>{row.type}</TableCell>
+                      <TableCell align="left">{row.type}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -367,7 +358,7 @@ export default function EnhancedTable() {
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
-          component='div'
+          component="div"
           count={bots.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -377,7 +368,7 @@ export default function EnhancedTable() {
       </Paper>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label='Dense padding'
+        label="Dense padding"
       />
     </div>
   );

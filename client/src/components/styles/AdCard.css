@@ -1,0 +1,36 @@
+.cardStyle {
+    height: 350px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+
+.overallContainerStyle {
+    height: 100%;
+}
+
+.cardActionAreaStyle {
+    height: 100%;
+}
+
+.imageStyle {
+    width: auto;
+    height: auto;
+    max-width: 300px;
+    max-height: 320px;
+}
+
+.informationContainerStyle {
+    height: 100%;
+    margin-left: 15px;
+    width: auto;
+}
+
+.adLinkContainerStyle {
+    height: 42%;
+}
+
+.adFontStyle {
+    font-size: 18px;
+    font-weight: 600px;
+}

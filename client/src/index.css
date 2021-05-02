@@ -15,7 +15,7 @@ body {
   font-family: "Mulish", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-dark);
+  background: var(--bg-light);
 }
 
 html {
@@ -26,9 +26,9 @@ html {
 #main {
   margin-left: 320px;
   padding: 40px;
+  height: 100%;
   min-height: 100vh;
   box-sizing: border-box;
-  background: var(--bg-light);
   z-index: 2;
 }
 

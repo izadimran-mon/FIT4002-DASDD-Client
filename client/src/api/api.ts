@@ -7,12 +7,10 @@
  */
 
 import axios from "axios";
-
-const usingRp = true;
-const localServerUrl = usingRp ? "/api" : "http://localhost:8888";
+import { config } from "../configs/config";
 
 export const baseApi = axios.create({
-  baseURL: localServerUrl,
+  baseURL: config.API_URL,
   withCredentials: true,
   headers: {
     Accept: "application/json",
