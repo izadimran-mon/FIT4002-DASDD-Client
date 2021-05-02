@@ -5,12 +5,17 @@
  * URL to point to the "/api" route, and the reverse proxy is expected to proxy the request to the API server.
  * see: https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_URL#absolute_urls_vs_relative_urls
  */
-import axios from 'axios';
-
+import axios from "axios";
 
 const usingRp = true;
-const localServerUrl = usingRp ? '/api' : 'http://localhost:8888';
+const localServerUrl = usingRp ? "/api" : "http://localhost:8888";
 
 export default axios.create({
-    baseURL: localServerUrl
+  baseURL: localServerUrl,
+  withCredentials: true,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Credentials": "true",
+  },
 });
