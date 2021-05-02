@@ -5,6 +5,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { mockData } from "../mockData";
 import axios from "axios";
 import { Grid } from "@material-ui/core";
+import { baseApi } from "../api/api";
 
 //ads?offset=0&limit=30
 const Ads = () => {
@@ -24,7 +25,7 @@ const Ads = () => {
 
   useEffect(() => {
     setLoading(true);
-    axios
+    baseApi
       .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}`)
       .then((res: any) => {
         setAds(res.data);
