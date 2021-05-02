@@ -131,12 +131,12 @@ const AdCard = (props: any) => {
               </Grid>
               <Grid item xs={6}>
                 <Typography style={{ marginTop: 5 }}>
-                  <span style={{ fontWeight: "bold" }}>Date:</span>
+                  <span style={{ fontWeight: "bold" }}>Date: </span>
                   {moment(props.createdAt).format("YYYY-MMM-D dddd h:mma")}
                 </Typography>
                 <Typography style={{ marginTop: 5 }}>
-                  <span style={{ fontWeight: "bold" }}>Seen bot:</span>
-                  {props.botId}
+                  <span style={{ fontWeight: "bold" }}>Seen bot: </span>
+                  {props.bot.username}
                 </Typography>
                 {props.seenOn ? (
                   <div>
