@@ -75,7 +75,6 @@ const AdCard = (props: any) => {
   const handleClose = () => {
     setOpen(false);
   };
-
   //@ts-ignore
   const classes = useStyles();
   return (
@@ -206,7 +205,7 @@ const AdCard = (props: any) => {
                   padding: 10,
                 }}
               >
-                <div>{<AdChip />}</div>
+                <div>{<AdChip {...props} />}</div>
               </Grid>
             </Grid>
           </Grid>
