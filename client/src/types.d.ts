@@ -22,7 +22,7 @@ interface Ad {
 }
 
 interface Bot {
-  dob: string;
+  dob: Date;
   fName: string;
   gender: string;
   id: string;

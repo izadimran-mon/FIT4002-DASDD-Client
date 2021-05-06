@@ -7,6 +7,7 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
+import Checkbox from "@material-ui/core/Checkbox";
 import Switch from "@material-ui/core/Switch";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -117,10 +118,20 @@ interface EnhancedTableProps {
   order: Order;
   orderBy: string;
   rowCount: number;
+  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  numSelected: number;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { classes, order, orderBy, onRequestSort } = props;
+  const {
+    classes,
+    order,
+    numSelected,
+    onSelectAllClick,
+    rowCount,
+    orderBy,
+    onRequestSort,
+  } = props;
   const createSortHandler = (property: keyof Data) => (
     event: React.MouseEvent<unknown>
   ) => {
@@ -130,6 +141,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ "aria-label": "select all bots" }}
+          />
+        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -263,7 +282,7 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [bots, setBots] = React.useState([]);
+  const [bots, setBots] = React.useState<Bot[]>([]);
 
   useEffect(() => {
     baseApi.get("/bots").then((res) => {
@@ -278,6 +297,35 @@ export default function EnhancedTable() {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelecteds = bots.map((b) => b.username);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected: string[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelected(newSelected);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -295,6 +343,7 @@ export default function EnhancedTable() {
     setDense(event.target.checked);
   };
 
+  const isSelected = (name: string) => selected.indexOf(name) !== -1;
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
@@ -315,15 +364,32 @@ export default function EnhancedTable() {
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
               rowCount={bots.length}
+              onSelectAllClick={handleSelectAllClick}
+              numSelected={selected.length}
             />
             <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
               {stableSort(bots, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: any, index: number) => {
+                .map((row: Bot, index: number) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
+                  const isItemSelected = isSelected(row.username);
 
                   return (
-                    <TableRow hover key={Math.random()}>
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.username)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={index}
+                      selected={isItemSelected}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ "aria-labelledby": labelId }}
+                        />
+                      </TableCell>
                       <TableCell
                         component="th"
                         id={labelId}
@@ -338,11 +404,13 @@ export default function EnhancedTable() {
                       </TableCell>
                       {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
                       {/* <TableCell align='center'>{row.ranking}</TableCell> */}
-                      <TableCell align="left">{row.dob}</TableCell>
+                      <TableCell align="left">
+                        {new Date(row.dob).toLocaleDateString("en-AU")}
+                      </TableCell>
                       <TableCell align="left">{row.gender}</TableCell>
                       <TableCell align="left">{row.password}</TableCell>
                       <TableCell align="left">
-                        {row.locLat + ", " + row.locLong}
+                        {row.locLat.toFixed(5) + ", " + row.locLong.toFixed(5)}
                       </TableCell>
                       <TableCell align="left">{row.type}</TableCell>
                     </TableRow>
