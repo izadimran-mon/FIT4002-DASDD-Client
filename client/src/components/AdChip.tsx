@@ -53,7 +53,6 @@ const AdChip = (props: any) => {
       settags(res.data);
     });
     let tempNameList: any[] = []
-    console.log(tags)
     tags.map((tag: {name: any}) =>(
       tempNameList.push(tag.name.toLowerCase())
   ))
@@ -61,7 +60,6 @@ const AdChip = (props: any) => {
   }, [tags]);
 
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
-    console.log(hasTag)
     if(hasTag){
       baseApi
       .delete(`/ads/${adData.id}/tags/${categoryIndex}`)
@@ -91,13 +89,19 @@ const AdChip = (props: any) => {
   };
 
   const handleAddTag = () => {
-    console.log(tagsName)
-    console.log(tagInputName)
     if(tagsName.includes(tagInputName)){
-      console.log("nice")
       setErrorMessage('Same tag name has already been added, please enter another name')
     }
     else{
+      baseApi
+      .post(`/tags`, {"name": tagInputName})
+      .then((res: any) => {
+        baseApi
+        .get(`/tags`)
+        .then((res: any) => {
+          settags(res.data);
+        });
+      });
       setOpen(false)
     }
     // else{
