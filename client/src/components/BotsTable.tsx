@@ -7,6 +7,7 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import Switch from "@material-ui/core/Switch";
 import Table from "@material-ui/core/Table";
@@ -20,7 +21,6 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
 import React, { useEffect } from "react";
@@ -185,15 +185,20 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+            color: theme.palette.primary.main,
+            backgroundColor: lighten(theme.palette.primary.light, 0.85),
           }
         : {
             color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
+            backgroundColor: theme.palette.primary.dark,
           },
     title: {
       flex: "1 1 100%",
+    },
+    viewAdsButton: {
+      whiteSpace: "nowrap",
+      padding: "10px",
+      minWidth: "auto",
     },
   })
 );
@@ -232,10 +237,10 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+        <Tooltip title="View ads for selected bots">
+          <Button className={classes.viewAdsButton} color="primary">
+            View ads for selected bots
+          </Button>
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
@@ -281,7 +286,7 @@ export default function EnhancedTable() {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [bots, setBots] = React.useState<Bot[]>([]);
 
   useEffect(() => {
