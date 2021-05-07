@@ -1,3 +1,5 @@
+import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
@@ -7,8 +9,6 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
 import Switch from "@material-ui/core/Switch";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -24,6 +24,7 @@ import Typography from "@material-ui/core/Typography";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { baseApi } from "../api/api";
 
 interface Data {
@@ -204,12 +205,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 );
 
 interface EnhancedTableToolbarProps {
-  numSelected: number;
+  selected: string[];
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { selected } = props;
+  const numSelected = selected.length;
 
   return (
     <Toolbar
@@ -237,11 +239,13 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title="View ads for selected bots">
-          <Button className={classes.viewAdsButton} color="primary">
-            View ads for selected bots
-          </Button>
-        </Tooltip>
+        <Link to={{ pathname: "/ads", state: { bots: selected } }}>
+          <Tooltip title="View ads for selected bots">
+            <Button className={classes.viewAdsButton} color="primary">
+              View ads for selected bots
+            </Button>
+          </Tooltip>
+        </Link>
       ) : (
         <Tooltip title="Filter list">
           <IconButton aria-label="filter list">
@@ -306,7 +310,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = bots.map((b) => b.username);
+      const newSelecteds = bots.map((b) => b.id);
       setSelected(newSelecteds);
       return;
     }
@@ -355,7 +359,7 @@ export default function EnhancedTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar selected={selected} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -377,12 +381,12 @@ export default function EnhancedTable() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: Bot, index: number) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
-                  const isItemSelected = isSelected(row.username);
+                  const isItemSelected = isSelected(row.id);
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.username)}
+                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}

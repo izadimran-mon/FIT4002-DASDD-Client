@@ -4,6 +4,11 @@ import React, { useEffect, useState } from "react";
 import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
+import { useLocation } from "react-router-dom";
+
+interface stateType {
+  bots: string[];
+}
 
 const Ads = () => {
   let storedPageNumber = localStorage.getItem("adsPage");
@@ -14,6 +19,9 @@ const Ads = () => {
   );
   const [loading, setLoading] = useState(false);
 
+  const { state } = useLocation<stateType>();
+
+  console.log(state);
   // useEffect(() => {
   //   axios.get(`/ads?offset${(page-1)*limit}&limit${limit}`).then((res: any) => {
   //     setAds(res.data);
