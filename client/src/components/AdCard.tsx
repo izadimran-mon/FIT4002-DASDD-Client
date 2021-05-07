@@ -96,7 +96,7 @@ const AdCard = (props: any) => {
                       }
                     >
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         color="primary"
                         href={`https://${props.headline} `}
                         target="_blank"
