@@ -7,27 +7,11 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
 import React from "react";
 import AdChip from "./AdChip";
 import "./styles/AdCard.css";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    /*  root: {
-      justifyContent: "center",
-      display: "flex",
-      flexWrap: "wrap",
-      "& > *": {
-        margin: theme.spacing(1),
-        width: theme.spacing(150),
-        height: theme.spacing(50),
-      },
-    }, */
-  })
-);
 
 const processLink = (link: string) => {
   if (link) {
@@ -76,8 +60,7 @@ const AdCard = (props: any) => {
     setOpen(false);
   };
 
-  //@ts-ignore
-  const classes = useStyles();
+  //const classes = useStyles();
   return (
     <Card className="cardStyle">
       <Grid container className="overallContainerStyle">
