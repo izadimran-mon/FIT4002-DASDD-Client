@@ -1,36 +1,32 @@
-import { Grid } from "@material-ui/core";
+import Accordion from "@material-ui/core/Accordion";
+import Grid from "@material-ui/core/Grid";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Fade from "@material-ui/core/Fade";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import MailIcon from "@material-ui/icons/Mail";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import Pagination from "@material-ui/lab/Pagination";
+import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
-import {
-  makeStyles,
-  useTheme,
-  Theme,
-  createStyles,
-} from "@material-ui/core/styles";
-import clsx from "clsx";
 
 interface stateType {
-  bots: string[];
+  bots: Bot[];
 }
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -81,12 +77,17 @@ const Ads = () => {
   );
   const [loading, setLoading] = useState(false);
 
-  const [bots, setBots] = useState<string[]>(
+  const [bots, setBots] = useState<Bot[]>(
     useLocation<stateType>()?.state?.bots || []
-  ); //empty = no filter
+  ); // empty = no filter
+
+  const [botsSelectOpen, setBotsSelectOpen] = React.useState(false);
+  const [allBots, setAllBots] = React.useState<Bot[]>([]);
+  const [botsLoading, setBotsLoading] = useState(false);
+
+  const [botsInputValue, setBotsInputValue] = React.useState("");
 
   const classes = useStyles();
-  const theme = useTheme();
   const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -101,7 +102,7 @@ const Ads = () => {
 
   useEffect(() => {
     setLoading(true);
-    const botParam = bots.reduce((a, b) => a + `&bots=${b}`, "");
+    const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
     baseApi
       .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam)
       .then((res: any) => {
@@ -114,7 +115,18 @@ const Ads = () => {
     localStorage.setItem("adsPage", JSON.stringify(value));
     setPage(value);
   };
-  console.log(ads);
+
+  useEffect(() => {
+    if (allBots.length) {
+      return;
+    }
+    setBotsLoading(true);
+    baseApi.get("/bots").then((res) => {
+      setAllBots(res.data);
+      setBotsLoading(false);
+    });
+  }, [botsSelectOpen, allBots]);
+
   return (
     <div id="main">
       <div
@@ -124,7 +136,7 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-          <Grid container justify="flex-end" style={{ marginBottom: 15 }}>
+          <Grid container justify="space-between" style={{ marginBottom: 15 }}>
             <Button
               color="secondary"
               variant={filterDrawerOpen ? "outlined" : "contained"}
@@ -171,29 +183,66 @@ const Ads = () => {
           <IconButton onClick={handleDrawerToggle}>
             <ChevronRightIcon />
           </IconButton>
+          <span>
+            <Typography variant="h6" style={{ fontWeight: "bold" }}>
+              Filters
+            </Typography>
+          </span>
         </div>
         <Divider />
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        <Accordion square>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>Bots</Typography>
+          </AccordionSummary>
+          <AccordionDetails style={{ display: "block" }}>
+            <Autocomplete
+              multiple
+              id="bots-select"
+              open={botsSelectOpen}
+              onOpen={() => {
+                setBotsSelectOpen(true);
+              }}
+              onClose={() => {
+                setBotsSelectOpen(false);
+              }}
+              onChange={(event: any, newValue: Bot[] | null) => {
+                if (newValue) setBots(newValue);
+              }}
+              filterSelectedOptions
+              getOptionSelected={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.username}
+              options={allBots}
+              value={bots}
+              inputValue={botsInputValue}
+              onInputChange={(_, newInputValue) => {
+                setBotsInputValue(newInputValue);
+              }}
+              loading={botsLoading}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Selected bots"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <React.Fragment>
+                        {loading ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                        {params.InputProps.endAdornment}
+                      </React.Fragment>
+                    ),
+                  }}
+                />
+              )}
+            />
+          </AccordionDetails>
+        </Accordion>
       </Drawer>
     </div>
   );

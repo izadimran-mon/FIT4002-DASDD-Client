@@ -16,6 +16,9 @@ const theme = createMuiTheme({
       main: indigo["A200"],
     },
   },
+  typography: {
+    fontFamily: ["Mulish", "sans-serif"].join(","),
+  },
 });
 
 ReactDOM.render(
