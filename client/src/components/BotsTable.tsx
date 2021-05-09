@@ -1,4 +1,5 @@
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import {
@@ -7,7 +8,6 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
-import Switch from "@material-ui/core/Switch";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -19,10 +19,10 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { baseApi } from "../api/api";
 
 interface Data {
@@ -117,10 +117,20 @@ interface EnhancedTableProps {
   order: Order;
   orderBy: string;
   rowCount: number;
+  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  numSelected: number;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { classes, order, orderBy, onRequestSort } = props;
+  const {
+    classes,
+    order,
+    numSelected,
+    onSelectAllClick,
+    rowCount,
+    orderBy,
+    onRequestSort,
+  } = props;
   const createSortHandler = (property: keyof Data) => (
     event: React.MouseEvent<unknown>
   ) => {
@@ -130,6 +140,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ "aria-label": "select all bots" }}
+          />
+        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -166,26 +184,32 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+            color: theme.palette.primary.main,
+            backgroundColor: lighten(theme.palette.primary.light, 0.85),
           }
         : {
             color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
+            backgroundColor: theme.palette.primary.dark,
           },
     title: {
       flex: "1 1 100%",
+    },
+    viewAdsButton: {
+      whiteSpace: "nowrap",
+      padding: "10px",
+      minWidth: "auto",
     },
   })
 );
 
 interface EnhancedTableToolbarProps {
-  numSelected: number;
+  selected: Bot[];
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { selected } = props;
+  const numSelected = selected.length;
 
   return (
     <Toolbar
@@ -213,11 +237,14 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        <Link
+          to={{ pathname: "/ads", state: { bots: selected } }}
+          style={{ textDecoration: "none" }}
+        >
+          <Button className={classes.viewAdsButton} color="primary">
+            View ads for selected bots
+          </Button>
+        </Link>
       ) : (
         <Tooltip title="Filter list">
           <IconButton aria-label="filter list">
@@ -259,11 +286,10 @@ export default function EnhancedTable() {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("adcount");
-  const [selected, setSelected] = React.useState<string[]>([]);
+  const [selected, setSelected] = React.useState<Bot[]>([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [bots, setBots] = React.useState([]);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [bots, setBots] = React.useState<Bot[]>([]);
 
   useEffect(() => {
     baseApi.get("/bots").then((res) => {
@@ -280,6 +306,34 @@ export default function EnhancedTable() {
     setOrderBy(property);
   };
 
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setSelected(bots);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event: React.MouseEvent<unknown>, bot: Bot) => {
+    const selectedIndex = selected.map((e) => e.id).indexOf(bot.id);
+    let newSelected: Bot[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, bot);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -291,22 +345,20 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
+  const isSelected = (bot: Bot) =>
+    selected.map((e) => e.id).indexOf(bot.id) !== -1;
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar selected={selected} />
         <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
+            size="medium"
             aria-label="enhanced table"
           >
             <EnhancedTableHead
@@ -315,15 +367,32 @@ export default function EnhancedTable() {
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
               rowCount={bots.length}
+              onSelectAllClick={handleSelectAllClick}
+              numSelected={selected.length}
             />
             <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
               {stableSort(bots, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: any, index: number) => {
+                .map((row: Bot, index: number) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
+                  const isItemSelected = isSelected(row);
 
                   return (
-                    <TableRow hover key={Math.random()}>
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={index}
+                      selected={isItemSelected}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ "aria-labelledby": labelId }}
+                        />
+                      </TableCell>
                       <TableCell
                         component="th"
                         id={labelId}
@@ -338,18 +407,20 @@ export default function EnhancedTable() {
                       </TableCell>
                       {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
                       {/* <TableCell align='center'>{row.ranking}</TableCell> */}
-                      <TableCell align="left">{row.dob}</TableCell>
+                      <TableCell align="left">
+                        {new Date(row.dob).toLocaleDateString("en-AU")}
+                      </TableCell>
                       <TableCell align="left">{row.gender}</TableCell>
                       <TableCell align="left">{row.password}</TableCell>
                       <TableCell align="left">
-                        {row.locLat + ", " + row.locLong}
+                        {row.locLat.toFixed(5) + ", " + row.locLong.toFixed(5)}
                       </TableCell>
                       <TableCell align="left">{row.type}</TableCell>
                     </TableRow>
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -366,10 +437,6 @@ export default function EnhancedTable() {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </div>
   );
 }

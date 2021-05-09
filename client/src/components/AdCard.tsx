@@ -7,27 +7,11 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
 import React from "react";
 import AdChip from "./AdChip";
 import "./styles/AdCard.css";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    /*  root: {
-      justifyContent: "center",
-      display: "flex",
-      flexWrap: "wrap",
-      "& > *": {
-        margin: theme.spacing(1),
-        width: theme.spacing(150),
-        height: theme.spacing(50),
-      },
-    }, */
-  })
-);
 
 const processLink = (link: string) => {
   if (link) {
@@ -75,8 +59,13 @@ const AdCard = (props: any) => {
   const handleClose = () => {
     setOpen(false);
   };
+<<<<<<< HEAD
   //@ts-ignore
   const classes = useStyles();
+=======
+
+  //const classes = useStyles();
+>>>>>>> origin/master
   return (
     <Card className="cardStyle">
       <Grid container className="overallContainerStyle">
@@ -112,7 +101,7 @@ const AdCard = (props: any) => {
                       }
                     >
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         color="primary"
                         href={`https://${props.headline} `}
                         target="_blank"
@@ -130,13 +119,28 @@ const AdCard = (props: any) => {
               </Grid>
               <Grid item xs={6}>
                 <Typography style={{ marginTop: 5 }}>
-                  <span style={{ fontWeight: "bold" }}>Date:</span>
+                  <span style={{ fontWeight: "bold" }}>Date: </span>
                   {moment(props.createdAt).format("YYYY-MMM-D dddd h:mma")}
                 </Typography>
-                <Typography style={{ marginTop: 5 }}>
-                  <span style={{ fontWeight: "bold" }}>Seen bot:</span>
-                  {props.botId}
-                </Typography>
+                <Tooltip
+                  title={
+                    <>
+                      <Typography>
+                        Political ranking: {props.bot.politicalRanking}
+                      </Typography>
+                      <Typography>
+                        Other terms: {props.bot.otherTermsCategory}
+                      </Typography>
+                      <Typography>Gender: {props.bot.gender}</Typography>
+                      <Typography>DOB: {props.bot.dob}</Typography>
+                    </>
+                  }
+                >
+                  <Typography style={{ marginTop: 5 }}>
+                    <span style={{ fontWeight: "bold" }}>Seen bot: </span>
+                    {props.bot.username}
+                  </Typography>
+                </Tooltip>
                 {props.seenOn ? (
                   <div>
                     <Grid container style={{ marginTop: 5 }}>
