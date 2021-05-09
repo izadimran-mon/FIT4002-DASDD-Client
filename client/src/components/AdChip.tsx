@@ -83,7 +83,7 @@ const AdChip = (props: Ad) => {
         "Same tag name has already been added, please enter another name"
       );
     } else {
-      baseApi.post(`/tags`, { name: tagInputName }).then(() => {
+      baseApi.post(`/tags`, { name: tagInputName }).then((res: any) => {
         baseApi.get(`/tags`).then((res: any) => {
           setTags(res.data);
         });

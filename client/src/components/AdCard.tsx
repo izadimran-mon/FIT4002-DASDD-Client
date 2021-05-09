@@ -36,7 +36,6 @@ interface ImageDialogProps {
 }
 
 const ImageDialog = (props: ImageDialogProps) => {
-  console.log(props.image);
   return (
     <Dialog
       onClose={props.handleClose}

@@ -17,7 +17,7 @@ interface Ad {
   image: string;
   loggedIn: boolean;
   seenOn: string;
-  tags: any[]; // TODO: define tag interface
+  tags: Tag[]; // TODO: define tag interface
   bot: Bot;
 }
 
