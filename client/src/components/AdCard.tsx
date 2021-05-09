@@ -29,7 +29,13 @@ const processLink = (link: string) => {
   }
 };
 
-const ImageDialog = (props: any) => {
+interface ImageDialogProps {
+  image: string;
+  open: boolean;
+  handleClose: () => void;
+}
+
+const ImageDialog = (props: ImageDialogProps) => {
   return (
     <Dialog
       onClose={props.handleClose}
@@ -50,7 +56,7 @@ const ImageDialog = (props: any) => {
   );
 };
 
-const AdCard = (props: any) => {
+const AdCard = (props: Ad) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -204,7 +210,7 @@ const AdCard = (props: any) => {
                   padding: 10,
                 }}
               >
-                <div>{<AdChip />}</div>
+                <div>{<AdChip {...props} />}</div>
               </Grid>
             </Grid>
           </Grid>

@@ -17,7 +17,7 @@ interface Ad {
   image: string;
   loggedIn: boolean;
   seenOn: string;
-  tags: any[]; // TODO: define tag interface
+  tags: Tag[]; // TODO: define tag interface
   bot: Bot;
 }
 
@@ -34,6 +34,11 @@ interface Bot {
   politicalRanking: number;
   type: string;
   username: string;
+}
+
+interface Tag {
+  id: number;
+  name: string;
 }
 
 interface CategoryData {
