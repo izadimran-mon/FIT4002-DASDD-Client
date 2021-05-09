@@ -5,7 +5,6 @@ import Routes from "./routes";
 import "./index.css";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
 import indigo from "@material-ui/core/colors/indigo";
-import deepPurple from "@material-ui/core/colors/deepPurple";
 
 const theme = createMuiTheme({
   palette: {

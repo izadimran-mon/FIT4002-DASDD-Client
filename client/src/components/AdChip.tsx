@@ -25,84 +25,70 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const AdChip = (props: any) => {
+const AdChip = (props: Ad) => {
   const classes = useStyles();
 
-  const [tags, settags] = useState<any[]>([])
-  const [adOwnTagsId, setAdOwnTags] = useState<Number[]>([])
-  const [tagsName, setTagsName] = useState<String[]>([])
-  const [adData, setAdData] = useState<any>(props)
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [adOwnTagsId, setAdOwnTags] = useState<number[]>([]);
+  const [tagsName, setTagsName] = useState<string[]>([]);
+  const [adData, setAdData] = useState<Ad>(props);
   const [open, setOpen] = useState(false);
-  const [tagInputName, setTagInputName] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-
-  useEffect(() =>{
-    let tempList: any[] = []
-
-    // eslint-disable-next-line array-callback-return
-    adData.tags.map((tag: { id: any; name: any}) =>(
-      tempList.push(tag.id)
-  ))
-    setAdOwnTags(tempList)
-  }, [adData])
+  const [tagInputName, setTagInputName] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    baseApi
-    .get(`/tags`)
-    .then((res: any) => {
-      settags(res.data);
+    const tempList = adData.tags.map((tag: Tag) => tag.id);
+    setAdOwnTags(tempList);
+  }, [adData]);
+
+  useEffect(() => {
+    baseApi.get(`/tags`).then((res: any) => {
+      setTags(res.data);
     });
-    let tempNameList: any[] = []
-    tags.map((tag: {name: any}) =>(
-      tempNameList.push(tag.name.toLowerCase())
-  ))
-    setTagsName(tempNameList)
+    const tempNameList = tags.map((tag: Tag) => tag.name.toLowerCase());
+    setTagsName(tempNameList);
   }, [tags]);
 
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
-    if(hasTag){
+    if (hasTag) {
       baseApi
-      .delete(`/ads/${adData.id}/tags/${categoryIndex}`)
-      .then((res: any) => {
-        setAdData(res.data);
-      });
-    }
-    else{
+        .delete(`/ads/${adData.id}/tags/${categoryIndex}`)
+        .then((res: any) => {
+          setAdData(res.data);
+        });
+    } else {
       baseApi
-      .post(`/ads/${adData.id}/tags/${categoryIndex}`)
-      .then((res: any) => {
-        setAdData(res.data);
-      });
+        .post(`/ads/${adData.id}/tags/${categoryIndex}`)
+        .then((res: any) => {
+          setAdData(res.data);
+        });
     }
   };
 
   const handleClickOpen = () => {
-    setErrorMessage('')
-    setTagInputName('')
+    setErrorMessage("");
+    setTagInputName("");
     setOpen(true);
   };
 
   const handleClose = () => {
-    setErrorMessage('')
-    setTagInputName('')
+    setErrorMessage("");
+    setTagInputName("");
     setOpen(false);
   };
 
   const handleAddTag = () => {
-    if(tagsName.includes(tagInputName)){
-      setErrorMessage('Same tag name has already been added, please enter another name')
-    }
-    else{
-      baseApi
-      .post(`/tags`, {"name": tagInputName})
-      .then((res: any) => {
-        baseApi
-        .get(`/tags`)
-        .then((res: any) => {
-          settags(res.data);
+    if (tagsName.includes(tagInputName)) {
+      setErrorMessage(
+        "Same tag name has already been added, please enter another name"
+      );
+    } else {
+      baseApi.post(`/tags`, { name: tagInputName }).then(() => {
+        baseApi.get(`/tags`).then((res: any) => {
+          setTags(res.data);
         });
       });
-      setOpen(false)
+      setOpen(false);
     }
     // else{
     //   baseApi
@@ -111,26 +97,30 @@ const AdChip = (props: any) => {
     //     setAdData(res.data);
     //   });
     // }
-  }
+  };
 
   const handleTagNameChange = (e: any) => {
-    setTagInputName(e.target.value)
-  }
+    setTagInputName(e.target.value);
+  };
 
   return (
     <div className={classes.root}>
       {tags.map((category, i) => (
         <Chip
-        variant={adOwnTagsId.includes(category.id) ? "default" : "outlined"}
-        label={category.name}
-        onClick={() => {
-          handleClick(category.id, adOwnTagsId.includes(category.id));
-        }}
-        key={i}
-      />
+          variant={adOwnTagsId.includes(category.id) ? "default" : "outlined"}
+          label={category.name}
+          onClick={() => {
+            handleClick(category.id, adOwnTagsId.includes(category.id));
+          }}
+          key={i}
+        />
       ))}
-    <Chip variant={"outlined"} label="+"  onClick={handleClickOpen}/>
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Chip variant={"outlined"} label="+" onClick={handleClickOpen} />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">Add tags</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -145,7 +135,7 @@ const AdChip = (props: any) => {
             value={tagInputName}
             onChange={handleTagNameChange}
           />
-          <Typography style={{fontSize: 12, color: "red"}}>
+          <Typography style={{ fontSize: 12, color: "red" }}>
             {errorMessage}
           </Typography>
         </DialogContent>

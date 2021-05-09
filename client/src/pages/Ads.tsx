@@ -81,12 +81,12 @@ const Ads = () => {
     useLocation<stateType>()?.state?.bots || []
   ); // empty = no filter
 
-  const [tags, setTags] = useState<any[]>([])
+  const [tags, setTags] = useState<Tag[]>([]);
 
   const [botsSelectOpen, setBotsSelectOpen] = React.useState(false);
   const [tagsSelectOpen, setTagsSelectOpen] = React.useState(false);
   const [allBots, setAllBots] = React.useState<Bot[]>([]);
-  const [allTags, setAllTags] = React.useState<any[]>([]);
+  const [allTags, setAllTags] = React.useState<Tag[]>([]);
   const [botsLoading, setBotsLoading] = useState(false);
   const [tagsLoading, setTagsLoading] = useState(false);
 
@@ -111,7 +111,9 @@ const Ads = () => {
     const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
     const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
     baseApi
-      .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam + tagParam)
+      .get(
+        `/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam + tagParam
+      )
       .then((res: any) => {
         setAds(res.data);
         setLoading(false);
@@ -280,7 +282,7 @@ const Ads = () => {
               onClose={() => {
                 setTagsSelectOpen(false);
               }}
-              onChange={(event: any, newValue: any[] | null) => {
+              onChange={(event: any, newValue: Tag[] | null) => {
                 if (newValue) setTags(newValue);
               }}
               filterSelectedOptions

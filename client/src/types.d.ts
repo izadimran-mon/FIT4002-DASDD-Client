@@ -36,6 +36,11 @@ interface Bot {
   username: string;
 }
 
+interface Tag {
+  id: number;
+  name: string;
+}
+
 interface CategoryData {
   name: string;
   selection: boolean;
