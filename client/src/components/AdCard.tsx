@@ -59,13 +59,8 @@ const AdCard = (props: any) => {
   const handleClose = () => {
     setOpen(false);
   };
-<<<<<<< HEAD
-  //@ts-ignore
-  const classes = useStyles();
-=======
 
   //const classes = useStyles();
->>>>>>> origin/master
   return (
     <Card className="cardStyle">
       <Grid container className="overallContainerStyle">

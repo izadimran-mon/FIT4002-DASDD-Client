@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Ads = () => {
   //let storedPageNumber = localStorage.getItem("adsPage");
-  const [limit, setLimit] = useState(30);
+  const [limit, setLimit] = useState(5);
   const [ads, setAds] = useState<Ad[]>([]);
   const [page, setPage] = useState(
     1 //storedPageNumber ? JSON.parse(storedPageNumber) : 1
@@ -81,11 +81,17 @@ const Ads = () => {
     useLocation<stateType>()?.state?.bots || []
   ); // empty = no filter
 
+  const [tags, setTags] = useState<any[]>([])
+
   const [botsSelectOpen, setBotsSelectOpen] = React.useState(false);
+  const [tagsSelectOpen, setTagsSelectOpen] = React.useState(false);
   const [allBots, setAllBots] = React.useState<Bot[]>([]);
+  const [allTags, setAllTags] = React.useState<any[]>([]);
   const [botsLoading, setBotsLoading] = useState(false);
+  const [tagsLoading, setTagsLoading] = useState(false);
 
   const [botsInputValue, setBotsInputValue] = React.useState("");
+  const [tagsInputValue, setTagsInputValue] = React.useState("");
 
   const classes = useStyles();
   const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
@@ -103,13 +109,14 @@ const Ads = () => {
   useEffect(() => {
     setLoading(true);
     const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
+    const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
     baseApi
-      .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam)
+      .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam + tagParam)
       .then((res: any) => {
         setAds(res.data);
         setLoading(false);
       });
-  }, [page, limit, bots]);
+  }, [page, limit, bots, tags]);
 
   const handleChange = (event: any, value: number) => {
     localStorage.setItem("adsPage", JSON.stringify(value));
@@ -126,6 +133,17 @@ const Ads = () => {
       setBotsLoading(false);
     });
   }, [botsSelectOpen, allBots]);
+
+  useEffect(() => {
+    if (allTags.length) {
+      return;
+    }
+    setTagsLoading(true);
+    baseApi.get("/tags").then((res) => {
+      setAllTags(res.data);
+      setTagsLoading(false);
+    });
+  }, [tagsSelectOpen, allTags]);
 
   return (
     <div id="main">
@@ -201,7 +219,7 @@ const Ads = () => {
           <AccordionDetails style={{ display: "block" }}>
             <Autocomplete
               multiple
-              id="bots-select"
+              id="tags-select"
               open={botsSelectOpen}
               onOpen={() => {
                 setBotsSelectOpen(true);
@@ -226,6 +244,59 @@ const Ads = () => {
                 <TextField
                   {...params}
                   label="Selected bots"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <React.Fragment>
+                        {loading ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                        {params.InputProps.endAdornment}
+                      </React.Fragment>
+                    ),
+                  }}
+                />
+              )}
+            />
+          </AccordionDetails>
+        </Accordion>
+        <Accordion square>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>Tags</Typography>
+          </AccordionSummary>
+          <AccordionDetails style={{ display: "block" }}>
+            <Autocomplete
+              multiple
+              id="tags-select"
+              open={tagsSelectOpen}
+              onOpen={() => {
+                setTagsSelectOpen(true);
+              }}
+              onClose={() => {
+                setTagsSelectOpen(false);
+              }}
+              onChange={(event: any, newValue: any[] | null) => {
+                if (newValue) setTags(newValue);
+              }}
+              filterSelectedOptions
+              getOptionSelected={(option, value) => option.id === value.id}
+              getOptionLabel={(option) => option.name}
+              options={allTags}
+              value={tags}
+              inputValue={tagsInputValue}
+              onInputChange={(_, newInputValue) => {
+                setTagsInputValue(newInputValue);
+              }}
+              loading={tagsLoading}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Selected tags"
                   variant="outlined"
                   InputProps={{
                     ...params.InputProps,
