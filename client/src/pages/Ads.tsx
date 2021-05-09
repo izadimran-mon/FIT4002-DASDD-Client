@@ -22,6 +22,11 @@ import { useLocation } from "react-router-dom";
 import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 interface stateType {
   bots: Bot[];
@@ -92,6 +97,14 @@ const Ads = () => {
 
   const [botsInputValue, setBotsInputValue] = React.useState("");
   const [tagsInputValue, setTagsInputValue] = React.useState("");
+
+  const [selectedDate, setSelectedDate] = React.useState<Date | null>(
+    new Date(),
+  );
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
 
   const classes = useStyles();
   const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
@@ -313,6 +326,45 @@ const Ads = () => {
               )}
             />
           </AccordionDetails>
+        </Accordion>
+        <Accordion square>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>Date</Typography>
+          </AccordionSummary>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid container justify="space-around">
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                id="date-picker-inline"
+                label="Start date"
+                value={selectedDate}
+                onChange={handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/dd/yyyy"
+                margin="normal"
+                id="date-picker-inline"
+                label="End date"
+                value={selectedDate}
+                onChange={handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </Grid>
+          </MuiPickersUtilsProvider>
         </Accordion>
       </Drawer>
     </div>
