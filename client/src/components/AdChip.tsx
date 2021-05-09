@@ -25,24 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const AdChip = (props: any) => {
+const AdChip = (props: Ad) => {
   const classes = useStyles();
 
-  const [tags, settags] = useState<any[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
   const [adOwnTagsId, setAdOwnTags] = useState<Number[]>([])
   const [tagsName, setTagsName] = useState<String[]>([])
-  const [adData, setAdData] = useState<any>(props)
+  const [adData, setAdData] = useState<Ad>(props)
   const [open, setOpen] = useState(false);
   const [tagInputName, setTagInputName] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() =>{
-    let tempList: any[] = []
-
-    // eslint-disable-next-line array-callback-return
-    adData.tags.map((tag: { id: any; name: any}) =>(
-      tempList.push(tag.id)
-  ))
+    const tempList = adData.tags.map(tag => tag.id)
     setAdOwnTags(tempList)
   }, [adData])
 
@@ -50,12 +45,9 @@ const AdChip = (props: any) => {
     baseApi
     .get(`/tags`)
     .then((res: any) => {
-      settags(res.data);
+      setTags(res.data);
     });
-    let tempNameList: any[] = []
-    tags.map((tag: {name: any}) =>(
-      tempNameList.push(tag.name.toLowerCase())
-  ))
+    const tempNameList = tags.map(tag => tag.name.toLowerCase())
     setTagsName(tempNameList)
   }, [tags]);
 
@@ -99,7 +91,7 @@ const AdChip = (props: any) => {
         baseApi
         .get(`/tags`)
         .then((res: any) => {
-          settags(res.data);
+          setTags(res.data);
         });
       });
       setOpen(false)
