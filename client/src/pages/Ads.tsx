@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Pagination from "@material-ui/lab/Pagination";
+import ClearIcon from "@material-ui/icons/Clear"
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -98,12 +99,21 @@ const Ads = () => {
   const [botsInputValue, setBotsInputValue] = React.useState("");
   const [tagsInputValue, setTagsInputValue] = React.useState("");
 
-  const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-    new Date(),
+  const [startDate, setStartDate] = React.useState<Date | null>(
+    null,
   );
+  const [endDate, setEndDate] = React.useState<Date | null>(
+    null,
+  );
+  const tempDate = new Date()
+  console.log(tempDate)
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+  const handleStartDateChange = (date: Date | null) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    setEndDate(date);
   };
 
   const classes = useStyles();
@@ -123,13 +133,23 @@ const Ads = () => {
     setLoading(true);
     const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
     const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
+    const startParam = startDate?.getTime()
+    const endParam = endDate?.getTime()
     baseApi
-      .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam + tagParam)
+      // .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam + tagParam)
+      .get('/ads', {params: {
+        offset: (page - 1) * limit,
+        limit: limit,
+        bots: bots.map((a) => a.id),
+        tag: tags.map((a) => a.name),
+        startDate: startParam,
+        endDate: endParam,
+      }})
       .then((res: any) => {
         setAds(res.data);
         setLoading(false);
       });
-  }, [page, limit, bots, tags]);
+  }, [page, limit, bots, tags, startDate, endDate]);
 
   const handleChange = (event: any, value: number) => {
     localStorage.setItem("adsPage", JSON.stringify(value));
@@ -338,27 +358,53 @@ const Ads = () => {
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Grid container justify="space-around">
               <KeyboardDatePicker
+                style={{marginLeft: 30, marginRight: 30}}
                 disableToolbar
                 variant="inline"
-                format="MM/dd/yyyy"
+                format="dd/MM/yyyy"
                 margin="normal"
                 id="date-picker-inline"
+                disableFuture={true}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={() => setStartDate(null)}>
+                      <ClearIcon />
+                    </IconButton>
+                  )
+                }}
+                InputAdornmentProps={{
+                  position: "start"
+                }}
                 label="Start date"
-                value={selectedDate}
-                onChange={handleDateChange}
+                value={startDate}
+                maxDate={endDate? endDate : new Date()}
+                onChange={handleStartDateChange}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
               />
               <KeyboardDatePicker
+                style={{marginLeft: 30, marginRight: 30}}
                 disableToolbar
                 variant="inline"
-                format="MM/dd/yyyy"
+                format="dd/MM/yyyy"
                 margin="normal"
                 id="date-picker-inline"
+                disableFuture={true}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={() => setEndDate(null)}>
+                      <ClearIcon />
+                    </IconButton>
+                  )
+                }}
+                InputAdornmentProps={{
+                  position: "start"
+                }}
+                minDate={startDate? startDate : new Date('1900-01-01')}
                 label="End date"
-                value={selectedDate}
-                onChange={handleDateChange}
+                value={endDate}
+                onChange={handleEndDateChange}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
