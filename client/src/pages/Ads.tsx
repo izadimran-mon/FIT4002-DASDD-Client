@@ -20,12 +20,18 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Pagination from "@material-ui/lab/Pagination";
+import ClearIcon from "@material-ui/icons/Clear"
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 interface stateType {
   bots: Bot[];
@@ -97,6 +103,21 @@ const Ads = () => {
   const [botsInputValue, setBotsInputValue] = useState("");
   const [tagsInputValue, setTagsInputValue] = useState("");
 
+  const [startDate, setStartDate] = React.useState<Date | null>(
+    null,
+  );
+  const [endDate, setEndDate] = React.useState<Date | null>(
+    null,
+  );
+
+  const handleStartDateChange = (date: Date | null) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    setEndDate(date);
+  };
+
   const classes = useStyles();
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
@@ -112,17 +133,22 @@ const Ads = () => {
 
   useEffect(() => {
     setLoading(true);
-    const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
-    const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
+    // const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
+    // const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
     baseApi
-      .get(
-        `/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam + tagParam
-      )
+      .get('/ads', {params: {
+        offset: (page - 1) * limit,
+        limit: limit,
+        bots: bots.map((a) => a.id),
+        tag: tags.map((a) => a.name),
+        startDate: startDate?.getTime(),
+        endDate: endDate?.getTime(),
+      }})
       .then((res: any) => {
         setAds(res.data);
         setLoading(false);
       });
-  }, [page, limit, bots, tags]);
+  }, [page, limit, bots, tags, startDate, endDate]);
 
   const handleChange = (event: any, value: number) => {
     localStorage.setItem("adsPage", JSON.stringify(value));
@@ -319,6 +345,71 @@ const Ads = () => {
               )}
             />
           </AccordionDetails>
+        </Accordion>
+        <Accordion square>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>Date</Typography>
+          </AccordionSummary>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid container justify="space-around">
+              <KeyboardDatePicker
+                style={{marginLeft: 30, marginRight: 30}}
+                disableToolbar
+                variant="inline"
+                format="dd/MM/yyyy"
+                margin="normal"
+                id="date-picker-inline"
+                disableFuture={true}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={() => setStartDate(null)}>
+                      <ClearIcon />
+                    </IconButton>
+                  )
+                }}
+                InputAdornmentProps={{
+                  position: "start"
+                }}
+                label="Start date"
+                value={startDate}
+                maxDate={endDate? endDate : new Date()}
+                onChange={handleStartDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+              <KeyboardDatePicker
+                style={{marginLeft: 30, marginRight: 30}}
+                disableToolbar
+                variant="inline"
+                format="dd/MM/yyyy"
+                margin="normal"
+                id="date-picker-inline"
+                disableFuture={true}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={() => setEndDate(null)}>
+                      <ClearIcon />
+                    </IconButton>
+                  )
+                }}
+                InputAdornmentProps={{
+                  position: "start"
+                }}
+                minDate={startDate? startDate : new Date('1900-01-01')}
+                label="End date"
+                value={endDate}
+                onChange={handleEndDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </Grid>
+          </MuiPickersUtilsProvider>
         </Accordion>
       </Drawer>
     </div>
