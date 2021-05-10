@@ -109,8 +109,6 @@ const Ads = () => {
   const [endDate, setEndDate] = React.useState<Date | null>(
     null,
   );
-  const tempDate = new Date()
-  console.log(tempDate)
 
   const handleStartDateChange = (date: Date | null) => {
     setStartDate(date);
