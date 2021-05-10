@@ -1,16 +1,20 @@
-import Accordion from "@material-ui/core/Accordion";
-import Grid from "@material-ui/core/Grid";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import Fade from "@material-ui/core/Fade";
-import IconButton from "@material-ui/core/IconButton";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  Accordion,
+  Grid,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  CircularProgress,
+  Divider,
+  Drawer,
+  Fade,
+  IconButton,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FilterListIcon from "@material-ui/icons/FilterList";
@@ -76,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Ads = () => {
   //let storedPageNumber = localStorage.getItem("adsPage");
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(30);
   const [ads, setAds] = useState<Ad[]>([]);
   const [page, setPage] = useState(
     1 //storedPageNumber ? JSON.parse(storedPageNumber) : 1
@@ -87,17 +91,17 @@ const Ads = () => {
     useLocation<stateType>()?.state?.bots || []
   ); // empty = no filter
 
-  const [tags, setTags] = useState<any[]>([])
+  const [tags, setTags] = useState<Tag[]>([]);
 
-  const [botsSelectOpen, setBotsSelectOpen] = React.useState(false);
-  const [tagsSelectOpen, setTagsSelectOpen] = React.useState(false);
-  const [allBots, setAllBots] = React.useState<Bot[]>([]);
-  const [allTags, setAllTags] = React.useState<any[]>([]);
+  const [botsSelectOpen, setBotsSelectOpen] = useState(false);
+  const [tagsSelectOpen, setTagsSelectOpen] = useState(false);
+  const [allBots, setAllBots] = useState<Bot[]>([]);
+  const [allTags, setAllTags] = useState<Tag[]>([]);
   const [botsLoading, setBotsLoading] = useState(false);
   const [tagsLoading, setTagsLoading] = useState(false);
 
-  const [botsInputValue, setBotsInputValue] = React.useState("");
-  const [tagsInputValue, setTagsInputValue] = React.useState("");
+  const [botsInputValue, setBotsInputValue] = useState("");
+  const [tagsInputValue, setTagsInputValue] = useState("");
 
   const [startDate, setStartDate] = React.useState<Date | null>(
     null,
@@ -117,7 +121,7 @@ const Ads = () => {
   };
 
   const classes = useStyles();
-  const [filterDrawerOpen, setFilterDrawerOpen] = React.useState(false);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setFilterDrawerOpen(!filterDrawerOpen);
@@ -131,19 +135,16 @@ const Ads = () => {
 
   useEffect(() => {
     setLoading(true);
-    const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
-    const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
-    const startParam = startDate?.getTime()
-    const endParam = endDate?.getTime()
+    // const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
+    // const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
     baseApi
-      // .get(`/ads?offset=${(page - 1) * limit}&limit=${limit}` + botParam + tagParam)
       .get('/ads', {params: {
         offset: (page - 1) * limit,
         limit: limit,
         bots: bots.map((a) => a.id),
         tag: tags.map((a) => a.name),
-        startDate: startParam,
-        endDate: endParam,
+        startDate: startDate?.getTime(),
+        endDate: endDate?.getTime(),
       }})
       .then((res: any) => {
         setAds(res.data);
@@ -313,7 +314,7 @@ const Ads = () => {
               onClose={() => {
                 setTagsSelectOpen(false);
               }}
-              onChange={(event: any, newValue: any[] | null) => {
+              onChange={(event: any, newValue: Tag[] | null) => {
                 if (newValue) setTags(newValue);
               }}
               filterSelectedOptions
