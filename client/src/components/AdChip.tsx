@@ -44,10 +44,10 @@ const AdChip = (props: Ad) => {
   useEffect(() => {
     baseApi.get(`/tags`).then((res: any) => {
       setTags(res.data);
+      const tempNameList = res.data.map((tag: Tag) => tag.name.toLowerCase());
+      setTagsName(tempNameList);
     });
-    const tempNameList = tags.map((tag: Tag) => tag.name.toLowerCase());
-    setTagsName(tempNameList);
-  }, [tags]);
+  }, []);
 
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
     if (hasTag) {
