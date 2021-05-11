@@ -18,6 +18,7 @@ import moment from "moment";
 import politicalRanking from "./helpers/politicalRankings";
 import politicalSearchTerms from "./helpers/politicalSearchTerms";
 import otherSearchTerms from "./helpers/otherSearchTerms";
+import Geocode from "react-geocode";
 import React from "react";
 import AdChip from "./AdChip";
 import "./styles/AdCard.css";
@@ -50,6 +51,8 @@ interface BotDetailsProps {
   gender: string;
   dob: any;
   open: boolean;
+  long: number;
+  lat: number;
   handleClose: () => void;
   displayTerms: (terms: string[], title: string) => void;
 }
@@ -63,7 +66,17 @@ interface SearchTermsProps {
 
 const BotDetails = (props: BotDetailsProps) => {
   let ranking: string = politicalRanking[`${props.ranking}`];
-
+  const [location, setLocation] = React.useState("");
+  Geocode.fromLatLng(props.lat.toString(), props.long.toString()).then(
+    (response: { results: { formatted_address: any }[] }) => {
+      const address = response.results[0].formatted_address;
+      setLocation(address);
+    },
+    (error: any) => {
+      console.error(error);
+    }
+  );
+  Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
   return (
     <Dialog
       onClose={props.handleClose}
@@ -91,10 +104,10 @@ const BotDetails = (props: BotDetailsProps) => {
         <List>
           <ListItem>
             <Grid container>
-              <Grid item xs={8}>
+              <Grid item xs={7}>
                 <Typography>Political Inclination: </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={5}>
                 {" "}
                 <span
                   style={{
@@ -121,10 +134,10 @@ const BotDetails = (props: BotDetailsProps) => {
           <ListItem>
             {" "}
             <Grid container style={{ display: "flex", alignItems: "center" }}>
-              <Grid item xs={8}>
-                <Typography>Political Search Terms: </Typography>{" "}
+              <Grid item xs={7}>
+                <Typography>Political Terms: </Typography>{" "}
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={5}>
                 {" "}
                 <Button
                   size='small'
@@ -145,10 +158,10 @@ const BotDetails = (props: BotDetailsProps) => {
           <ListItem>
             {" "}
             <Grid container>
-              <Grid item xs={8}>
+              <Grid item xs={7}>
                 <Typography>Other Terms: </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={5}>
                 {" "}
                 <Button
                   size='small'
@@ -169,22 +182,49 @@ const BotDetails = (props: BotDetailsProps) => {
           <ListItem>
             {" "}
             <Grid container>
-              <Grid item xs={8}>
+              <Grid item xs={7}>
                 <Typography>Gender: </Typography>
               </Grid>{" "}
-              <Grid item xs={4}>
-                <span>{props.gender}</span>
+              <Grid item xs={5}>
+                <span>{props.gender}</span>{" "}
+                {props.gender === "Female" ? (
+                  <span style={{ fontSize: 17, color: "#e449ac" }}>
+                    &#9792;
+                  </span>
+                ) : props.gender === "Male" ? (
+                  <span style={{ fontSize: 17, color: "#4968e4" }}>
+                    &#9794;
+                  </span>
+                ) : (
+                  <span style={{ fontSize: 17, color: "#fcb316" }}>
+                    &#9673;
+                  </span>
+                )}
               </Grid>
             </Grid>
           </ListItem>{" "}
           <ListItem>
             {" "}
             <Grid container>
-              <Grid item xs={8}>
+              <Grid item xs={7}>
                 <Typography> Age: </Typography>{" "}
               </Grid>{" "}
-              <Typography>{moment().diff(props.dob, "years")}</Typography>
-              <Grid item xs={4}></Grid>
+              <Grid item xs={5}>
+                {" "}
+                <Typography>{moment().diff(props.dob, "years")}</Typography>
+              </Grid>
+            </Grid>{" "}
+          </ListItem>
+          <ListItem>
+            {" "}
+            <Grid container>
+              <Grid item xs={7}>
+                <Typography> Location: </Typography>{" "}
+              </Grid>{" "}
+              <Grid item xs={5}>
+                {" "}
+                <Typography>{location}</Typography>
+              </Grid>
             </Grid>{" "}
           </ListItem>
         </List>
@@ -448,6 +488,8 @@ const AdCard = (props: Ad) => {
         other={props.bot.otherTermsCategory}
         gender={props.bot.gender}
         dob={props.bot.dob}
+        long={props.bot.locLong}
+        lat={props.bot.locLat}
         open={openDetails}
         handleClose={handleCloseDetails}
         displayTerms={displayTerms}
