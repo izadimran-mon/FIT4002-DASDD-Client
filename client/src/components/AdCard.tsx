@@ -4,23 +4,15 @@ import {
   CardActionArea,
   Dialog,
   DialogContent,
-  DialogTitle,
   Grid,
   Typography,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  DialogActions,
 } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
-import politicalRanking from "./helpers/politicalRankings";
-import politicalSearchTerms from "./helpers/politicalSearchTerms";
-import otherSearchTerms from "./helpers/otherSearchTerms";
-import Geocode from "react-geocode";
 import React from "react";
 import AdChip from "./AdChip";
+import BotDetails from "./BotDetails";
+import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
 
 const processLink = (link: string) => {
@@ -44,259 +36,12 @@ interface ImageDialogProps {
   open: boolean;
   handleClose: () => void;
 }
-interface BotDetailsProps {
-  name: string;
-  ranking: number;
-  other: number;
-  gender: string;
-  dob: any;
-  open: boolean;
-  long: number;
-  lat: number;
-  handleClose: () => void;
-  displayTerms: (terms: string[], title: string) => void;
-}
-
-interface SearchTermsProps {
-  terms: string[];
-  title: string;
-  open: boolean;
-  handleClose: () => void;
-}
-
-const BotDetails = (props: BotDetailsProps) => {
-  let ranking: string = politicalRanking[`${props.ranking}`];
-  const [location, setLocation] = React.useState("");
-  Geocode.fromLatLng(props.lat.toString(), props.long.toString()).then(
-    (response: { results: { formatted_address: any }[] }) => {
-      const address = response.results[0].formatted_address;
-      setLocation(address);
-    },
-    (error: any) => {
-      console.error(error);
-    }
-  );
-  Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
-  return (
-    <Dialog
-      onClose={props.handleClose}
-      aria-labelledby='simple-dialog-title'
-      open={props.open}
-    >
-      <DialogTitle
-        id='simple-dialog-title'
-        style={{
-          borderBottom: "1px solid #b2b2b2",
-        }}
-      >
-        <Typography
-          align='center'
-          style={{
-            fontSize: 22,
-            fontWeight: "bold",
-          }}
-        >
-          {" "}
-          {props.name}
-        </Typography>
-      </DialogTitle>
-      <DialogContent>
-        <List>
-          <ListItem>
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography>Political Inclination: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                {" "}
-                <span
-                  style={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    background:
-                      ranking === "Left"
-                        ? "#4e79c4"
-                        : ranking === "Right"
-                        ? "#d63e34"
-                        : "#fcb316",
-                    paddingTop: 2,
-                    paddingBottom: 2,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    borderRadius: 15,
-                  }}
-                >
-                  {ranking}
-                </span>
-              </Grid>
-            </Grid>
-          </ListItem>{" "}
-          <ListItem>
-            {" "}
-            <Grid container style={{ display: "flex", alignItems: "center" }}>
-              <Grid item xs={7}>
-                <Typography>Political Terms: </Typography>{" "}
-              </Grid>
-              <Grid item xs={5}>
-                {" "}
-                <Button
-                  size='small'
-                  variant='outlined'
-                  onClick={() => {
-                    props.displayTerms(
-                      politicalSearchTerms[`${props.ranking}`],
-                      "Politcal Search Terms"
-                    );
-                  }}
-                >
-                  {" "}
-                  View{" "}
-                </Button>
-              </Grid>
-            </Grid>{" "}
-          </ListItem>{" "}
-          <ListItem>
-            {" "}
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography>Other Terms: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                {" "}
-                <Button
-                  size='small'
-                  variant='outlined'
-                  onClick={() => {
-                    props.displayTerms(
-                      otherSearchTerms[`${props.other}`],
-                      "Other Search Terms"
-                    );
-                  }}
-                >
-                  {" "}
-                  View{" "}
-                </Button>
-              </Grid>
-            </Grid>{" "}
-          </ListItem>{" "}
-          <ListItem>
-            {" "}
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography>Gender: </Typography>
-              </Grid>{" "}
-              <Grid item xs={5}>
-                <span>{props.gender}</span>{" "}
-                {props.gender === "Female" ? (
-                  <span style={{ fontSize: 17, color: "#e449ac" }}>
-                    &#9792;
-                  </span>
-                ) : props.gender === "Male" ? (
-                  <span style={{ fontSize: 17, color: "#4968e4" }}>
-                    &#9794;
-                  </span>
-                ) : (
-                  <span style={{ fontSize: 17, color: "#fcb316" }}>
-                    &#9673;
-                  </span>
-                )}
-              </Grid>
-            </Grid>
-          </ListItem>{" "}
-          <ListItem>
-            {" "}
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography> Age: </Typography>{" "}
-              </Grid>{" "}
-              <Grid item xs={5}>
-                {" "}
-                <Typography>{moment().diff(props.dob, "years")}</Typography>
-              </Grid>
-            </Grid>{" "}
-          </ListItem>
-          <ListItem>
-            {" "}
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography> Location: </Typography>{" "}
-              </Grid>{" "}
-              <Grid item xs={5}>
-                {" "}
-                <Typography>{location}</Typography>
-              </Grid>
-            </Grid>{" "}
-          </ListItem>
-        </List>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const SearchTerms = (props: SearchTermsProps) => {
-  return (
-    <Dialog
-      onClose={props.handleClose}
-      aria-labelledby='simple-dialog-title'
-      open={props.open}
-      fullWidth
-      maxWidth={"sm"}
-    >
-      <DialogTitle
-        id='simple-dialog-title'
-        style={{ borderBottom: "1px solid #b2b2b2", background: "#363740" }}
-      >
-        <Typography
-          align='center'
-          style={{ fontWeight: "bold", fontSize: 24, color: "#fff" }}
-        >
-          {" "}
-          {props.title}
-        </Typography>
-      </DialogTitle>
-      <DialogContent>
-        <List>
-          {props.terms.map((term, key) => (
-            <>
-              <ListItem key={key}>
-                <ListItemText primary={term} />
-              </ListItem>
-              {key !== props.terms.length - 1 ? <Divider /> : null}
-            </>
-          ))}
-        </List>
-      </DialogContent>
-      <DialogActions
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          paddingLeft: 0,
-          paddingRight: 0,
-          paddingTop: 20,
-          paddingBottom: 20,
-          borderTop: "1px double #515364",
-        }}
-      >
-        <Button
-          autoFocus
-          variant='outlined'
-          onClick={props.handleClose}
-          style={{
-            color: "#363740",
-          }}
-        >
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
 
 const ImageDialog = (props: ImageDialogProps) => {
   return (
     <Dialog
       onClose={props.handleClose}
-      aria-labelledby='simple-dialog-title'
+      aria-labelledby="simple-dialog-title"
       open={props.open}
     >
       <DialogContent>
@@ -306,7 +51,7 @@ const ImageDialog = (props: ImageDialogProps) => {
             height: "100%",
           }}
           src={props.image}
-          alt='Ad screenshot full'
+          alt="Ad screenshot full"
         />
       </DialogContent>
     </Dialog>
@@ -340,8 +85,8 @@ const AdCard = (props: Ad) => {
   };
   //const classes = useStyles();
   return (
-    <Card className='cardStyle'>
-      <Grid container className='overallContainerStyle'>
+    <Card className="cardStyle">
+      <Grid container className="overallContainerStyle">
         <Grid
           item
           xs={4}
@@ -351,12 +96,12 @@ const AdCard = (props: Ad) => {
           }}
         >
           <CardActionArea
-            className='cardActionAreaStyle'
+            className="cardActionAreaStyle"
             onClick={() => {
               handleClickOpen();
             }}
           >
-            <img className='imageStyle' src={props.image} alt='Ad screenshot' />
+            <img className="imageStyle" src={props.image} alt="Ad screenshot" />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -364,7 +109,7 @@ const AdCard = (props: Ad) => {
             container
             style={{ height: "100%", marginLeft: 15, width: "auto" }}
           >
-            <Grid container direction='row' className='adLinkContainerStyle'>
+            <Grid container direction="row" className="adLinkContainerStyle">
               <Grid item xs={6}>
                 {props.headline ? (
                   <div>
@@ -374,11 +119,11 @@ const AdCard = (props: Ad) => {
                       }
                     >
                       <Button
-                        variant='outlined'
-                        color='primary'
+                        variant="outlined"
+                        color="primary"
                         href={`https://${props.headline} `}
-                        target='_blank'
-                        rel='noreferrer'
+                        target="_blank"
+                        rel="noreferrer"
                       >
                         Visit Ad Link
                       </Button>
@@ -420,7 +165,7 @@ const AdCard = (props: Ad) => {
                           title={<Typography>{props.seenOn}</Typography>}
                         >
                           <Button
-                            variant='contained'
+                            variant="contained"
                             style={{
                               background: "#167070",
                               marginLeft: 10,
@@ -429,8 +174,8 @@ const AdCard = (props: Ad) => {
                               paddingRight: 10,
                             }}
                             href={props.seenOn}
-                            target='_blank'
-                            rel='noreferrer'
+                            target="_blank"
+                            rel="noreferrer"
                           >
                             <Typography
                               style={{
@@ -456,7 +201,6 @@ const AdCard = (props: Ad) => {
                       </Grid>
                       <Grid item>
                         <Typography style={{ marginLeft: 10 }}>
-                          {" "}
                           No Link
                         </Typography>
                       </Grid>
@@ -465,7 +209,7 @@ const AdCard = (props: Ad) => {
                 )}
               </Grid>
             </Grid>
-            <Grid container direction='row' style={{ height: "58%" }}>
+            <Grid container direction="row" style={{ height: "58%" }}>
               <Grid
                 item
                 xs={12}
