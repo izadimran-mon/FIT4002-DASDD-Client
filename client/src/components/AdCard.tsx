@@ -11,6 +11,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
 import React from "react";
 import AdChip from "./AdChip";
+import BotDetails from "./BotDetails";
+import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
 
 const processLink = (link: string) => {
@@ -58,6 +60,11 @@ const ImageDialog = (props: ImageDialogProps) => {
 
 const AdCard = (props: Ad) => {
   const [open, setOpen] = React.useState(false);
+  const [openDetails, setOpenDetails] = React.useState(false);
+  const [openTerms, setOpenTerms] = React.useState(false);
+
+  const [terms, setTerms] = React.useState<string[]>([]);
+  const [title, setTitle] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -65,7 +72,17 @@ const AdCard = (props: Ad) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const handleCloseDetails = () => {
+    setOpenDetails(false);
+  };
+  const handleCloseTerms = () => {
+    setOpenTerms(false);
+  };
+  const displayTerms = (terms: string[], title: string) => {
+    setTerms(terms);
+    setTitle(title);
+    setOpenTerms(true);
+  };
   //const classes = useStyles();
   return (
     <Card className="cardStyle">
@@ -123,25 +140,18 @@ const AdCard = (props: Ad) => {
                   <span style={{ fontWeight: "bold" }}>Date: </span>
                   {moment(props.createdAt).format("YYYY-MMM-D dddd h:mma")}
                 </Typography>
-                <Tooltip
-                  title={
-                    <>
-                      <Typography>
-                        Political ranking: {props.bot.politicalRanking}
-                      </Typography>
-                      <Typography>
-                        Other terms: {props.bot.otherTermsCategory}
-                      </Typography>
-                      <Typography>Gender: {props.bot.gender}</Typography>
-                      <Typography>DOB: {props.bot.dob}</Typography>
-                    </>
-                  }
-                >
-                  <Typography style={{ marginTop: 5 }}>
-                    <span style={{ fontWeight: "bold" }}>Seen bot: </span>
+
+                <Typography style={{ marginTop: 5 }}>
+                  <span style={{ fontWeight: "bold" }}>Seen bot: </span>
+                  <Button
+                    onClick={() => {
+                      setOpenDetails(true);
+                    }}
+                  >
                     {props.bot.username}
-                  </Typography>
-                </Tooltip>
+                  </Button>
+                </Typography>
+
                 {props.seenOn ? (
                   <div>
                     <Grid container style={{ marginTop: 5 }}>
@@ -191,7 +201,6 @@ const AdCard = (props: Ad) => {
                       </Grid>
                       <Grid item>
                         <Typography style={{ marginLeft: 10 }}>
-                          {" "}
                           No Link
                         </Typography>
                       </Grid>
@@ -217,6 +226,24 @@ const AdCard = (props: Ad) => {
         </Grid>
       </Grid>
       <ImageDialog image={props.image} open={open} handleClose={handleClose} />
+      <BotDetails
+        name={props.bot.fName + " " + props.bot.lName}
+        ranking={props.bot.politicalRanking}
+        other={props.bot.otherTermsCategory}
+        gender={props.bot.gender}
+        dob={props.bot.dob}
+        long={props.bot.locLong}
+        lat={props.bot.locLat}
+        open={openDetails}
+        handleClose={handleCloseDetails}
+        displayTerms={displayTerms}
+      />
+      <SearchTerms
+        open={openTerms}
+        handleClose={handleCloseTerms}
+        terms={terms}
+        title={title}
+      />
     </Card>
   );
 };

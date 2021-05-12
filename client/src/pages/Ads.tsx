@@ -173,10 +173,10 @@ const Ads = () => {
       setAllTags(res.data);
       setTagsLoading(false);
     });
-  }, []);
+  }, [allTags.length]);
 
   return (
-    <div id="main">
+    <div id='main'>
       <div
         className={clsx(classes.content, {
           [classes.contentShift]: filterDrawerOpen,
@@ -184,11 +184,11 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-          <Grid container justify="space-between" style={{ marginBottom: 15 }}>
+          <Grid container justify='space-between' style={{ marginBottom: 15 }}>
             <Button
-              color="secondary"
+              color='secondary'
               variant={filterDrawerOpen ? "outlined" : "contained"}
-              aria-label="open filters menu"
+              aria-label='open filters menu'
               onClick={handleDrawerToggle}
             >
               <FilterListIcon />
@@ -198,7 +198,7 @@ const Ads = () => {
               count={Math.ceil(90000 / limit)} //replace with total ad count
               page={page}
               onChange={handleChange}
-              size="large"
+              size='large'
             />
           </Grid>
         </Fade>
@@ -220,8 +220,8 @@ const Ads = () => {
       </div>
       <Drawer
         className={classes.drawer}
-        variant="persistent"
-        anchor="right"
+        variant='persistent'
+        anchor='right'
         open={filterDrawerOpen}
         classes={{
           paper: classes.drawerPaper,
@@ -232,7 +232,7 @@ const Ads = () => {
             <ChevronRightIcon />
           </IconButton>
           <span>
-            <Typography variant="h6" style={{ fontWeight: "bold" }}>
+            <Typography variant='h6' style={{ fontWeight: "bold" }}>
               Filters
             </Typography>
           </span>
@@ -241,15 +241,15 @@ const Ads = () => {
         <Accordion square>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+            aria-controls='panel1a-content'
+            id='panel1a-header'
           >
             <Typography>Bots</Typography>
           </AccordionSummary>
           <AccordionDetails style={{ display: "block" }}>
             <Autocomplete
               multiple
-              id="tags-select"
+              id='tags-select'
               open={botsSelectOpen}
               onOpen={() => {
                 setBotsSelectOpen(true);
@@ -273,14 +273,14 @@ const Ads = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Selected bots"
-                  variant="outlined"
+                  label='Selected bots'
+                  variant='outlined'
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
                       <React.Fragment>
                         {loading ? (
-                          <CircularProgress color="inherit" size={20} />
+                          <CircularProgress color='inherit' size={20} />
                         ) : null}
                         {params.InputProps.endAdornment}
                       </React.Fragment>
@@ -294,15 +294,15 @@ const Ads = () => {
         <Accordion square>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+            aria-controls='panel1a-content'
+            id='panel1a-header'
           >
             <Typography>Tags</Typography>
           </AccordionSummary>
           <AccordionDetails style={{ display: "block" }}>
             <Autocomplete
               multiple
-              id="tags-select"
+              id='tags-select'
               open={tagsSelectOpen}
               onOpen={() => {
                 setTagsSelectOpen(true);
@@ -326,14 +326,14 @@ const Ads = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Selected tags"
-                  variant="outlined"
+                  label='Selected tags'
+                  variant='outlined'
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
                       <React.Fragment>
                         {loading ? (
-                          <CircularProgress color="inherit" size={20} />
+                          <CircularProgress color='inherit' size={20} />
                         ) : null}
                         {params.InputProps.endAdornment}
                       </React.Fragment>
@@ -347,20 +347,20 @@ const Ads = () => {
         <Accordion square>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+            aria-controls='panel1a-content'
+            id='panel1a-header'
           >
             <Typography>Date</Typography>
           </AccordionSummary>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Grid container justify="space-around">
+            <Grid container justify='space-around'>
               <KeyboardDatePicker
                 style={{ marginLeft: 30, marginRight: 30 }}
                 disableToolbar
-                variant="inline"
-                format="dd/MM/yyyy"
-                margin="normal"
-                id="date-picker-inline"
+                variant='inline'
+                format='dd/MM/yyyy'
+                margin='normal'
+                id='date-picker-inline'
                 disableFuture={true}
                 InputProps={{
                   endAdornment: (
@@ -372,7 +372,7 @@ const Ads = () => {
                 InputAdornmentProps={{
                   position: "start",
                 }}
-                label="Start date"
+                label='Start date'
                 value={startDate}
                 maxDate={endDate ? endDate : new Date()}
                 onChange={handleStartDateChange}
@@ -383,10 +383,10 @@ const Ads = () => {
               <KeyboardDatePicker
                 style={{ marginLeft: 30, marginRight: 30 }}
                 disableToolbar
-                variant="inline"
-                format="dd/MM/yyyy"
-                margin="normal"
-                id="date-picker-inline"
+                variant='inline'
+                format='dd/MM/yyyy'
+                margin='normal'
+                id='date-picker-inline'
                 disableFuture={true}
                 InputProps={{
                   endAdornment: (
@@ -399,7 +399,7 @@ const Ads = () => {
                   position: "start",
                 }}
                 minDate={startDate ? startDate : new Date("1900-01-01")}
-                label="End date"
+                label='End date'
                 value={endDate}
                 onChange={handleEndDateChange}
                 KeyboardButtonProps={{
