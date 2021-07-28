@@ -11,6 +11,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
 import React, { useState } from "react";
 import AdChip from "./AdChip";
+import BotDetails from "./BotDetails";
+import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
 
 const processLink = (link: string) => {
@@ -65,6 +67,11 @@ type AdCardProp = {
 const AdCard = (props: AdCardProp) => {
   const {ad, allTags, onNewTagCreated} = props;
   const [open, setOpen] = useState(false);
+  const [openDetails, setOpenDetails] = React.useState(false);
+  const [openTerms, setOpenTerms] = React.useState(false);
+
+  const [terms, setTerms] = React.useState<string[]>([]);
+  const [title, setTitle] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -72,7 +79,17 @@ const AdCard = (props: AdCardProp) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const handleCloseDetails = () => {
+    setOpenDetails(false);
+  };
+  const handleCloseTerms = () => {
+    setOpenTerms(false);
+  };
+  const displayTerms = (terms: string[], title: string) => {
+    setTerms(terms);
+    setTitle(title);
+    setOpenTerms(true);
+  };
   //const classes = useStyles();
   return (
     <Card className="cardStyle">
@@ -198,7 +215,6 @@ const AdCard = (props: AdCardProp) => {
                       </Grid>
                       <Grid item>
                         <Typography style={{ marginLeft: 10 }}>
-                          {" "}
                           No Link
                         </Typography>
                       </Grid>
@@ -224,6 +240,24 @@ const AdCard = (props: AdCardProp) => {
         </Grid>
       </Grid>
       <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
+      <BotDetails
+        name={ad.bot.fName + " " + ad.bot.lName}
+        ranking={ad.bot.politicalRanking}
+        other={ad.bot.otherTermsCategory}
+        gender={ad.bot.gender}
+        dob={ad.bot.dob}
+        long={ad.bot.locLong}
+        lat={ad.bot.locLat}
+        open={openDetails}
+        handleClose={handleCloseDetails}
+        displayTerms={displayTerms}
+      />
+      <SearchTerms
+        open={openTerms}
+        handleClose={handleCloseTerms}
+        terms={terms}
+        title={title}
+      />
     </Card>
   );
 };
