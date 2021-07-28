@@ -1,11 +1,10 @@
-import React from "react";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-
-import moment from "moment";
-import "./styles/AdCard.css";
-import AdChip from "./AdChip";
 import { Grid } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import moment from "moment";
+import React from "react";
+import "./styles/AdCard.css";
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -131,4 +130,5 @@ const cardref = (props: any) => {
 //     );
 //   }
 
-export {};
+export { };
+

@@ -25,13 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const AdChip = (props: Ad) => {
-  const classes = useStyles();
+type AdChipProp = {
+  ad: Ad,
+  allTags: Tag[],
+  onNewTagCreated?: () => void;
+}
 
-  const [tags, setTags] = useState<Tag[]>([]);
+const AdChip = (props: AdChipProp) => {
+  const classes = useStyles();
+  const {allTags, onNewTagCreated} = props;
+
   const [adOwnTagsId, setAdOwnTags] = useState<number[]>([]);
   const [tagsName, setTagsName] = useState<string[]>([]);
-  const [adData, setAdData] = useState<Ad>(props);
+  const [adData, setAdData] = useState<Ad>(props.ad);
   const [open, setOpen] = useState(false);
   const [tagInputName, setTagInputName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,12 +48,9 @@ const AdChip = (props: Ad) => {
   }, [adData]);
 
   useEffect(() => {
-    baseApi.get(`/tags`).then((res: any) => {
-      setTags(res.data);
-      const tempNameList = res.data.map((tag: Tag) => tag.name.toLowerCase());
+      const tempNameList = allTags.map((tag: Tag) => tag.name.toLowerCase());
       setTagsName(tempNameList);
-    });
-  }, []);
+  }, [allTags]);
 
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
     if (hasTag) {
@@ -84,19 +87,10 @@ const AdChip = (props: Ad) => {
       );
     } else {
       baseApi.post(`/tags`, { name: tagInputName }).then((res: any) => {
-        baseApi.get(`/tags`).then((res: any) => {
-          setTags(res.data);
-        });
+        if (onNewTagCreated) onNewTagCreated(); // callback function after new tag is created, used to update all tags in Ads.tsx
       });
       setOpen(false);
     }
-    // else{
-    //   baseApi
-    //   .post(`/ads/${adData.id}/tags/${categoryIndex}`)
-    //   .then((res: any) => {
-    //     setAdData(res.data);
-    //   });
-    // }
   };
 
   const handleTagNameChange = (e: any) => {
@@ -105,7 +99,7 @@ const AdChip = (props: Ad) => {
 
   return (
     <div className={classes.root}>
-      {tags.map((category, i) => (
+      {allTags.map((category, i) => (
         <Chip
           variant={adOwnTagsId.includes(category.id) ? "default" : "outlined"}
           label={category.name}
