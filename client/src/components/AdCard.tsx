@@ -5,11 +5,11 @@ import {
   Dialog,
   DialogContent,
   Grid,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import AdChip from "./AdChip";
 import "./styles/AdCard.css";
 
@@ -56,8 +56,15 @@ const ImageDialog = (props: ImageDialogProps) => {
   );
 };
 
-const AdCard = (props: Ad) => {
-  const [open, setOpen] = React.useState(false);
+type AdCardProp = {
+  ad: Ad,
+  allTags: Tag[],
+  onNewTagCreated?: () => void
+}
+
+const AdCard = (props: AdCardProp) => {
+  const {ad, allTags, onNewTagCreated} = props;
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -84,7 +91,7 @@ const AdCard = (props: Ad) => {
               handleClickOpen();
             }}
           >
-            <img className="imageStyle" src={props.image} alt="Ad screenshot" />
+            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -94,17 +101,17 @@ const AdCard = (props: Ad) => {
           >
             <Grid container direction="row" className="adLinkContainerStyle">
               <Grid item xs={6}>
-                {props.headline ? (
+                {ad.headline ? (
                   <div>
                     <Tooltip
                       title={
-                        <Typography>{`https://${props.headline}`}</Typography>
+                        <Typography>{`https://${ad.headline}`}</Typography>
                       }
                     >
                       <Button
                         variant="outlined"
                         color="primary"
-                        href={`https://${props.headline} `}
+                        href={`https://${ad.headline} `}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -121,28 +128,28 @@ const AdCard = (props: Ad) => {
               <Grid item xs={6}>
                 <Typography style={{ marginTop: 5 }}>
                   <span style={{ fontWeight: "bold" }}>Date: </span>
-                  {moment(props.createdAt).format("YYYY-MMM-D dddd h:mma")}
+                  {moment(ad.createdAt).format("YYYY-MMM-D dddd h:mma")}
                 </Typography>
                 <Tooltip
                   title={
                     <>
                       <Typography>
-                        Political ranking: {props.bot.politicalRanking}
+                        Political ranking: {ad.bot.politicalRanking}
                       </Typography>
                       <Typography>
-                        Other terms: {props.bot.otherTermsCategory}
+                        Other terms: {ad.bot.otherTermsCategory}
                       </Typography>
-                      <Typography>Gender: {props.bot.gender}</Typography>
-                      <Typography>DOB: {props.bot.dob}</Typography>
+                      <Typography>Gender: {ad.bot.gender}</Typography>
+                      <Typography>DOB: {ad.bot.dob}</Typography>
                     </>
                   }
                 >
                   <Typography style={{ marginTop: 5 }}>
                     <span style={{ fontWeight: "bold" }}>Seen bot: </span>
-                    {props.bot.username}
+                    {ad.bot.username}
                   </Typography>
                 </Tooltip>
-                {props.seenOn ? (
+                {ad.seenOn ? (
                   <div>
                     <Grid container style={{ marginTop: 5 }}>
                       <Grid item>
@@ -152,7 +159,7 @@ const AdCard = (props: Ad) => {
                       </Grid>
                       <Grid item>
                         <Tooltip
-                          title={<Typography>{props.seenOn}</Typography>}
+                          title={<Typography>{ad.seenOn}</Typography>}
                         >
                           <Button
                             variant="contained"
@@ -163,7 +170,7 @@ const AdCard = (props: Ad) => {
                               paddingLeft: 10,
                               paddingRight: 10,
                             }}
-                            href={props.seenOn}
+                            href={ad.seenOn}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -174,7 +181,7 @@ const AdCard = (props: Ad) => {
                                 fontSize: 14,
                               }}
                             >
-                              {processLink(props.seenOn)}
+                              {processLink(ad.seenOn)}
                             </Typography>
                           </Button>
                         </Tooltip>
@@ -210,13 +217,13 @@ const AdCard = (props: Ad) => {
                   padding: 10,
                 }}
               >
-                <div>{<AdChip {...props} />}</div>
+                <div><AdChip ad={ad} allTags={allTags} onNewTagCreated={onNewTagCreated}/></div>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-      <ImageDialog image={props.image} open={open} handleClose={handleClose} />
+      <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
     </Card>
   );
 };

@@ -175,6 +175,13 @@ const Ads = () => {
     });
   }, []);
 
+  const handleOnNewTagCreated = () => {
+    baseApi.get("/tags").then((res) => {
+      setAllTags(res.data);
+      setTagsLoading(false);
+    });
+  }
+
   return (
     <div id="main">
       <div
@@ -207,7 +214,7 @@ const Ads = () => {
               .fill(null)
               .map((_, i) => <AdCardSkeleton key={i} />)
           : ads.map((data, i) => {
-              return <AdCard {...data} key={i} />;
+              return <AdCard ad={data} allTags={allTags} onNewTagCreated={handleOnNewTagCreated} key={i} />;
             })}
         {/* <Grid container justify="flex-end">
         <Pagination
