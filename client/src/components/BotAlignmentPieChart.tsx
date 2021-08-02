@@ -12,7 +12,8 @@ type BotAlignmentPieChartProps = {
 };
 const BotAlignmentPieChart = (props: BotAlignmentPieChartProps) => {
   const { data, height, title } = props;
-  const labels = data?.map((dataPoint) => dataPoint.label);
+  console.log(data);
+  const labels = data?.map((dataPoint) => dataPoint.label.toString());
   const values = data?.map((dataPoint) => dataPoint.count);
 
   const options: ApexCharts.ApexOptions = {

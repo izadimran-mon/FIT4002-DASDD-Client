@@ -44,8 +44,10 @@ const Statistics = () => {
           label: element.label,
         }));
         // TODO: type checking and avoid hard-coded values?
+        console.log(e.type);
         switch (e.type) {
           case "political ranking":
+            // console.log(data);
             setBotPoliticalAlignmentData(data);
             break;
 
