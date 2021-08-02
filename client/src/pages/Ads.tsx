@@ -184,14 +184,13 @@ const Ads = () => {
     });
   }
 
-  const handlePageNumberInput = (e: any) => {
-    localStorage.setItem("adsPage", JSON.stringify(e.target.value))
-    setPage(e.target.value);
-  }
-
   const enterKeyDown = (e: any) => {
     if(e.keyCode === 13){
-      handlePageNumberInput(e)
+      if(!isNaN(e.target.value as any) && e.target.value !== ""){
+        console.log(e.target.value)
+        localStorage.setItem("adsPage", JSON.stringify(e.target.value))
+        setPage(parseInt(e.target.value));
+      }
     }
   }
 
@@ -205,7 +204,7 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-          <Grid container justify='space-between' style={{ marginBottom: 15, flexDirection: "row", display: "flex" }}>
+          <Grid container justify='space-between' style={{ marginBottom: 15}}>
             <Button
               color='secondary'
               variant={filterDrawerOpen ? "outlined" : "contained"}
@@ -215,15 +214,12 @@ const Ads = () => {
               <FilterListIcon />
               Filters
             </Button>
-            <Box style={{maxWidth: 450}}>
               <Pagination
-                boundaryCount={3}
                 count={Math.ceil(90000 / limit)} //replace with total ad count
                 page={page}
                 onChange={handleChange}
                 size='large'
               />
-            </Box>
           </Grid>
         </Fade>
         <Grid container alignItems="flex-end" justifyContent="flex-end">
