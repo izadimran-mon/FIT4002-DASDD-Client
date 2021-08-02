@@ -14,6 +14,7 @@ import {
   IconButton,
   TextField,
   Typography,
+  Box,
 } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -85,6 +86,7 @@ const Ads = () => {
   const [page, setPage] = useState(
     1 //storedPageNumber ? JSON.parse(storedPageNumber) : 1
   );
+  const [pageNumberInTextField, setpageNumberInTextField] = useState("")
   const [loading, setLoading] = useState(false);
 
   const [bots, setBots] = useState<Bot[]>(
@@ -182,6 +184,18 @@ const Ads = () => {
     });
   }
 
+  const handlePageNumberInput = (e: any) => {
+    localStorage.setItem("adsPage", JSON.stringify(e.target.value))
+    setPage(e.target.value);
+  }
+
+  const enterKeyDown = (e: any) => {
+    if(e.keyCode === 13){
+      handlePageNumberInput(e)
+    }
+  }
+
+
   return (
     <div id='main'>
       <div
@@ -191,7 +205,7 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-          <Grid container justify='space-between' style={{ marginBottom: 15 }}>
+          <Grid container justify='space-between' style={{ marginBottom: 15, flexDirection: "row", display: "flex" }}>
             <Button
               color='secondary'
               variant={filterDrawerOpen ? "outlined" : "contained"}
@@ -201,14 +215,22 @@ const Ads = () => {
               <FilterListIcon />
               Filters
             </Button>
-            <Pagination
-              count={Math.ceil(90000 / limit)} //replace with total ad count
-              page={page}
-              onChange={handleChange}
-              size='large'
-            />
+            <Box style={{maxWidth: 450}}>
+              <Pagination
+                boundaryCount={3}
+                count={Math.ceil(90000 / limit)} //replace with total ad count
+                page={page}
+                onChange={handleChange}
+                size='large'
+              />
+            </Box>
           </Grid>
         </Fade>
+        <Grid container alignItems="flex-end" justifyContent="flex-end">
+          <Grid item>
+            <TextField id="standard-basic" label="Page Number" variant="filled" onKeyDown={enterKeyDown} />
+          </Grid>
+        </Grid>
         {loading
           ? Array(3)
               .fill(null)
