@@ -10,6 +10,7 @@
 
 .cardActionAreaStyle {
   height: 100%;
+  overflow: hidden;
 }
 
 .imageStyle {
