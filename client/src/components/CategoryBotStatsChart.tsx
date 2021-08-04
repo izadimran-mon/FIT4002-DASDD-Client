@@ -24,7 +24,7 @@ const options: ApexCharts.ApexOptions = {
       text: "Political inclination",
     },
     crosshairs: {
-      show: true,
+      show: false,
     },
     tooltip: {
       enabled: false,
@@ -45,9 +45,6 @@ const options: ApexCharts.ApexOptions = {
     },
     axisTicks: {
       show: false,
-    },
-    crosshairs: {
-      show: true,
     },
     tooltip: {
       enabled: false,
