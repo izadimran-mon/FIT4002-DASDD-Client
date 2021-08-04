@@ -1,4 +1,5 @@
 import Chart from "react-apexcharts";
+import "./styles/CategoryBotStatsChart.css";
 
 const options: ApexCharts.ApexOptions = {
   chart: {
@@ -22,6 +23,12 @@ const options: ApexCharts.ApexOptions = {
     title: {
       text: "Political inclination",
     },
+    crosshairs: {
+      show: true,
+    },
+    tooltip: {
+      enabled: false,
+    },
   },
   yaxis: {
     min: 0,
@@ -39,6 +46,12 @@ const options: ApexCharts.ApexOptions = {
     axisTicks: {
       show: false,
     },
+    crosshairs: {
+      show: true,
+    },
+    tooltip: {
+      enabled: false,
+    },
   },
   grid: {
     show: false,
@@ -51,6 +64,38 @@ const options: ApexCharts.ApexOptions = {
     show: true,
     onItemHover: {
       highlightDataSeries: true,
+    },
+  },
+
+  tooltip: {
+    // marker: {
+    //   show: false,
+    // },
+    // enabled: true,
+    // onDatasetHover: {
+    //   highlightDataSeries: true,
+    // },
+    // x: {
+    //   formatter: (_: number, { seriesIndex, w }) =>
+    //     w.globals.seriesNames[seriesIndex],
+    // },
+    // y: {
+    //   formatter: (x: number, { dataPointIndex, seriesIndex, w }) => {
+    //     let r = Math.round(x * 1000) / 10;
+    //     return `Gender Distribution: ${r}% Male, ${100 - r}% Female \n
+    //       Avg. Political Inclination: ${w.globals.seriesX[seriesIndex][0].toFixed(2)}`;
+    //   },
+    // },
+    custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+      console.log(w);
+      let g = Math.round(w.globals.series[seriesIndex][0] * 1000) / 10;
+      let pol = w.globals.seriesX[seriesIndex][0].toFixed(2);
+      return `<div class="tooltip">
+          <div>
+           Gender Distribution: ${g}% Male, ${100 - g}% Female
+          </div><div>
+            Avg. Political Inclination: ${pol}
+        </div></div>`;
     },
   },
 };
@@ -67,27 +112,11 @@ type CategoryBotStatsChartProps = {
 };
 const CategoryBotStatsChart = (props: CategoryBotStatsChartProps) => {
   const { data, height } = props;
-  // const chartData = data.map((dataPoint) => ({
-  //   id: dataPoint.id,
-  //   x: dataPoint.label,
-  //   y: dataPoint.count,
-  // }));
-  //const chartSeries = [{ data: chartData }];
 
   const chartSeries = data.map((point) => ({
     name: point.label,
     data: [[point.avgPolitical, point.avgGender]],
   }));
-  // const chartSeries = [
-  //   {
-  //     name: "tech",
-  //     data: [[3, 0.9]],
-  //   },
-  //   {
-  //     name: "uncategorised",
-  //     data: [[1, 0.3]],
-  //   },
-  // ];
   return (
     <Chart
       options={options}
