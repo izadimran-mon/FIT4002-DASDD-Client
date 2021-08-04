@@ -65,26 +65,7 @@ const options: ApexCharts.ApexOptions = {
   },
 
   tooltip: {
-    // marker: {
-    //   show: false,
-    // },
-    // enabled: true,
-    // onDatasetHover: {
-    //   highlightDataSeries: true,
-    // },
-    // x: {
-    //   formatter: (_: number, { seriesIndex, w }) =>
-    //     w.globals.seriesNames[seriesIndex],
-    // },
-    // y: {
-    //   formatter: (x: number, { dataPointIndex, seriesIndex, w }) => {
-    //     let r = Math.round(x * 1000) / 10;
-    //     return `Gender Distribution: ${r}% Male, ${100 - r}% Female \n
-    //       Avg. Political Inclination: ${w.globals.seriesX[seriesIndex][0].toFixed(2)}`;
-    //   },
-    // },
-    custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-      console.log(w);
+    custom: ({ seriesIndex, w }) => {
       let g = Math.round(w.globals.series[seriesIndex][0] * 1000) / 10;
       let pol = w.globals.seriesX[seriesIndex][0].toFixed(2);
       return `<div class="tooltip">
