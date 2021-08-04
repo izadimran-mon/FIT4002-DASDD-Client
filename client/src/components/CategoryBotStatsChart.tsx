@@ -91,6 +91,7 @@ const options: ApexCharts.ApexOptions = {
       let g = Math.round(w.globals.series[seriesIndex][0] * 1000) / 10;
       let pol = w.globals.seriesX[seriesIndex][0].toFixed(2);
       return `<div class="tooltip">
+          <div><b>${w.globals.seriesNames[seriesIndex]}</b></div>
           <div>
            Gender Distribution: ${g}% Male, ${100 - g}% Female
           </div><div>
