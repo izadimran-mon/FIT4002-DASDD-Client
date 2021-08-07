@@ -79,11 +79,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Ads = () => {
-  //let storedPageNumber = localStorage.getItem("adsPage");
   const [limit, setLimit] = useState(30);
+  const [totalNumberOfAd, setTotalNumberOfAd] = useState(0);
+  const [errorBooleanForInput, seterrorBooleanForInput] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [pageNumber, setPageNumber] = useState(0);
   const [ads, setAds] = useState<Ad[]>([]);
   const [page, setPage] = useState(
-    1 //storedPageNumber ? JSON.parse(storedPageNumber) : 1
+    1
   );
   const [loading, setLoading] = useState(false);
 
@@ -143,10 +146,14 @@ const Ads = () => {
         },
       })
       .then((res: any) => {
-        setAds(res.data);
+        setAds(res.data.records);
+        setTotalNumberOfAd(res.data.metadata.total_count)
+        setPageNumber(Math.ceil(totalNumberOfAd / limit))
         setLoading(false);
+        seterrorBooleanForInput(false)
+        setErrorMessage("")
       });
-  }, [page, limit, bots, tags, startDate, endDate]);
+  }, [page, limit, bots, tags, startDate, endDate, totalNumberOfAd]);
 
   const handleChange = (event: any, value: number) => {
     localStorage.setItem("adsPage", JSON.stringify(value));
@@ -182,6 +189,23 @@ const Ads = () => {
     });
   }
 
+  const enterKeyDown = (e: any) => {
+    if(e.keyCode === 13){
+      if(!isNaN(e.target.value as any) && e.target.value !== "" && (parseInt(e.target.value) >= 1) && (parseInt(e.target.value) <= pageNumber)){
+        console.log(e.target.value)
+        localStorage.setItem("adsPage", JSON.stringify(e.target.value))
+        setPage(parseInt(e.target.value));
+        seterrorBooleanForInput(false)
+        setErrorMessage("")
+      }
+      else{
+        seterrorBooleanForInput(true)
+        setErrorMessage("Invalid Input.")
+      }
+    }
+  }
+
+
   return (
     <div id='main'>
       <div
@@ -191,7 +215,7 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-          <Grid container justify='space-between' style={{ marginBottom: 15 }}>
+          <Grid container justify='space-between' style={{ marginBottom: 15}}>
             <Button
               color='secondary'
               variant={filterDrawerOpen ? "outlined" : "contained"}
@@ -201,14 +225,19 @@ const Ads = () => {
               <FilterListIcon />
               Filters
             </Button>
-            <Pagination
-              count={Math.ceil(90000 / limit)} //replace with total ad count
-              page={page}
-              onChange={handleChange}
-              size='large'
-            />
+              <Pagination
+                count={pageNumber}
+                page={page}
+                onChange={handleChange}
+                size='large'
+              />
           </Grid>
         </Fade>
+        <Grid container alignItems="flex-end" justifyContent="flex-end">
+          <Grid item>
+            <TextField id="standard-basic" label="Page Number" variant="filled" onKeyDown={enterKeyDown} error={errorBooleanForInput} helperText={errorMessage}/>
+          </Grid>
+        </Grid>
         {loading
           ? Array(3)
               .fill(null)
