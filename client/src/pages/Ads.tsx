@@ -145,8 +145,8 @@ const Ads = () => {
         },
       })
       .then((res: any) => {
-        setAds(res.data.ads);
-        setTotalNumberOfAd(res.data.metaData.total_count)
+        setAds(res.data.records);
+        setTotalNumberOfAd(res.data.metadata.total_count)
         setPageNumber(Math.ceil(totalNumberOfAd / limit))
         setLoading(false);
       });
