@@ -14,7 +14,6 @@ import {
   IconButton,
   TextField,
   Typography,
-  Box,
 } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -83,11 +82,11 @@ const Ads = () => {
   //let storedPageNumber = localStorage.getItem("adsPage");
   const [limit, setLimit] = useState(30);
   const [totalNumberOfAd, setTotalNumberOfAd] = useState(0);
+  const [pageNumber, setPageNumber] = useState(0);
   const [ads, setAds] = useState<Ad[]>([]);
   const [page, setPage] = useState(
     1 //storedPageNumber ? JSON.parse(storedPageNumber) : 1
   );
-  const [pageNumberInTextField, setpageNumberInTextField] = useState("")
   const [loading, setLoading] = useState(false);
 
   const [bots, setBots] = useState<Bot[]>(
@@ -148,9 +147,10 @@ const Ads = () => {
       .then((res: any) => {
         setAds(res.data.ads);
         setTotalNumberOfAd(res.data.metaData.total_count)
+        setPageNumber(Math.ceil(totalNumberOfAd / limit))
         setLoading(false);
       });
-  }, [page, limit, bots, tags, startDate, endDate]);
+  }, [page, limit, bots, tags, startDate, endDate, totalNumberOfAd]);
 
   const handleChange = (event: any, value: number) => {
     localStorage.setItem("adsPage", JSON.stringify(value));
@@ -188,7 +188,7 @@ const Ads = () => {
 
   const enterKeyDown = (e: any) => {
     if(e.keyCode === 13){
-      if(!isNaN(e.target.value as any) && e.target.value !== ""){
+      if(!isNaN(e.target.value as any) && e.target.value !== "" && (parseInt(e.target.value) >= 1) && (parseInt(e.target.value) <= pageNumber)){
         console.log(e.target.value)
         localStorage.setItem("adsPage", JSON.stringify(e.target.value))
         setPage(parseInt(e.target.value));
@@ -217,7 +217,7 @@ const Ads = () => {
               Filters
             </Button>
               <Pagination
-                count={Math.ceil(totalNumberOfAd / limit)} //replace with total ad count
+                count={pageNumber}
                 page={page}
                 onChange={handleChange}
                 size='large'
