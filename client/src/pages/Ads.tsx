@@ -79,13 +79,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Ads = () => {
-  //let storedPageNumber = localStorage.getItem("adsPage");
   const [limit, setLimit] = useState(30);
   const [totalNumberOfAd, setTotalNumberOfAd] = useState(0);
+  const [errorBooleanForInput, seterrorBooleanForInput] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const [pageNumber, setPageNumber] = useState(0);
   const [ads, setAds] = useState<Ad[]>([]);
   const [page, setPage] = useState(
-    1 //storedPageNumber ? JSON.parse(storedPageNumber) : 1
+    1
   );
   const [loading, setLoading] = useState(false);
 
@@ -149,6 +150,8 @@ const Ads = () => {
         setTotalNumberOfAd(res.data.metadata.total_count)
         setPageNumber(Math.ceil(totalNumberOfAd / limit))
         setLoading(false);
+        seterrorBooleanForInput(false)
+        setErrorMessage("")
       });
   }, [page, limit, bots, tags, startDate, endDate, totalNumberOfAd]);
 
@@ -192,6 +195,12 @@ const Ads = () => {
         console.log(e.target.value)
         localStorage.setItem("adsPage", JSON.stringify(e.target.value))
         setPage(parseInt(e.target.value));
+        seterrorBooleanForInput(false)
+        setErrorMessage("")
+      }
+      else{
+        seterrorBooleanForInput(true)
+        setErrorMessage("Invalid Input.")
       }
     }
   }
@@ -226,7 +235,7 @@ const Ads = () => {
         </Fade>
         <Grid container alignItems="flex-end" justifyContent="flex-end">
           <Grid item>
-            <TextField id="standard-basic" label="Page Number" variant="filled" onKeyDown={enterKeyDown} />
+            <TextField id="standard-basic" label="Page Number" variant="filled" onKeyDown={enterKeyDown} error={errorBooleanForInput} helperText={errorMessage}/>
           </Grid>
         </Grid>
         {loading
