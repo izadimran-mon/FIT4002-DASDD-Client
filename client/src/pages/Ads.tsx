@@ -82,6 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Ads = () => {
   //let storedPageNumber = localStorage.getItem("adsPage");
   const [limit, setLimit] = useState(30);
+  const [totalNumberOfAd, setTotalNumberOfAd] = useState(0);
   const [ads, setAds] = useState<Ad[]>([]);
   const [page, setPage] = useState(
     1 //storedPageNumber ? JSON.parse(storedPageNumber) : 1
@@ -145,7 +146,8 @@ const Ads = () => {
         },
       })
       .then((res: any) => {
-        setAds(res.data);
+        setAds(res.data.ads);
+        setTotalNumberOfAd(res.data.metaData.total_count)
         setLoading(false);
       });
   }, [page, limit, bots, tags, startDate, endDate]);
@@ -215,7 +217,7 @@ const Ads = () => {
               Filters
             </Button>
               <Pagination
-                count={Math.ceil(90000 / limit)} //replace with total ad count
+                count={Math.ceil(totalNumberOfAd / limit)} //replace with total ad count
                 page={page}
                 onChange={handleChange}
                 size='large'
