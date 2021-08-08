@@ -40,6 +40,9 @@ interface BotDetailsProps {
   displayTerms: (terms: string[], title: string) => void;
 }
 
+/**
+ * Displays details for bots
+ */
 const BotDetails = (props: BotDetailsProps) => {
   let ranking: string = politicalRanking[`${props.ranking}`];
   const [location, setLocation] = React.useState("");

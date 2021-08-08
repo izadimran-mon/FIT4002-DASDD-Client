@@ -24,6 +24,9 @@ const SidebarItems = [
   },
 ];
 
+/**
+ * Sidebar menu
+ */
 const Sidebar = () => {
   return (
     <>
