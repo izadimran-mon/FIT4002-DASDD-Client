@@ -141,8 +141,8 @@ const Ads = () => {
       })
       .then((res: any) => {
         setAds(res.data.ads);
-        setTotalNumberOfAd(res.data.metaData.total_count)
-        setPageNumber(Math.ceil(totalNumberOfAd / limit))
+        setTotalNumberOfAd(res.data.metaData.total_count);
+        setPageNumber(Math.ceil(totalNumberOfAd / limit));
         setLoading(false);
       });
   }, [page, limit, bots, tags, startDate, endDate, totalNumberOfAd]);
@@ -181,15 +181,19 @@ const Ads = () => {
   };
 
   const enterKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      if(!isNaN(e.target.value as any) && e.target.value !== "" && (parseInt(e.target.value) >= 1) && (parseInt(e.target.value) <= pageNumber)){
-        console.log(e.target.value)
-        localStorage.setItem("adsPage", JSON.stringify(e.target.value))
+    if (e.keyCode === 13) {
+      if (
+        !isNaN(e.target.value as any) &&
+        e.target.value !== "" &&
+        parseInt(e.target.value) >= 1 &&
+        parseInt(e.target.value) <= pageNumber
+      ) {
+        console.log(e.target.value);
+        localStorage.setItem("adsPage", JSON.stringify(e.target.value));
         setPage(parseInt(e.target.value));
       }
     }
-  }
-
+  };
 
   return (
     <div id="main">
@@ -200,11 +204,7 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-<<<<<<< HEAD
           <Grid container justify="space-between" style={{ marginBottom: 15 }}>
-=======
-          <Grid container justify='space-between' style={{ marginBottom: 15}}>
->>>>>>> Page-Functions
             <Button
               color="secondary"
               variant={filterDrawerOpen ? "outlined" : "contained"}
@@ -214,26 +214,22 @@ const Ads = () => {
               <FilterListIcon />
               Filters
             </Button>
-<<<<<<< HEAD
             <Pagination
-              count={Math.ceil(90000 / limit)} //replace with total ad count
+              count={pageNumber}
               page={page}
               onChange={handleChange}
               size="large"
             />
-=======
-              <Pagination
-                count={pageNumber}
-                page={page}
-                onChange={handleChange}
-                size='large'
-              />
->>>>>>> Page-Functions
           </Grid>
         </Fade>
         <Grid container alignItems="flex-end" justifyContent="flex-end">
           <Grid item>
-            <TextField id="standard-basic" label="Page Number" variant="filled" onKeyDown={enterKeyDown} />
+            <TextField
+              id="standard-basic"
+              label="Page Number"
+              variant="filled"
+              onKeyDown={enterKeyDown}
+            />
           </Grid>
         </Grid>
         {loading
