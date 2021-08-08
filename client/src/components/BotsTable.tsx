@@ -281,6 +281,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+/**
+ * Table displayed on Bots page
+ */
 export default function EnhancedTable() {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");

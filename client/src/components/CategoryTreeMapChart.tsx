@@ -25,9 +25,19 @@ interface CategoryDataItem {
   count: number;
 }
 type CategoryTreeMapChartProps = {
+  /**
+   * Data for category treemap chart
+   */
   data: Array<CategoryDataItem>;
+  /**
+   * Height of chart
+   */
   height?: number;
 };
+
+/**
+ * Category treemap chart to be displayed on Stats page
+ */
 const CategoryTreeMapChart = (props: CategoryTreeMapChartProps) => {
   const { data, height } = props;
   const chartData = data.map((dataPoint) => ({

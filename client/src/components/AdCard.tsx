@@ -188,10 +188,12 @@ const AdCard = (props: AdCardProp) => {
                         Political ranking: {ad.bot.politicalRanking}
                       </Typography>
                       <Typography>
-                        Other terms: {ad.bot.otherTermsCategory}
+                        Other terms: {ad.bot.otherTermsCategory - 1}
                       </Typography>
                       <Typography>Gender: {ad.bot.gender}</Typography>
-                      <Typography>DOB: {ad.bot.dob}</Typography>
+                      <Typography>
+                        DOB: {moment(ad.bot.dob).format("YYYY-MMM-D")}
+                      </Typography>
                     </>
                   }
                 >

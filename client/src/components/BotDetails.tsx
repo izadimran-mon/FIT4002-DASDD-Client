@@ -10,9 +10,9 @@ import {
 } from "@material-ui/core";
 import moment from "moment";
 import React from "react";
-import otherSearchTerms from "./helpers/otherSearchTerms";
-import politicalRanking from "./helpers/politicalRankings";
-import politicalSearchTerms from "./helpers/politicalSearchTerms";
+import otherSearchTerms from "../helpers/otherSearchTerms";
+import politicalRanking from "../helpers/politicalRankings";
+import politicalSearchTerms from "../helpers/politicalSearchTerms";
 import Geocode from "react-geocode";
 
 interface BotDetailsProps {
@@ -21,13 +21,22 @@ interface BotDetailsProps {
    * Political ranking
    */
   ranking: number;
+  /**
+   * Number of other search terms (unique extra search terms for the particular bot)
+   */
   other: number;
   gender: string;
   dob: any;
   open: boolean;
   long: number;
   lat: number;
+  /**
+   * Handles closing the bot details dialog
+   */
   handleClose: () => void;
+  /**
+   * Displays search terms in a dialog
+   */
   displayTerms: (terms: string[], title: string) => void;
 }
 
