@@ -79,32 +79,90 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Ads = () => {
+  /**
+   * State for number of entries displayed on each page
+   */
   const [limit, setLimit] = useState(30);
+  /**
+   * State for total number of ads
+   */
   const [totalNumberOfAd, setTotalNumberOfAd] = useState(0);
+  /**
+   * State to indicate error in page number input
+   */
   const [errorBooleanForInput, seterrorBooleanForInput] = useState(false);
+  /**
+   * Error message to display
+   */
   const [errorMessage, setErrorMessage] = useState("");
+  /**
+   * State to store total amount of pages
+   */
   const [pageNumber, setPageNumber] = useState(0);
+  /**
+   * State to store all ads
+   */
   const [ads, setAds] = useState<Ad[]>([]);
+  /**
+   * State for current page number
+   */
   const [page, setPage] = useState(1);
+  /**
+   * Loading state for retrieving ads
+   */
   const [loading, setLoading] = useState(false);
-
+  /**
+   * State for the bot filter
+   */
   const [bots, setBots] = useState<Bot[]>(
     useLocation<stateType>()?.state?.bots || []
   ); // empty = no filter
-
+  /**
+   * State for storing all tags
+   */
   const [tags, setTags] = useState<Tag[]>([]);
 
+  /**
+   * Open/closed state of bots filter selection dropdown
+   */
   const [botsSelectOpen, setBotsSelectOpen] = useState(false);
+  /**
+   * Open/closed state of tags filter selection dropdown
+   */
   const [tagsSelectOpen, setTagsSelectOpen] = useState(false);
+
+  /**
+   * State for all bots
+   */
   const [allBots, setAllBots] = useState<Bot[]>([]);
+  /**
+   * State for all tags
+   */
   const [allTags, setAllTags] = useState<Tag[]>([]);
+  /**
+   * Loading state for bots data
+   */
   const [botsLoading, setBotsLoading] = useState(false);
+  /**
+   * Loading state for tags data
+   */
   const [tagsLoading, setTagsLoading] = useState(false);
 
+  /**
+   * State for inputted bot name for filter
+   */
   const [botsInputValue, setBotsInputValue] = useState("");
+  /**
+   * State for inputted tag name for filter
+   */
   const [tagsInputValue, setTagsInputValue] = useState("");
-
+  /**
+   * Start date for date filter
+   */
   const [startDate, setStartDate] = React.useState<Date | null>(null);
+  /**
+   * End date for date filter
+   */
   const [endDate, setEndDate] = React.useState<Date | null>(null);
 
   const handleStartDateChange = (date: Date | null) => {
@@ -121,12 +179,6 @@ const Ads = () => {
   const handleDrawerToggle = () => {
     setFilterDrawerOpen(!filterDrawerOpen);
   };
-
-  // useEffect(() => {
-  //   axios.get(`/ads?offset${(page-1)*limit}&limit${limit}`).then((res: any) => {
-  //     setAds(res.data);
-  //   });
-  // }, []);
 
   useEffect(() => {
     setLoading(true);
