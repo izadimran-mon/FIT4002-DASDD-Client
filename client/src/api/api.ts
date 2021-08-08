@@ -43,3 +43,8 @@ export const getAdStats = async () => {
   const res = await baseApi.get(`/stats/ad-stat`);
   return res.data;
 };
+
+export const getCategoryBotStats = async () => {
+  const res = await baseApi.get(`/stats/category-bot`);
+  return res.data;
+};
