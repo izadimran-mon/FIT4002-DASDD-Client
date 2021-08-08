@@ -6,10 +6,12 @@ import {
   getAdCountStats,
   getAdStats,
   getBotAlignmentStats,
+  getCategoryBotStats,
 } from "../api/api";
 import AdCountLineChart from "../components/AdCountLineChart";
 import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
+import CategoryBotStatsChart from "../components/CategoryBotStatsChart";
 import MonthPicker from "../components/MonthPicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +35,7 @@ const Statistics = () => {
     []
   );
   const [adCategoryData, setAdCategoryData] = useState<any[]>([]);
+  const [categoryBotData, setCategoryBotData] = useState<any[]>([]);
   const [adCountData, setAdCountData] = useState<any[]>([]);
   const [adStatData, setAdStatData] = useState<any[]>([]);
 
@@ -93,6 +96,16 @@ const Statistics = () => {
 
       setAdStatData(data);
     });
+
+    getCategoryBotStats().then((res) => {
+      if (!res) return;
+      const data = res.map((element: any) => ({
+        avgGender: parseFloat(element.avgGender),
+        avgPolitical: parseFloat(element.avgPolitical),
+        label: element.label,
+      }));
+      setCategoryBotData(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -135,6 +148,12 @@ const Statistics = () => {
     </Paper>
   );
 
+  const categoryBotChart = (
+    <Paper className={classes.paper}>
+      <CategoryBotStatsChart data={categoryBotData} />
+    </Paper>
+  );
+
   const adsScrapedChart = (
     <Paper className={classes.paper}>
       <Grid container spacing={3}>
@@ -174,6 +193,9 @@ const Statistics = () => {
         </Grid>
         <Grid item xs={12}>
           {adsScrapedChart}
+        </Grid>
+        <Grid item xs={8}>
+          {categoryBotChart}
         </Grid>
       </Grid>
     </div>
