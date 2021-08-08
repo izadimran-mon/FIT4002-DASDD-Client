@@ -18,3 +18,7 @@ https://www.figma.com/file/gD2iQJkPll3i6ffzdxJ6k6/FIT4002-Ad-Transparency-Dashbo
 
 - Use Material UI for components where possible.
 - Use the global variables defined in src/index.css for the colour scheme where possible.
+
+# Component documentation:
+
+Run `npx styleguidist server` to view the documentation for the React components.
