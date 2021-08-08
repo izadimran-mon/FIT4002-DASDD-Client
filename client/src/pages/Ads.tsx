@@ -300,9 +300,6 @@ const Ads = () => {
             </div>
           </Grid>
         </Fade>
-        {/* <Grid container alignItems="flex-end" justifyContent="flex-end">
-          <Grid item></Grid>
-        </Grid> */}
         {loading
           ? Array(3)
               .fill(null)
@@ -317,14 +314,6 @@ const Ads = () => {
                 />
               );
             })}
-        {/* <Grid container justify="flex-end">
-        <Pagination
-          count={Math.ceil(ads.length / limit)}
-          page={page}
-          onChange={handleChange}
-          size="large"
-        />
-      </Grid> */}
       </div>
       <Drawer
         className={classes.drawer}
