@@ -197,7 +197,28 @@ const AdCard = (props: AdCardProp) => {
                 >
                   <Typography style={{ marginTop: 5 }}>
                     <span style={{ fontWeight: "bold" }}>Seen bot: </span>
-                    {ad.bot.username}
+                    <Button
+                      variant="contained"
+                      style={{
+                        background: "#167070",
+                        marginLeft: 10,
+                        padding: 2,
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                      }}
+                      onClick={() => {
+                        setOpenDetails(true);
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          color: "#fff",
+                          fontSize: 14,
+                        }}
+                      >
+                        {ad.bot.username}
+                      </Typography>
+                    </Button>
                   </Typography>
                 </Tooltip>
                 {ad.seenOn ? (
