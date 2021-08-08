@@ -29,11 +29,23 @@ const Statistics = () => {
   const [botPoliticalAlignmentData, setBotPoliticalAlignmentData] = useState<
     any[]
   >([]);
+  /**
+   * State to store data for bot gender pie chart
+   */
   const [botGenderAlignmentData, setBotGenderAlignmentData] = useState<any[]>(
     []
   );
+  /**
+   * State to store data for CategoryMapTreeChart
+   */
   const [adCategoryData, setAdCategoryData] = useState<any[]>([]);
+  /**
+   * State to store ad count data for AdCountLineChart
+   */
   const [adCountData, setAdCountData] = useState<any[]>([]);
+  /**
+   * State to store ad stat dta for AdCountLineChart
+   */
   const [adStatData, setAdStatData] = useState<any[]>([]);
 
   useEffect(() => {
