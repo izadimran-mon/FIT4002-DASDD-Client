@@ -17,6 +17,9 @@ import Geocode from "react-geocode";
 
 interface BotDetailsProps {
   name: string;
+  /**
+   * Political ranking
+   */
   ranking: number;
   other: number;
   gender: string;
