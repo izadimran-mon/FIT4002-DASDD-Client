@@ -90,7 +90,7 @@ const Ads = () => {
   /**
    * State to indicate error in page number input
    */
-  const [errorBooleanForInput, seterrorBooleanForInput] = useState(false);
+  const [errorBooleanForInput, setErrorBooleanForInput] = useState(false);
   /**
    * Error message to display
    */
@@ -198,7 +198,7 @@ const Ads = () => {
         setTotalNumberOfAd(res.data.metadata.total_count);
         setPageNumber(Math.ceil(totalNumberOfAd / limit));
         setLoading(false);
-        seterrorBooleanForInput(false);
+        setErrorBooleanForInput(false);
         setErrorMessage("");
       });
   }, [page, limit, bots, tags, startDate, endDate, totalNumberOfAd]);
@@ -247,11 +247,11 @@ const Ads = () => {
         console.log(e.target.value);
         localStorage.setItem("adsPage", JSON.stringify(e.target.value));
         setPage(parseInt(e.target.value));
-        seterrorBooleanForInput(false);
+        setErrorBooleanForInput(false);
         setErrorMessage("");
       } else {
-        seterrorBooleanForInput(true);
-        setErrorMessage("Invalid Input.");
+        setErrorBooleanForInput(true);
+        //setErrorMessage("Invalid Input.");
       }
     }
   };
@@ -275,26 +275,34 @@ const Ads = () => {
               <FilterListIcon />
               Filters
             </Button>
-            <Pagination
-              count={pageNumber}
-              page={page}
-              onChange={handleChange}
-              size="large"
-            />
+            <div
+              style={{
+                display: "inline-flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              <TextField
+                label="Page #"
+                size="small"
+                style={{ width: 120 }}
+                variant="outlined"
+                onKeyDown={enterKeyDown}
+                error={errorBooleanForInput}
+                helperText={errorMessage}
+              />
+              <Pagination
+                count={pageNumber}
+                page={page}
+                onChange={handleChange}
+                size="large"
+              />
+            </div>
           </Grid>
         </Fade>
-        <Grid container alignItems="flex-end" justifyContent="flex-end">
-          <Grid item>
-            <TextField
-              id="standard-basic"
-              label="Page Number"
-              variant="filled"
-              onKeyDown={enterKeyDown}
-              error={errorBooleanForInput}
-              helperText={errorMessage}
-            />
-          </Grid>
-        </Grid>
+        {/* <Grid container alignItems="flex-end" justifyContent="flex-end">
+          <Grid item></Grid>
+        </Grid> */}
         {loading
           ? Array(3)
               .fill(null)
