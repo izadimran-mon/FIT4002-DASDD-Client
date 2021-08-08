@@ -6,13 +6,25 @@ interface BotAlignmentDataItem {
   count: number;
 }
 type BotAlignmentPieChartProps = {
+  /**
+   * Data to display in the chart
+   */
   data: Array<BotAlignmentDataItem>;
+  /**
+   * Height of the chart
+   */
   height?: number;
+  /**
+   * Title of the chart
+   */
   title?: string;
 };
+
+/**
+ * Pie chart component for bot alignment
+ */
 const BotAlignmentPieChart = (props: BotAlignmentPieChartProps) => {
   const { data, height, title } = props;
-  console.log(data);
   const labels = data?.map((dataPoint) => dataPoint.label.toString());
   const values = data?.map((dataPoint) => dataPoint.count);
 
@@ -23,12 +35,11 @@ const BotAlignmentPieChart = (props: BotAlignmentPieChartProps) => {
     },
     chart: {
       events: {
-        dataPointSelection: (event, chartContext, config) => {
-          // console.log(config);
-          const { dataPointIndex } = config;
-          console.log(dataPointIndex);
-          // TODO: anything happens when clicking item in chart?
-        },
+        // dataPointSelection: (event, chartContext, config) => {
+        //   const { dataPointIndex } = config;
+        //   console.log(dataPointIndex);
+        //   // TODO: anything happens when clicking item in chart?
+        // },
       },
       toolbar: {
         show: true,
