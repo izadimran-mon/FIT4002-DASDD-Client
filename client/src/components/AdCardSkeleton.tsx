@@ -3,6 +3,9 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import React from "react";
 import "./styles/AdCard.css";
 
+/**
+ * A loading skeleton placeholder for AdCard components
+ */
 const AdCardSkeleton = () => {
   return (
     <Card style={{ height: 350, marginBottom: 20, padding: 15 }}>

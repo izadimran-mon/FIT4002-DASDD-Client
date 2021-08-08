@@ -5,7 +5,7 @@ import {
   Dialog,
   DialogContent,
   Grid,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
@@ -15,6 +15,11 @@ import BotDetails from "./BotDetails";
 import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
 
+/**
+ * Extracts the domain of a URL from the link.
+ * @param link - the link to process
+ * @returns domain - the domain of the URL, as a string
+ */
 const processLink = (link: string) => {
   if (link) {
     let link_split = link.split("/");
@@ -37,6 +42,9 @@ interface ImageDialogProps {
   handleClose: () => void;
 }
 
+/**
+ * Popup dialog for ad image (screenshots)
+ */
 const ImageDialog = (props: ImageDialogProps) => {
   return (
     <Dialog
@@ -59,18 +67,44 @@ const ImageDialog = (props: ImageDialogProps) => {
 };
 
 type AdCardProp = {
-  ad: Ad,
-  allTags: Tag[],
-  onNewTagCreated?: () => void
-}
+  /**
+   * The ad to display the card for
+   */
+  ad: Ad;
+  /**
+   * A list of all tags in the system
+   */
+  allTags: Tag[];
+  /**
+   * A callback function to handle creating a new tag
+   */
+  onNewTagCreated?: () => void;
+};
 
+/**
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx)
+ */
 const AdCard = (props: AdCardProp) => {
-  const {ad, allTags, onNewTagCreated} = props;
+  const { ad, allTags, onNewTagCreated } = props;
+  /**
+   * The state (open/closed) of the image (screenshot) popup dialog
+   */
   const [open, setOpen] = useState(false);
+  /**
+   * The state (open/closed) of the bot details popup dialog
+   */
   const [openDetails, setOpenDetails] = React.useState(false);
+  /**
+   * The state (open/closed) of the bot search terms popup dialog
+   */
   const [openTerms, setOpenTerms] = React.useState(false);
-
+  /**
+   * State for initialising search terms
+   */
   const [terms, setTerms] = React.useState<string[]>([]);
+  /**
+   * State for initialising the title for search terms
+   */
   const [title, setTitle] = React.useState("");
 
   const handleClickOpen = () => {
@@ -90,7 +124,7 @@ const AdCard = (props: AdCardProp) => {
     setTitle(title);
     setOpenTerms(true);
   };
-  //const classes = useStyles();
+
   return (
     <Card className="cardStyle">
       <Grid container className="overallContainerStyle">
@@ -175,9 +209,7 @@ const AdCard = (props: AdCardProp) => {
                         </Typography>
                       </Grid>
                       <Grid item>
-                        <Tooltip
-                          title={<Typography>{ad.seenOn}</Typography>}
-                        >
+                        <Tooltip title={<Typography>{ad.seenOn}</Typography>}>
                           <Button
                             variant="contained"
                             style={{
@@ -233,7 +265,13 @@ const AdCard = (props: AdCardProp) => {
                   padding: 10,
                 }}
               >
-                <div><AdChip ad={ad} allTags={allTags} onNewTagCreated={onNewTagCreated}/></div>
+                <div>
+                  <AdChip
+                    ad={ad}
+                    allTags={allTags}
+                    onNewTagCreated={onNewTagCreated}
+                  />
+                </div>
               </Grid>
             </Grid>
           </Grid>
@@ -261,50 +299,5 @@ const AdCard = (props: AdCardProp) => {
     </Card>
   );
 };
-
-// const AdCard: React.FC<Ad> = (props) => {
-//     const classes = useStyles();
-//     return (
-//       <div className={classes.root}>
-//         <Paper elevation={3}>
-//             <div className="overallDivStyle">
-//               <section className="imageSection">
-//                 <img className="imageStyle" src={props.file} alt="Ad screenshot"/>
-//               </section>
-//               <section className="mainSection">
-//                 <div className="headlineDiv">
-//                   <a className="headlineStyle" href={props.headline}>{props.headline}</a>
-//                 </div>
-//               </section>
-//               <section className="sideSection">
-//                 <p className="dateStyle"> Date: {moment(props.dateTime).format("YYYY-MMM-D dddd h:mma")} </p>
-//                 <p className="botStyle">Seen bot: {props.bot}</p>
-//                 <p className="seenOnStlye">Seen on: <a href={props.seenOn}>{props.seenOn}</a></p>
-//               </section>
-//               <section className="categorySection">
-//                 <div className="cardStyle">
-//                   <AdChip {...props}/>
-//                 </div>
-//               </section>
-//                 <div>
-
-//                 </div>
-//                 {/* <div className="middleBlock">
-//                   <p className="botStyle">Bot: {props.bot}</p>
-//                   <a className="headlineStyle" href={props.headline}>{props.headline}</a>
-//                 </div>
-//                 <div>
-//                   <p className="dateStyle"> Date: {moment(props.dateTime).format("YYYY-MMM-D dddd h:mma")} </p>
-//                   <p className="seenOnStlye">Seen on: <a href={props.seenOn}>{props.seenOn}</a></p>
-//                 </div>
-
-//                 <div className="AdChipStyle">
-//                   <AdChip {...props}/>
-//                 </div> */}
-//             </div>
-//         </Paper>
-//       </div>
-//     );
-//   }
 
 export default AdCard;
