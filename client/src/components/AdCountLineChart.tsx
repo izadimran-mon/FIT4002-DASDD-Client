@@ -6,10 +6,23 @@ interface AdCountDataItem {
   count: number;
 }
 type AdCountLineChartProps = {
+  /**
+   * Data to display in the chart
+   */
   data: Array<AdCountDataItem>;
+  /**
+   * Height of the chart
+   */
   height?: number;
+  /**
+   * Title of the chart
+   */
   title?: string;
 };
+
+/**
+ * Chart to display statistics about ads scraped
+ */
 const AdCountLineChart = (props: AdCountLineChartProps) => {
   const { data, height, title } = props;
   const labels = data?.map((dataPoint) => dataPoint.date);

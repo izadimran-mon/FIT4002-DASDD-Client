@@ -14,12 +14,19 @@ import React from "react";
 import "./styles/AdCard.css";
 
 interface SearchTermsProps {
+  /** The list of search terms to display */
   terms: string[];
+  /** Title to display on the dialog */
   title: string;
+  /** Open state of the dialog */
   open: boolean;
+  /** Handler for closing the dialog */
   handleClose: () => void;
 }
 
+/**
+ * Dialog for displaying search terms
+ */
 const SearchTerms = (props: SearchTermsProps) => {
   return (
     <Dialog

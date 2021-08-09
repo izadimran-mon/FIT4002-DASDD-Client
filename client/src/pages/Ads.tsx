@@ -79,34 +79,90 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Ads = () => {
+  /**
+   * State for number of entries displayed on each page
+   */
   const [limit, setLimit] = useState(30);
+  /**
+   * State for total number of ads
+   */
   const [totalNumberOfAd, setTotalNumberOfAd] = useState(0);
-  const [errorBooleanForInput, seterrorBooleanForInput] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
+  /**
+   * State to indicate error in page number input
+   */
+  const [errorBooleanForInput, setErrorBooleanForInput] = useState(false);
+  /**
+   * Error message to display
+   */
+  const [errorMessage, setErrorMessage] = useState("");
+  /**
+   * State to store total amount of pages
+   */
   const [pageNumber, setPageNumber] = useState(0);
+  /**
+   * State to store all ads
+   */
   const [ads, setAds] = useState<Ad[]>([]);
-  const [page, setPage] = useState(
-    1
-  );
+  /**
+   * State for current page number
+   */
+  const [page, setPage] = useState(1);
+  /**
+   * Loading state for retrieving ads
+   */
   const [loading, setLoading] = useState(false);
-
+  /**
+   * State for the bot filter
+   */
   const [bots, setBots] = useState<Bot[]>(
     useLocation<stateType>()?.state?.bots || []
   ); // empty = no filter
-
+  /**
+   * State for storing all tags
+   */
   const [tags, setTags] = useState<Tag[]>([]);
 
+  /**
+   * Open/closed state of bots filter selection dropdown
+   */
   const [botsSelectOpen, setBotsSelectOpen] = useState(false);
+  /**
+   * Open/closed state of tags filter selection dropdown
+   */
   const [tagsSelectOpen, setTagsSelectOpen] = useState(false);
+
+  /**
+   * State for all bots
+   */
   const [allBots, setAllBots] = useState<Bot[]>([]);
+  /**
+   * State for all tags
+   */
   const [allTags, setAllTags] = useState<Tag[]>([]);
+  /**
+   * Loading state for bots data
+   */
   const [botsLoading, setBotsLoading] = useState(false);
+  /**
+   * Loading state for tags data
+   */
   const [tagsLoading, setTagsLoading] = useState(false);
 
+  /**
+   * State for inputted bot name for filter
+   */
   const [botsInputValue, setBotsInputValue] = useState("");
+  /**
+   * State for inputted tag name for filter
+   */
   const [tagsInputValue, setTagsInputValue] = useState("");
-
+  /**
+   * Start date for date filter
+   */
   const [startDate, setStartDate] = React.useState<Date | null>(null);
+  /**
+   * End date for date filter
+   */
   const [endDate, setEndDate] = React.useState<Date | null>(null);
 
   const handleStartDateChange = (date: Date | null) => {
@@ -124,16 +180,8 @@ const Ads = () => {
     setFilterDrawerOpen(!filterDrawerOpen);
   };
 
-  // useEffect(() => {
-  //   axios.get(`/ads?offset${(page-1)*limit}&limit${limit}`).then((res: any) => {
-  //     setAds(res.data);
-  //   });
-  // }, []);
-
   useEffect(() => {
     setLoading(true);
-    // const botParam = bots.reduce((a, b) => a + `&bots=${b.id}`, "");
-    // const tagParam = tags.reduce((a, b) => a + `&tag=${b.name}`, "");
     baseApi
       .get("/ads", {
         params: {
@@ -147,16 +195,15 @@ const Ads = () => {
       })
       .then((res: any) => {
         setAds(res.data.records);
-        setTotalNumberOfAd(res.data.metadata.total_count)
-        setPageNumber(Math.ceil(totalNumberOfAd / limit))
+        setTotalNumberOfAd(res.data.metadata.total_count);
+        setPageNumber(Math.ceil(totalNumberOfAd / limit));
         setLoading(false);
-        seterrorBooleanForInput(false)
-        setErrorMessage("")
+        setErrorBooleanForInput(false);
+        setErrorMessage("");
       });
   }, [page, limit, bots, tags, startDate, endDate, totalNumberOfAd]);
 
   const handleChange = (event: any, value: number) => {
-    localStorage.setItem("adsPage", JSON.stringify(value));
     setPage(value);
   };
 
@@ -187,27 +234,30 @@ const Ads = () => {
       setAllTags(res.data);
       setTagsLoading(false);
     });
-  }
+  };
 
   const enterKeyDown = (e: any) => {
-    if(e.keyCode === 13){
-      if(!isNaN(e.target.value as any) && e.target.value !== "" && (parseInt(e.target.value) >= 1) && (parseInt(e.target.value) <= pageNumber)){
-        console.log(e.target.value)
-        localStorage.setItem("adsPage", JSON.stringify(e.target.value))
+    if (e.keyCode === 13) {
+      if (
+        !isNaN(e.target.value as any) &&
+        e.target.value !== "" &&
+        parseInt(e.target.value) >= 1 &&
+        parseInt(e.target.value) <= pageNumber
+      ) {
+        console.log(e.target.value);
+        localStorage.setItem("adsPage", JSON.stringify(e.target.value));
         setPage(parseInt(e.target.value));
-        seterrorBooleanForInput(false)
-        setErrorMessage("")
-      }
-      else{
-        seterrorBooleanForInput(true)
-        setErrorMessage("Invalid Input.")
+        setErrorBooleanForInput(false);
+        setErrorMessage("");
+      } else {
+        setErrorBooleanForInput(true);
+        //setErrorMessage("Invalid Input.");
       }
     }
-  }
-
+  };
 
   return (
-    <div id='main'>
+    <div id="main">
       <div
         className={clsx(classes.content, {
           [classes.contentShift]: filterDrawerOpen,
@@ -215,49 +265,60 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-          <Grid container justify='space-between' style={{ marginBottom: 15}}>
+          <Grid container justify="space-between" style={{ marginBottom: 15 }}>
             <Button
-              color='secondary'
+              color="secondary"
               variant={filterDrawerOpen ? "outlined" : "contained"}
-              aria-label='open filters menu'
+              aria-label="open filters menu"
               onClick={handleDrawerToggle}
             >
               <FilterListIcon />
               Filters
             </Button>
+            <div
+              style={{
+                display: "inline-flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              <TextField
+                label="Page #"
+                size="small"
+                style={{ width: 120 }}
+                variant="outlined"
+                onKeyDown={enterKeyDown}
+                error={errorBooleanForInput}
+                helperText={errorMessage}
+              />
               <Pagination
                 count={pageNumber}
                 page={page}
                 onChange={handleChange}
-                size='large'
+                size="large"
               />
+            </div>
           </Grid>
         </Fade>
-        <Grid container alignItems="flex-end" justifyContent="flex-end">
-          <Grid item>
-            <TextField id="standard-basic" label="Page Number" variant="filled" onKeyDown={enterKeyDown} error={errorBooleanForInput} helperText={errorMessage}/>
-          </Grid>
-        </Grid>
         {loading
           ? Array(3)
               .fill(null)
               .map((_, i) => <AdCardSkeleton key={i} />)
           : ads.map((data, i) => {
-              return <AdCard ad={data} allTags={allTags} onNewTagCreated={handleOnNewTagCreated} key={i} />;
+              return (
+                <AdCard
+                  ad={data}
+                  allTags={allTags}
+                  onNewTagCreated={handleOnNewTagCreated}
+                  key={i}
+                />
+              );
             })}
-        {/* <Grid container justify="flex-end">
-        <Pagination
-          count={Math.ceil(ads.length / limit)}
-          page={page}
-          onChange={handleChange}
-          size="large"
-        />
-      </Grid> */}
       </div>
       <Drawer
         className={classes.drawer}
-        variant='persistent'
-        anchor='right'
+        variant="persistent"
+        anchor="right"
         open={filterDrawerOpen}
         classes={{
           paper: classes.drawerPaper,
@@ -268,7 +329,7 @@ const Ads = () => {
             <ChevronRightIcon />
           </IconButton>
           <span>
-            <Typography variant='h6' style={{ fontWeight: "bold" }}>
+            <Typography variant="h6" style={{ fontWeight: "bold" }}>
               Filters
             </Typography>
           </span>
@@ -277,15 +338,15 @@ const Ads = () => {
         <Accordion square>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1a-content'
-            id='panel1a-header'
+            aria-controls="panel1a-content"
+            id="panel1a-header"
           >
             <Typography>Bots</Typography>
           </AccordionSummary>
           <AccordionDetails style={{ display: "block" }}>
             <Autocomplete
               multiple
-              id='tags-select'
+              id="tags-select"
               open={botsSelectOpen}
               onOpen={() => {
                 setBotsSelectOpen(true);
@@ -309,14 +370,14 @@ const Ads = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label='Selected bots'
-                  variant='outlined'
+                  label="Selected bots"
+                  variant="outlined"
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
                       <React.Fragment>
                         {loading ? (
-                          <CircularProgress color='inherit' size={20} />
+                          <CircularProgress color="inherit" size={20} />
                         ) : null}
                         {params.InputProps.endAdornment}
                       </React.Fragment>
@@ -330,15 +391,15 @@ const Ads = () => {
         <Accordion square>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1a-content'
-            id='panel1a-header'
+            aria-controls="panel1a-content"
+            id="panel1a-header"
           >
             <Typography>Tags</Typography>
           </AccordionSummary>
           <AccordionDetails style={{ display: "block" }}>
             <Autocomplete
               multiple
-              id='tags-select'
+              id="tags-select"
               open={tagsSelectOpen}
               onOpen={() => {
                 setTagsSelectOpen(true);
@@ -362,14 +423,14 @@ const Ads = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label='Selected tags'
-                  variant='outlined'
+                  label="Selected tags"
+                  variant="outlined"
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
                       <React.Fragment>
                         {loading ? (
-                          <CircularProgress color='inherit' size={20} />
+                          <CircularProgress color="inherit" size={20} />
                         ) : null}
                         {params.InputProps.endAdornment}
                       </React.Fragment>
@@ -383,20 +444,20 @@ const Ads = () => {
         <Accordion square>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1a-content'
-            id='panel1a-header'
+            aria-controls="panel1a-content"
+            id="panel1a-header"
           >
             <Typography>Date</Typography>
           </AccordionSummary>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Grid container justify='space-around'>
+            <Grid container justify="space-around">
               <KeyboardDatePicker
                 style={{ marginLeft: 30, marginRight: 30 }}
                 disableToolbar
-                variant='inline'
-                format='dd/MM/yyyy'
-                margin='normal'
-                id='date-picker-inline'
+                variant="inline"
+                format="dd/MM/yyyy"
+                margin="normal"
+                id="date-picker-inline"
                 disableFuture={true}
                 InputProps={{
                   endAdornment: (
@@ -408,7 +469,7 @@ const Ads = () => {
                 InputAdornmentProps={{
                   position: "start",
                 }}
-                label='Start date'
+                label="Start date"
                 value={startDate}
                 maxDate={endDate ? endDate : new Date()}
                 onChange={handleStartDateChange}
@@ -419,10 +480,10 @@ const Ads = () => {
               <KeyboardDatePicker
                 style={{ marginLeft: 30, marginRight: 30 }}
                 disableToolbar
-                variant='inline'
-                format='dd/MM/yyyy'
-                margin='normal'
-                id='date-picker-inline'
+                variant="inline"
+                format="dd/MM/yyyy"
+                margin="normal"
+                id="date-picker-inline"
                 disableFuture={true}
                 InputProps={{
                   endAdornment: (
@@ -435,7 +496,7 @@ const Ads = () => {
                   position: "start",
                 }}
                 minDate={startDate ? startDate : new Date("1900-01-01")}
-                label='End date'
+                label="End date"
                 value={endDate}
                 onChange={handleEndDateChange}
                 KeyboardButtonProps={{

@@ -9,6 +9,9 @@
 import axios from "axios";
 import { config } from "../configs/config";
 
+/**
+ * Connect to base API.
+ */
 export const baseApi = axios.create({
   baseURL: config.API_URL,
   withCredentials: true,

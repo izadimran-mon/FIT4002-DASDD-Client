@@ -26,20 +26,49 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type AdChipProp = {
-  ad: Ad,
-  allTags: Tag[],
+  /**
+   * The ad represented by the containing AdCard
+   */
+  ad: Ad;
+  /**
+   * A list of all tags in the system
+   */
+  allTags: Tag[];
+  /**
+   * Callback function for handling the creation of a new tag
+   */
   onNewTagCreated?: () => void;
-}
+};
 
+/**
+ * Chip component to represent tags on AdCard components
+ */
 const AdChip = (props: AdChipProp) => {
   const classes = useStyles();
-  const {allTags, onNewTagCreated} = props;
-
+  const { allTags, onNewTagCreated } = props;
+  /**
+   * State for the tags already applied to the ad
+   */
   const [adOwnTagsId, setAdOwnTags] = useState<number[]>([]);
+  /**
+   * State for the name of the tags
+   */
   const [tagsName, setTagsName] = useState<string[]>([]);
+  /**
+   * State for storing ad data
+   */
   const [adData, setAdData] = useState<Ad>(props.ad);
+  /**
+   * Open/closed state of dialog for creating a new tag
+   */
   const [open, setOpen] = useState(false);
+  /**
+   * State for inputted name of tag being created
+   */
   const [tagInputName, setTagInputName] = useState("");
+  /**
+   * State for controlling error message display upon creation of an invalid tag
+   */
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -48,8 +77,8 @@ const AdChip = (props: AdChipProp) => {
   }, [adData]);
 
   useEffect(() => {
-      const tempNameList = allTags.map((tag: Tag) => tag.name.toLowerCase());
-      setTagsName(tempNameList);
+    const tempNameList = allTags.map((tag: Tag) => tag.name.toLowerCase());
+    setTagsName(tempNameList);
   }, [allTags]);
 
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
@@ -87,7 +116,7 @@ const AdChip = (props: AdChipProp) => {
       );
     } else {
       baseApi.post(`/tags`, { name: tagInputName }).then((res: any) => {
-        if (onNewTagCreated) onNewTagCreated(); // callback function after new tag is created, used to update all tags in Ads.tsx
+        if (onNewTagCreated) onNewTagCreated();
       });
       setOpen(false);
     }
@@ -146,19 +175,5 @@ const AdChip = (props: AdChipProp) => {
     </div>
   );
 };
-
-// return (
-//   <div className={classes.root}>
-//     {tags.map((category, i) => {
-//       if(adOwnTags.includes(category.id)){
-//         return <Chip label={category.name} onClick={() => {handleClick(i)}} key={i}/>
-//       }
-//       else{
-//         return <Chip variant="outlined" label={category.name} onClick={() => {handleClick(i)}} key={i}/>
-//       }
-//     })}
-//   </div>
-// );
-// };
 
 export default AdChip;

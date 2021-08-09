@@ -82,11 +82,23 @@ const options: ApexCharts.ApexOptions = {
 interface CategoryDataItem {
   id?: number | string;
   label: string;
+  /**
+   * Average gender (where Female = 0, Male = 1, Other = 0.5)
+   */
   avgGender: number;
+  /**
+   * Average political inclination (0-4)
+   */
   avgPolitical: number;
 }
 type CategoryBotStatsChartProps = {
+  /**
+   * Data for the CategoryBotStatsChart
+   */
   data: Array<CategoryDataItem>;
+  /**
+   * Height of the chart
+   */
   height?: number;
 };
 const CategoryBotStatsChart = (props: CategoryBotStatsChartProps) => {
