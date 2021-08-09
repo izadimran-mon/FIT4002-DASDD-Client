@@ -183,7 +183,7 @@ const Ads = () => {
   useEffect(() => {
     setLoading(true);
     baseApi
-      .get("/ads", {
+      .get("/google/ads", {
         params: {
           offset: (page - 1) * limit,
           limit: limit,
@@ -212,7 +212,7 @@ const Ads = () => {
       return;
     }
     setBotsLoading(true);
-    baseApi.get("/bots").then((res) => {
+    baseApi.get("/google/bots").then((res) => {
       setAllBots(res.data);
       setBotsLoading(false);
     });
@@ -223,14 +223,14 @@ const Ads = () => {
       return;
     }
     setTagsLoading(true);
-    baseApi.get("/tags").then((res) => {
+    baseApi.get("/google/tags").then((res) => {
       setAllTags(res.data);
       setTagsLoading(false);
     });
   }, [allTags.length]);
 
   const handleOnNewTagCreated = () => {
-    baseApi.get("/tags").then((res) => {
+    baseApi.get("/google/tags").then((res) => {
       setAllTags(res.data);
       setTagsLoading(false);
     });

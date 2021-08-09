@@ -84,13 +84,13 @@ const AdChip = (props: AdChipProp) => {
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
     if (hasTag) {
       baseApi
-        .delete(`/ads/${adData.id}/tags/${categoryIndex}`)
+        .delete(`/google/ads/${adData.id}/tags/${categoryIndex}`)
         .then((res: any) => {
           setAdData(res.data);
         });
     } else {
       baseApi
-        .post(`/ads/${adData.id}/tags/${categoryIndex}`)
+        .post(`/google/ads/${adData.id}/tags/${categoryIndex}`)
         .then((res: any) => {
           setAdData(res.data);
         });
@@ -115,7 +115,7 @@ const AdChip = (props: AdChipProp) => {
         "Same tag name has already been added, please enter another name"
       );
     } else {
-      baseApi.post(`/tags`, { name: tagInputName }).then((res: any) => {
+      baseApi.post(`/google/tags`, { name: tagInputName }).then((res: any) => {
         if (onNewTagCreated) onNewTagCreated();
       });
       setOpen(false);

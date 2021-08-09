@@ -23,28 +23,28 @@ export const baseApi = axios.create({
 });
 
 export const getBotAlignmentStats = async () => {
-  const res = await baseApi.get(`/stats/bot-alignment`);
+  const res = await baseApi.get(`/google/stats/bot-alignment`);
   return res.data;
 };
 
 export const getAdCategoryStats = async () => {
-  const res = await baseApi.get(`/stats/category`);
+  const res = await baseApi.get(`/google/stats/category`);
   return res.data;
 };
 
 export const getAdCountStats = async (startDateTimestamp?: number) => {
-  const res = await baseApi.get(`/stats/ad-count`, {
+  const res = await baseApi.get(`/google/stats/ad-count`, {
     params: { startDate: startDateTimestamp },
   });
   return res.data;
 };
 
 export const getAdStats = async () => {
-  const res = await baseApi.get(`/stats/ad-stat`);
+  const res = await baseApi.get(`/google/stats/ad-stat`);
   return res.data;
 };
 
 export const getCategoryBotStats = async () => {
-  const res = await baseApi.get(`/stats/category-bot`);
+  const res = await baseApi.get(`/google/stats/category-bot`);
   return res.data;
 };
