@@ -7,7 +7,7 @@ import "./index.css";
 import Routes from "./routes";
 
 export const DataContext = React.createContext({
-  dataSource: DataSource.Google,
+  dataSource: localStorage.getItem("dataSource") ?? DataSource.Google,
   changeDataSource: (d: DataSource) => {},
 });
 
@@ -27,10 +27,13 @@ const theme = createTheme({
 
 export const App = () => {
   const changeDataSource = (d: DataSource) => {
+    localStorage.setItem("dataSource", d);
     setDataSource(d);
   };
 
-  const [dataSource, setDataSource] = useState(DataSource.Google);
+  const [dataSource, setDataSource] = useState(
+    localStorage.getItem("dataSource") ?? DataSource.Google
+  );
 
   return (
     <MuiThemeProvider theme={theme}>

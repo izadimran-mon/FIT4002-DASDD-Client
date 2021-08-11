@@ -1,4 +1,4 @@
 export enum DataSource {
-  Google = 0,
-  Twitter = 1,
+  Google = "google",
+  Twitter = "twitter",
 }

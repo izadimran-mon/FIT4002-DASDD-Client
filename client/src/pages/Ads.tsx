@@ -1,37 +1,40 @@
+import DateFnsUtils from "@date-io/date-fns";
 import {
-  createStyles,
-  makeStyles,
-  Theme,
   Accordion,
-  Grid,
   AccordionDetails,
   AccordionSummary,
   Button,
   CircularProgress,
+  createStyles,
   Divider,
   Drawer,
   Fade,
+  Grid,
   IconButton,
+  makeStyles,
   TextField,
+  Theme,
   Typography,
 } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ClearIcon from "@material-ui/icons/Clear";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Pagination from "@material-ui/lab/Pagination";
-import ClearIcon from "@material-ui/icons/Clear";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { baseApi } from "../api/api";
 import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+
+import { DataContext } from "../App";
+import { DataSource } from "../helpers/dataSourceEnum";
 
 interface stateType {
   bots: Bot[];
@@ -79,6 +82,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Ads = () => {
+  // Context for data source
+  const dataSourceContext = useContext(DataContext);
+  const source = dataSourceContext.dataSource;
+
   /**
    * State for number of entries displayed on each page
    */
@@ -183,7 +190,7 @@ const Ads = () => {
   useEffect(() => {
     setLoading(true);
     baseApi
-      .get("/google/ads", {
+      .get(`/${source}/ads`, {
         params: {
           offset: (page - 1) * limit,
           limit: limit,
@@ -201,7 +208,7 @@ const Ads = () => {
         setErrorBooleanForInput(false);
         setErrorMessage("");
       });
-  }, [page, limit, bots, tags, startDate, endDate, totalNumberOfAd]);
+  }, [page, limit, bots, tags, source, startDate, endDate, totalNumberOfAd]);
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -212,25 +219,25 @@ const Ads = () => {
       return;
     }
     setBotsLoading(true);
-    baseApi.get("/google/bots").then((res) => {
+    baseApi.get(`/${source}/bots`).then((res) => {
       setAllBots(res.data);
       setBotsLoading(false);
     });
-  }, [botsSelectOpen, allBots]);
+  }, [botsSelectOpen, allBots, source]);
 
   useEffect(() => {
     if (allTags.length) {
       return;
     }
     setTagsLoading(true);
-    baseApi.get("/google/tags").then((res) => {
+    baseApi.get(`/${source}/tags`).then((res) => {
       setAllTags(res.data);
       setTagsLoading(false);
     });
-  }, [allTags.length]);
+  }, [allTags.length, source]);
 
   const handleOnNewTagCreated = () => {
-    baseApi.get("/google/tags").then((res) => {
+    baseApi.get(`/${source}/tags`).then((res) => {
       setAllTags(res.data);
       setTagsLoading(false);
     });
@@ -265,7 +272,11 @@ const Ads = () => {
       >
         <h1>Ads</h1>
         <Fade in={true}>
-          <Grid container justify="space-between" style={{ marginBottom: 15 }}>
+          <Grid
+            container
+            justifyContent="space-between"
+            style={{ marginBottom: 15 }}
+          >
             <Button
               color="secondary"
               variant={filterDrawerOpen ? "outlined" : "contained"}
@@ -300,20 +311,24 @@ const Ads = () => {
             </div>
           </Grid>
         </Fade>
-        {loading
-          ? Array(3)
-              .fill(null)
-              .map((_, i) => <AdCardSkeleton key={i} />)
-          : ads.map((data, i) => {
-              return (
-                <AdCard
-                  ad={data}
-                  allTags={allTags}
-                  onNewTagCreated={handleOnNewTagCreated}
-                  key={i}
-                />
-              );
-            })}
+        {loading ? (
+          Array(3)
+            .fill(null)
+            .map((_, i) => <AdCardSkeleton key={i} />)
+        ) : ads.length === 0 ? (
+          <div>No results found</div>
+        ) : (
+          ads.map((data, i) => {
+            return (
+              <AdCard
+                ad={data}
+                allTags={allTags}
+                onNewTagCreated={handleOnNewTagCreated}
+                key={i}
+              />
+            );
+          })
+        )}
       </div>
       <Drawer
         className={classes.drawer}
