@@ -1,12 +1,3 @@
-// interface Ad {
-//   bot: string;
-//   dateTime: Date;
-//   file: string;
-//   headline: string;
-//   category: CategoryData[];
-//   seenOn: string;
-// }
-
 interface Ad {
   adLink: string;
   botId: string;

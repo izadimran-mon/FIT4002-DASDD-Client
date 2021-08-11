@@ -173,7 +173,7 @@ const Statistics = () => {
     <Paper className={classes.paper}>
       <Grid container spacing={3}>
         <Grid item xs={8}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} elevation={0}>
             <Box display="flex" justifyContent="flex-end" m={1} p={1}>
               <Box p={1}>
                 <MonthPicker onClickMonth={onClickMonth} date={selectedMonth} />
@@ -224,7 +224,7 @@ type AdStatRowProp = {
 const AdStatRow = (props: AdStatRowProp) => {
   return (
     <>
-      <Paper>
+      <Paper elevation={0} style={{ borderBottom: "1px solid lightgray" }}>
         <Typography variant="h6">{props.header}</Typography>
         <Typography variant="h4">
           {typeof props.content === "number"
