@@ -294,7 +294,7 @@ export default function EnhancedTable() {
   const [bots, setBots] = React.useState<Bot[]>([]);
 
   useEffect(() => {
-    baseApi.get("/bots").then((res) => {
+    baseApi.get("/google/bots").then((res) => {
       setBots(res.data);
     });
   }, []);
