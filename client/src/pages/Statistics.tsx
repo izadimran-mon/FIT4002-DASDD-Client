@@ -1,5 +1,5 @@
 import { Box, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "react-calendar/dist/Calendar.css";
 import {
   getAdCategoryStats,
@@ -13,6 +13,7 @@ import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
 import CategoryBotStatsChart from "../components/CategoryBotStatsChart";
 import MonthPicker from "../components/MonthPicker";
+import { DataContext } from "../App";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Statistics = () => {
+  const dataSourceContext = useContext(DataContext);
+  const source = dataSourceContext.dataSource;
+
   const classes = useStyles();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [botPoliticalAlignmentData, setBotPoliticalAlignmentData] = useState<
@@ -55,7 +59,7 @@ const Statistics = () => {
   const [adStatData, setAdStatData] = useState<any[]>([]);
 
   useEffect(() => {
-    getBotAlignmentStats().then((res) => {
+    getBotAlignmentStats(source).then((res) => {
       for (const e of res) {
         const data = e.data.map((element: any) => ({
           count: parseFloat(element.count),
@@ -79,7 +83,7 @@ const Statistics = () => {
       }
     });
 
-    getAdCategoryStats().then((res) => {
+    getAdCategoryStats(source).then((res) => {
       if (!res) return;
       const data = res.map((element: any) => ({
         count: parseFloat(element.count),
@@ -88,7 +92,7 @@ const Statistics = () => {
       setAdCategoryData(data);
     });
 
-    getAdStats().then((res) => {
+    getAdStats(source).then((res) => {
       if (!res) return;
       const data = [
         {
@@ -112,7 +116,7 @@ const Statistics = () => {
       setAdStatData(data);
     });
 
-    getCategoryBotStats().then((res) => {
+    getCategoryBotStats(source).then((res) => {
       if (!res) return;
       const data = res.map((element: any) => ({
         avgGender: parseFloat(element.avgGender),
@@ -124,7 +128,7 @@ const Statistics = () => {
   }, []);
 
   useEffect(() => {
-    getAdCountStats(selectedMonth.getTime()).then((res) => {
+    getAdCountStats(source, selectedMonth.getTime()).then((res) => {
       if (!res) return;
       const data = res.map((element: any) => ({
         count: parseFloat(element.count),

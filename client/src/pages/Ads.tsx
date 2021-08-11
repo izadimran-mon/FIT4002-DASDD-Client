@@ -34,7 +34,6 @@ import AdCard from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
 
 import { DataContext } from "../App";
-import { DataSource } from "../helpers/dataSourceEnum";
 
 interface stateType {
   bots: Bot[];

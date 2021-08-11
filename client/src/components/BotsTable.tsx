@@ -21,9 +21,10 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { baseApi } from "../api/api";
+import { DataContext } from "../App";
 
 interface Data {
   username: string;
@@ -285,6 +286,9 @@ const useStyles = makeStyles((theme: Theme) =>
  * Table displayed on Bots page
  */
 export default function EnhancedTable() {
+  const dataSourceContext = useContext(DataContext);
+  const source = dataSourceContext.dataSource;
+
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("adcount");
@@ -294,10 +298,10 @@ export default function EnhancedTable() {
   const [bots, setBots] = React.useState<Bot[]>([]);
 
   useEffect(() => {
-    baseApi.get("/google/bots").then((res) => {
+    baseApi.get(`/${source}/bots`).then((res) => {
       setBots(res.data);
     });
-  }, []);
+  }, [source]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -373,54 +377,68 @@ export default function EnhancedTable() {
               numSelected={selected.length}
             />
             <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
-              {stableSort(bots, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: Bot, index: number) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  const isItemSelected = isSelected(row);
+              {bots.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    align="center"
+                    style={{ fontWeight: "bold" }}
+                    colSpan={12}
+                  >
+                    No bots found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                stableSort(bots, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row: Bot, index: number) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    const isItemSelected = isSelected(row);
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={index}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="default"
-                        align="left"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={index}
+                        selected={isItemSelected}
                       >
-                        {row.username}
-                      </TableCell>
-                      <TableCell align="left">
-                        {row.fName + " " + row.lName}
-                      </TableCell>
-                      {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
-                      {/* <TableCell align='center'>{row.ranking}</TableCell> */}
-                      <TableCell align="left">
-                        {new Date(row.dob).toLocaleDateString("en-AU")}
-                      </TableCell>
-                      <TableCell align="left">{row.gender}</TableCell>
-                      <TableCell align="left">{row.password}</TableCell>
-                      <TableCell align="left">
-                        {row.locLat.toFixed(5) + ", " + row.locLong.toFixed(5)}
-                      </TableCell>
-                      <TableCell align="left">{row.type}</TableCell>
-                    </TableRow>
-                  );
-                })}
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={isItemSelected}
+                            inputProps={{ "aria-labelledby": labelId }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="default"
+                          align="left"
+                        >
+                          {row.username}
+                        </TableCell>
+                        <TableCell align="left">
+                          {row.fName + " " + row.lName}
+                        </TableCell>
+                        {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
+                        {/* <TableCell align='center'>{row.ranking}</TableCell> */}
+                        <TableCell align="left">
+                          {new Date(row.dob).toLocaleDateString("en-AU")}
+                        </TableCell>
+                        <TableCell align="left">{row.gender}</TableCell>
+                        <TableCell align="left">{row.password}</TableCell>
+                        <TableCell align="left">
+                          {row.locLat.toFixed(5) +
+                            ", " +
+                            row.locLong.toFixed(5)}
+                        </TableCell>
+                        <TableCell align="left">{row.type}</TableCell>
+                      </TableRow>
+                    );
+                  })
+              )}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
