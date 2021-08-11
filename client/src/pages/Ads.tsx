@@ -214,26 +214,20 @@ const Ads = () => {
   };
 
   useEffect(() => {
-    if (allBots.length) {
-      return;
-    }
     setBotsLoading(true);
     baseApi.get(`/${source}/bots`).then((res) => {
       setAllBots(res.data);
       setBotsLoading(false);
     });
-  }, [botsSelectOpen, allBots, source]);
+  }, [source]);
 
   useEffect(() => {
-    if (allTags.length) {
-      return;
-    }
     setTagsLoading(true);
     baseApi.get(`/${source}/tags`).then((res) => {
       setAllTags(res.data);
       setTagsLoading(false);
     });
-  }, [allTags.length, source]);
+  }, [source]);
 
   const handleOnNewTagCreated = () => {
     baseApi.get(`/${source}/tags`).then((res) => {

@@ -76,7 +76,7 @@ const Sidebar = () => {
               dataSourceContext.changeDataSource(e.target.value as DataSource);
             }}
             classes={{ select: "data-source-input" }}
-            variant="filled"
+            variant="outlined"
           >
             <MenuItem value={DataSource.Google}>Google</MenuItem>
             <MenuItem value={DataSource.Twitter}>Twitter</MenuItem>
