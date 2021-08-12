@@ -60,6 +60,11 @@ const Statistics = () => {
 
   useEffect(() => {
     getBotAlignmentStats(source).then((res) => {
+      if (!res || res.length === 0) {
+        setBotPoliticalAlignmentData([]);
+        setBotGenderAlignmentData([]);
+        return;
+      }
       for (const e of res) {
         const data = e.data.map((element: any) => ({
           count: parseFloat(element.count),
@@ -84,7 +89,10 @@ const Statistics = () => {
     });
 
     getAdCategoryStats(source).then((res) => {
-      if (!res) return;
+      if (!res) {
+        setAdCategoryData([]);
+        return;
+      }
       const data = res.map((element: any) => ({
         count: parseFloat(element.count),
         label: element.label,
@@ -105,7 +113,7 @@ const Statistics = () => {
         },
         {
           header: "Average ads per bot",
-          content: res.adPerBot,
+          content: res.adPerBot ?? "N/A",
         },
         {
           header: "Total scraping uptime",
@@ -117,7 +125,10 @@ const Statistics = () => {
     });
 
     getCategoryBotStats(source).then((res) => {
-      if (!res) return;
+      if (!res) {
+        setCategoryBotData([]);
+        return;
+      }
       const data = res.map((element: any) => ({
         avgGender: parseFloat(element.avgGender),
         avgPolitical: parseFloat(element.avgPolitical),
@@ -125,7 +136,7 @@ const Statistics = () => {
       }));
       setCategoryBotData(data);
     });
-  }, []);
+  }, [source]);
 
   useEffect(() => {
     getAdCountStats(source, selectedMonth.getTime()).then((res) => {
@@ -137,7 +148,7 @@ const Statistics = () => {
 
       setAdCountData(data);
     });
-  }, [selectedMonth]);
+  }, [selectedMonth, source]);
 
   const onClickMonth = (value: Date) => {
     console.log(value);
