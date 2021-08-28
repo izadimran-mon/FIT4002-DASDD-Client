@@ -49,7 +49,7 @@ const ImageDialog = (props: ImageDialogProps) => {
   return (
     <Dialog
       onClose={props.handleClose}
-      aria-labelledby="simple-dialog-title"
+      aria-labelledby='simple-dialog-title'
       open={props.open}
     >
       <DialogContent>
@@ -59,7 +59,7 @@ const ImageDialog = (props: ImageDialogProps) => {
             height: "100%",
           }}
           src={props.image}
-          alt="Ad screenshot full"
+          alt='Ad screenshot full'
         />
       </DialogContent>
     </Dialog>
@@ -67,17 +67,8 @@ const ImageDialog = (props: ImageDialogProps) => {
 };
 
 type AdCardProp = {
-  /**
-   * The ad to display the card for
-   */
   ad: Ad;
-  /**
-   * A list of all tags in the system
-   */
   allTags: Tag[];
-  /**
-   * A callback function to handle creating a new tag
-   */
   onNewTagCreated?: () => void;
 };
 
@@ -86,9 +77,6 @@ type AdCardProp = {
  */
 const AdCard = (props: AdCardProp) => {
   const { ad, allTags, onNewTagCreated } = props;
-  /**
-   * The state (open/closed) of the image (screenshot) popup dialog
-   */
   const [open, setOpen] = useState(false);
   /**
    * The state (open/closed) of the bot details popup dialog
@@ -126,31 +114,48 @@ const AdCard = (props: AdCardProp) => {
   };
 
   return (
-    <Card className="cardStyle">
-      <Grid container className="overallContainerStyle">
+    <Card className='cardStyle'>
+      <Grid container className='overallContainerStyle'>
         <Grid
           item
           xs={4}
           style={{
             maxHeight: 350,
             background: "#f7f7f7",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <CardActionArea
-            className="cardActionAreaStyle"
-            onClick={() => {
-              handleClickOpen();
-            }}
-          >
-            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
-          </CardActionArea>
+          {ad.image ? (
+            <CardActionArea
+              className='cardActionAreaStyle'
+              onClick={() => {
+                handleClickOpen();
+              }}
+            >
+              <img className='imageStyle' src={ad.image} alt='Ad screenshot' />
+            </CardActionArea>
+          ) : (
+            <Typography style={{ fontStyle: "italic", color: "#8d8d8d" }}>
+              <span
+                style={{
+                  border: "1px dashed #c9c9c9",
+                  padding: "5px 18px 5px 15px",
+                  borderRadius: 5,
+                }}
+              >
+                No screenshot scraped
+              </span>
+            </Typography>
+          )}
         </Grid>
         <Grid item xs={8}>
           <Grid
             container
             style={{ height: "100%", marginLeft: 15, width: "auto" }}
           >
-            <Grid container direction="row" className="adLinkContainerStyle">
+            <Grid container direction='row' className='adLinkContainerStyle'>
               <Grid item xs={6}>
                 {ad.headline ? (
                   <div>
@@ -160,11 +165,11 @@ const AdCard = (props: AdCardProp) => {
                       }
                     >
                       <Button
-                        variant="outlined"
-                        color="primary"
+                        variant='outlined'
+                        color='primary'
                         href={`https://${ad.headline} `}
-                        target="_blank"
-                        rel="noreferrer"
+                        target='_blank'
+                        rel='noreferrer'
                       >
                         Visit Ad Link
                       </Button>
@@ -200,7 +205,7 @@ const AdCard = (props: AdCardProp) => {
                   <Typography style={{ marginTop: 5 }}>
                     <span style={{ fontWeight: "bold" }}>Seen bot: </span>
                     <Button
-                      variant="contained"
+                      variant='contained'
                       style={{
                         background: "#167070",
                         marginLeft: 10,
@@ -232,31 +237,37 @@ const AdCard = (props: AdCardProp) => {
                         </Typography>
                       </Grid>
                       <Grid item>
-                        <Tooltip title={<Typography>{ad.seenOn}</Typography>}>
-                          <Button
-                            variant="contained"
-                            style={{
-                              background: "#167070",
-                              marginLeft: 10,
-                              padding: 2,
-                              paddingLeft: 10,
-                              paddingRight: 10,
-                            }}
-                            href={ad.seenOn}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <Typography
+                        {processLink(ad.seenOn)?.length ? (
+                          <Tooltip title={<Typography>{ad.seenOn}</Typography>}>
+                            <Button
+                              variant='contained'
                               style={{
-                                color: "#fff",
-                                textTransform: "lowercase",
-                                fontSize: 14,
+                                background: "#167070",
+                                marginLeft: 10,
+                                padding: 2,
+                                paddingLeft: 10,
+                                paddingRight: 10,
                               }}
+                              href={ad.seenOn}
+                              target='_blank'
+                              rel='noreferrer'
                             >
-                              {processLink(ad.seenOn)}
-                            </Typography>
-                          </Button>
-                        </Tooltip>
+                              <Typography
+                                style={{
+                                  color: "#fff",
+                                  textTransform: "lowercase",
+                                  fontSize: 14,
+                                }}
+                              >
+                                {processLink(ad.seenOn)}
+                              </Typography>
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <Typography style={{ marginLeft: 10 }}>
+                            Not Applicable
+                          </Typography>
+                        )}
                       </Grid>
                     </Grid>
                   </div>
@@ -278,7 +289,7 @@ const AdCard = (props: AdCardProp) => {
                 )}
               </Grid>
             </Grid>
-            <Grid container direction="row" style={{ height: "58%" }}>
+            <Grid container direction='row' style={{ height: "58%" }}>
               <Grid
                 item
                 xs={12}

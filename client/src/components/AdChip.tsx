@@ -26,17 +26,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type AdChipProp = {
-  /**
-   * The ad represented by the containing AdCard
-   */
   ad: Ad;
-  /**
-   * A list of all tags in the system
-   */
   allTags: Tag[];
-  /**
-   * Callback function for handling the creation of a new tag
-   */
   onNewTagCreated?: () => void;
 };
 
@@ -46,9 +37,6 @@ type AdChipProp = {
 const AdChip = (props: AdChipProp) => {
   const classes = useStyles();
   const { allTags, onNewTagCreated } = props;
-  /**
-   * State for the tags already applied to the ad
-   */
   const [adOwnTagsId, setAdOwnTags] = useState<number[]>([]);
   /**
    * State for the name of the tags
@@ -136,24 +124,26 @@ const AdChip = (props: AdChipProp) => {
             handleClick(category.id, adOwnTagsId.includes(category.id));
           }}
           key={i}
+          data-testid={`chip-${i}`}
+          role='tag'
         />
       ))}
-      <Chip variant={"outlined"} label="+" onClick={handleClickOpen} />
+      <Chip variant={"outlined"} label='+' onClick={handleClickOpen} />
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
+        aria-labelledby='form-dialog-title'
       >
-        <DialogTitle id="form-dialog-title">Add tags</DialogTitle>
+        <DialogTitle id='form-dialog-title'>Add tags</DialogTitle>
         <DialogContent>
           <DialogContentText>
             To add tag, please input the tag name and click submit.
           </DialogContentText>
           <TextField
             autoFocus
-            margin="dense"
-            id="name"
-            label="Tag name"
+            margin='dense'
+            id='name'
+            label='Tag name'
             fullWidth
             value={tagInputName}
             onChange={handleTagNameChange}
@@ -164,10 +154,10 @@ const AdChip = (props: AdChipProp) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose} color='primary'>
             Cancel
           </Button>
-          <Button onClick={handleAddTag} color="primary">
+          <Button onClick={handleAddTag} color='primary'>
             Add
           </Button>
         </DialogActions>
