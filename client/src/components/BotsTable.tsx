@@ -25,6 +25,7 @@ import React, { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { baseApi } from "../api/api";
 import { DataContext } from "../App";
+import { DataSource } from "../helpers/dataSourceEnum";
 
 interface Data {
   username: string;
@@ -77,49 +78,70 @@ function stableSort<T>(array: any, comparator: (a: any, b: any) => number) {
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: string;
   label: string;
   numeric: boolean;
 }
 
-const headCells: HeadCell[] = [
-  {
-    id: "username",
-    numeric: false,
-    disablePadding: true,
-    label: "Username",
-  },
-  { id: "name", numeric: false, disablePadding: false, label: "Name" },
-  /* { id: "adcount", numeric: true, disablePadding: false, label: "Ad Count" }, */
-  /*  {
+const getHeadCells = (source: DataSource) => {
+  if (source === DataSource.Google) {
+    return [
+      {
+        id: "username",
+        numeric: false,
+        disablePadding: true,
+        label: "Username",
+      },
+      { id: "name", numeric: false, disablePadding: false, label: "Name" },
+      /* { id: "adcount", numeric: true, disablePadding: false, label: "Ad Count" }, */
+      /*  {
     id: "ranking",
     numeric: true,
     disablePadding: false,
     label: "Political Ranking",
   }, */
-  { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
-  { id: "gender", numeric: false, disablePadding: false, label: "Gender" },
-  { id: "password", numeric: false, disablePadding: false, label: "Password" },
-  {
-    id: "location",
-    numeric: true,
-    disablePadding: false,
-    label: "Location",
-  },
-  { id: "type", numeric: false, disablePadding: false, label: "Type" },
-];
+      { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
+      { id: "gender", numeric: false, disablePadding: false, label: "Gender" },
+      {
+        id: "password",
+        numeric: false,
+        disablePadding: false,
+        label: "Password",
+      },
+      // {
+      //   id: "location",
+      //   numeric: true,
+      //   disablePadding: false,
+      //   label: "Location",
+      // },
+      { id: "type", numeric: false, disablePadding: false, label: "Type" },
+    ];
+  } else
+    return [
+      {
+        id: "username",
+        numeric: false,
+        disablePadding: true,
+        label: "Username",
+      },
+      {
+        id: "politicalRanking",
+        numeric: true,
+        disablePadding: false,
+        label: "Political Ranking",
+      },
+    ];
+};
 
 interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   numSelected: number;
+  headCells: HeadCell[];
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -131,9 +153,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     rowCount,
     orderBy,
     onRequestSort,
+    headCells,
   } = props;
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -291,11 +314,11 @@ export default function EnhancedTable() {
 
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Data>("adcount");
+  const [orderBy, setOrderBy] = React.useState<string>("adcount");
   const [selected, setSelected] = React.useState<Bot[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [bots, setBots] = React.useState<Bot[]>([]);
+  const [bots, setBots] = React.useState<GoogleBot[] | TwitterBot[]>([]);
 
   useEffect(() => {
     baseApi.get(`/${source}/bots`).then((res) => {
@@ -305,7 +328,7 @@ export default function EnhancedTable() {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: string
   ) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -356,6 +379,90 @@ export default function EnhancedTable() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
+  const createGoogleTableRow = (bots: GoogleBot[]) =>
+    stableSort(bots, getComparator(order, orderBy))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((row: GoogleBot, index: number) => {
+        const labelId = `enhanced-table-checkbox-${index}`;
+        const isItemSelected = isSelected(row);
+        return (
+          <TableRow
+            hover
+            onClick={(event) => handleClick(event, row)}
+            role="checkbox"
+            aria-checked={isItemSelected}
+            tabIndex={-1}
+            key={index}
+            selected={isItemSelected}
+          >
+            <TableCell padding="checkbox">
+              <Checkbox
+                checked={isItemSelected}
+                inputProps={{ "aria-labelledby": labelId }}
+              />
+            </TableCell>
+            <TableCell
+              component="th"
+              id={labelId}
+              scope="row"
+              padding="default"
+              align="left"
+            >
+              {row.username}
+            </TableCell>
+            <TableCell align="left">{row.fName + " " + row.lName}</TableCell>
+            {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
+            {/* <TableCell align='center'>{row.ranking}</TableCell> */}
+            <TableCell align="left">
+              {new Date(row.dob).toLocaleDateString("en-AU")}
+            </TableCell>
+            <TableCell align="left">{row.gender}</TableCell>
+            <TableCell align="left">{row.password}</TableCell>
+            {/* <TableCell align="left">
+              {row.locLat.toFixed(5) + ", " + row.locLong.toFixed(5)}
+            </TableCell> */}
+            <TableCell align="left">{row.type}</TableCell>
+          </TableRow>
+        );
+      });
+
+  const createTwitterTableRow = (bots: TwitterBot[]) =>
+    stableSort(bots, getComparator(order, orderBy))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((row: TwitterBot, index: number) => {
+        const labelId = `enhanced-table-checkbox-${index}`;
+        const isItemSelected = isSelected(row);
+        return (
+          <TableRow
+            hover
+            onClick={(event) => handleClick(event, row)}
+            role="checkbox"
+            aria-checked={isItemSelected}
+            tabIndex={-1}
+            key={index}
+            selected={isItemSelected}
+          >
+            <TableCell padding="checkbox">
+              <Checkbox
+                checked={isItemSelected}
+                inputProps={{ "aria-labelledby": labelId }}
+              />
+            </TableCell>
+            <TableCell
+              component="th"
+              id={labelId}
+              scope="row"
+              padding="default"
+              align="left"
+            >
+              {row.username}
+            </TableCell>
+
+            <TableCell align="left">{row.politicalRanking}</TableCell>
+          </TableRow>
+        );
+      });
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -375,6 +482,7 @@ export default function EnhancedTable() {
               rowCount={bots.length}
               onSelectAllClick={handleSelectAllClick}
               numSelected={selected.length}
+              headCells={getHeadCells(source)}
             />
             <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
               {bots.length === 0 ? (
@@ -387,57 +495,10 @@ export default function EnhancedTable() {
                     No bots found
                   </TableCell>
                 </TableRow>
+              ) : source === DataSource.Google ? (
+                createGoogleTableRow(bots as GoogleBot[])
               ) : (
-                stableSort(bots, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row: Bot, index: number) => {
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    const isItemSelected = isSelected(row);
-
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={index}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="default"
-                          align="left"
-                        >
-                          {row.username}
-                        </TableCell>
-                        <TableCell align="left">
-                          {row.fName + " " + row.lName}
-                        </TableCell>
-                        {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
-                        {/* <TableCell align='center'>{row.ranking}</TableCell> */}
-                        <TableCell align="left">
-                          {new Date(row.dob).toLocaleDateString("en-AU")}
-                        </TableCell>
-                        <TableCell align="left">{row.gender}</TableCell>
-                        <TableCell align="left">{row.password}</TableCell>
-                        <TableCell align="left">
-                          {row.locLat.toFixed(5) +
-                            ", " +
-                            row.locLong.toFixed(5)}
-                        </TableCell>
-                        <TableCell align="left">{row.type}</TableCell>
-                      </TableRow>
-                    );
-                  })
+                createTwitterTableRow(bots as TwitterBot[])
               )}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>

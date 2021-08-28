@@ -66,11 +66,26 @@ const ImageDialog = (props: ImageDialogProps) => {
   );
 };
 
-type AdCardProp = {
+type GoogleAdCardProp = {
   /**
    * The ad to display the card for
    */
-  ad: Ad;
+  ad: GoogleAd;
+  /**
+   * A list of all tags in the system
+   */
+  allTags: Tag[];
+  /**
+   * A callback function to handle creating a new tag
+   */
+  onNewTagCreated?: () => void;
+};
+
+type TwitterAdCardProp = {
+  /**
+   * The ad to display the card for
+   */
+  ad: TwitterAd;
   /**
    * A list of all tags in the system
    */
@@ -82,9 +97,9 @@ type AdCardProp = {
 };
 
 /**
- * An individual 'card' displayed for each ad on the Ad page (Ad.tsx)
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Google Ads)
  */
-const AdCard = (props: AdCardProp) => {
+export const GoogleAdCard = (props: GoogleAdCardProp) => {
   const { ad, allTags, onNewTagCreated } = props;
   /**
    * The state (open/closed) of the image (screenshot) popup dialog
@@ -323,4 +338,198 @@ const AdCard = (props: AdCardProp) => {
   );
 };
 
-export default AdCard;
+/**
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Twitter Ads)
+ */
+export const TwitterAdCard = (props: TwitterAdCardProp) => {
+  const { ad, allTags, onNewTagCreated } = props;
+  /**
+   * The state (open/closed) of the image (screenshot) popup dialog
+   */
+  const [open, setOpen] = useState(false);
+  /**
+   * The state (open/closed) of the bot details popup dialog
+   */
+  const [openDetails, setOpenDetails] = React.useState(false);
+  /**
+   * The state (open/closed) of the bot search terms popup dialog
+   */
+  const [openTerms, setOpenTerms] = React.useState(false);
+  /**
+   * State for initialising search terms
+   */
+  const [terms, setTerms] = React.useState<string[]>([]);
+  /**
+   * State for initialising the title for search terms
+   */
+  const [title, setTitle] = React.useState("");
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleCloseDetails = () => {
+    setOpenDetails(false);
+  };
+  const handleCloseTerms = () => {
+    setOpenTerms(false);
+  };
+  const displayTerms = (terms: string[], title: string) => {
+    setTerms(terms);
+    setTitle(title);
+    setOpenTerms(true);
+  };
+
+  return (
+    <Card className="cardStyle">
+      <Grid container className="overallContainerStyle">
+        <Grid
+          item
+          xs={4}
+          style={{
+            maxHeight: 350,
+            background: "#f7f7f7",
+          }}
+        >
+          <CardActionArea
+            className="cardActionAreaStyle"
+            onClick={() => {
+              handleClickOpen();
+            }}
+          >
+            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
+          </CardActionArea>
+        </Grid>
+        <Grid item xs={8}>
+          <Grid
+            container
+            style={{ height: "100%", marginLeft: 15, width: "auto" }}
+          >
+            <Grid container direction="row" className="adLinkContainerStyle">
+              <Grid item xs={6}>
+                {ad.adLink ? (
+                  <div>
+                    <Tooltip
+                      title={<Typography>{`https://${ad.adLink}`}</Typography>}
+                    >
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        href={`https://${ad.adLink} `}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Visit Ad Link
+                      </Button>
+                    </Tooltip>
+                  </div>
+                ) : (
+                  <Typography style={{ fontSize: 18, fontWeight: 600 }}>
+                    No Link Available
+                  </Typography>
+                )}
+              </Grid>
+              <Grid item xs={6}>
+                <Typography style={{ marginTop: 5 }}>
+                  <span style={{ fontWeight: "bold" }}>Date: </span>
+                  {moment(ad.createdAt).format("YYYY-MMM-D dddd h:mma")}
+                </Typography>
+                {/* <Tooltip
+                  title={
+                    <>
+                      <Typography>
+                        Political ranking: {ad.bot.politicalRanking}
+                      </Typography>
+                      <Typography>
+                        Other terms: {ad.bot.otherTermsCategory - 1}
+                      </Typography>
+                      <Typography>Gender: {ad.bot.gender}</Typography>
+                      <Typography>
+                        DOB: {moment(ad.bot.dob).format("YYYY-MMM-D")}
+                      </Typography>
+                    </>
+                  }
+                >
+                  <Typography style={{ marginTop: 5 }}>
+                    <span style={{ fontWeight: "bold" }}>Seen bot: </span>
+                    <Button
+                      variant="contained"
+                      style={{
+                        background: "#167070",
+                        marginLeft: 10,
+                        padding: 2,
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                      }}
+                      onClick={() => {
+                        setOpenDetails(true);
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          color: "#fff",
+                          fontSize: 14,
+                        }}
+                      >
+                        {ad.bot.username}
+                      </Typography>
+                    </Button>
+                  </Typography>
+                </Tooltip> */}
+
+                <div>
+                  <Grid container style={{ marginTop: 5 }}>
+                    <Grid item>
+                      <Typography style={{ fontWeight: "bold" }}>
+                        Promoter handle:
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography style={{ marginLeft: 10 }}>
+                        {ad.promoterHandle}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </div>
+              </Grid>
+            </Grid>
+            <Grid container direction="row" style={{ height: "58%" }}>
+              <Grid
+                item
+                xs={12}
+                style={{
+                  border: "1px solid #b2b2b2",
+                  borderRadius: 10,
+                  padding: 10,
+                }}
+              >
+                <div>
+                  <AdChip
+                    ad={ad}
+                    allTags={allTags}
+                    onNewTagCreated={onNewTagCreated}
+                  />
+                </div>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
+      {/* <BotDetails
+        ranking={ad.bot.politicalRanking}
+        open={openDetails}
+        handleClose={handleCloseDetails}
+        displayTerms={displayTerms}
+      /> */}
+      <SearchTerms
+        open={openTerms}
+        handleClose={handleCloseTerms}
+        terms={terms}
+        title={title}
+      />
+    </Card>
+  );
+};

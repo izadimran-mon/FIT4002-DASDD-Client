@@ -7,7 +7,8 @@ import "./index.css";
 import Routes from "./routes";
 
 export const DataContext = React.createContext({
-  dataSource: localStorage.getItem("dataSource") ?? DataSource.Google,
+  dataSource:
+    (localStorage.getItem("dataSource") as DataSource) ?? DataSource.Google,
   changeDataSource: (d: DataSource) => {},
 });
 
@@ -32,7 +33,7 @@ export const App = () => {
   };
 
   const [dataSource, setDataSource] = useState(
-    localStorage.getItem("dataSource") ?? DataSource.Google
+    (localStorage.getItem("dataSource") as DataSource) ?? DataSource.Google
   );
 
   return (

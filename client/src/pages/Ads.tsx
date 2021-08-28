@@ -30,10 +30,11 @@ import clsx from "clsx";
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { baseApi } from "../api/api";
-import AdCard from "../components/AdCard";
+import { GoogleAdCard, TwitterAdCard } from "../components/AdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
 
 import { DataContext } from "../App";
+import { DataSource } from "../helpers/dataSourceEnum";
 
 interface stateType {
   bots: Bot[];
@@ -312,9 +313,16 @@ const Ads = () => {
           <div>No results found</div>
         ) : (
           ads.map((data, i) => {
-            return (
-              <AdCard
-                ad={data}
+            return source === DataSource.Google ? (
+              <GoogleAdCard
+                ad={data as GoogleAd}
+                allTags={allTags}
+                onNewTagCreated={handleOnNewTagCreated}
+                key={i}
+              />
+            ) : (
+              <TwitterAdCard
+                ad={data as TwitterAd}
                 allTags={allTags}
                 onNewTagCreated={handleOnNewTagCreated}
                 key={i}
