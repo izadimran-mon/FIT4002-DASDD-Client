@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawerPaper: {
       width: drawerWidth,
+      boxShadow: "none",
     },
     drawerHeader: {
       display: "flex",
@@ -86,6 +87,10 @@ const Ads = () => {
   const dataSourceContext = useContext(DataContext);
   const source = dataSourceContext.dataSource;
 
+  /**
+   * Source (Google/Twitter) for ad data
+   */
+  const [adSource, setAdSource] = React.useState<DataSource>(source);
   /**
    * State for number of entries displayed on each page
    */
@@ -188,25 +193,29 @@ const Ads = () => {
   };
 
   useEffect(() => {
+    let params = {
+      offset: (page - 1) * limit,
+      limit: limit,
+      bots: bots.map((a) => a.id),
+      tag: tags.map((a) => a.name),
+      startDate: startDate?.getTime(),
+      endDate: endDate?.getTime(),
+      groupUnique: source === DataSource.Twitter,
+    };
+
     setLoading(true);
     baseApi
       .get(`/${source}/ads`, {
-        params: {
-          offset: (page - 1) * limit,
-          limit: limit,
-          bots: bots.map((a) => a.id),
-          tag: tags.map((a) => a.name),
-          startDate: startDate?.getTime(),
-          endDate: endDate?.getTime(),
-        },
+        params,
       })
       .then((res: any) => {
+        setAdSource(source);
         setAds(res.data.records);
         setTotalNumberOfAd(res.data.metadata.total_count);
         setPageNumber(Math.ceil(totalNumberOfAd / limit));
-        setLoading(false);
         setErrorBooleanForInput(false);
         setErrorMessage("");
+        setLoading(false);
       });
   }, [page, limit, bots, tags, source, startDate, endDate, totalNumberOfAd]);
 
@@ -245,7 +254,6 @@ const Ads = () => {
         parseInt(e.target.value) >= 1 &&
         parseInt(e.target.value) <= pageNumber
       ) {
-        console.log(e.target.value);
         localStorage.setItem("adsPage", JSON.stringify(e.target.value));
         setPage(parseInt(e.target.value));
         setErrorBooleanForInput(false);
@@ -256,6 +264,211 @@ const Ads = () => {
       }
     }
   };
+
+  const LoadSkeleton = () => (
+    <>
+      {Array(3)
+        .fill(null)
+        .map((_, i) => (
+          <AdCardSkeleton key={i} />
+        ))}
+    </>
+  );
+
+  const FilterDrawer = () => (
+    <Drawer
+      className={classes.drawer}
+      variant="persistent"
+      anchor="right"
+      open={filterDrawerOpen}
+      classes={{
+        paper: classes.drawerPaper,
+      }}
+    >
+      <div className={classes.drawerHeader}>
+        <IconButton onClick={handleDrawerToggle}>
+          <ChevronRightIcon />
+        </IconButton>
+        <span>
+          <Typography variant="h6" style={{ fontWeight: "bold" }}>
+            Filters
+          </Typography>
+        </span>
+      </div>
+      <Divider />
+      <Accordion square>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Bots</Typography>
+        </AccordionSummary>
+        <AccordionDetails style={{ display: "block" }}>
+          <Autocomplete
+            multiple
+            id="tags-select"
+            open={botsSelectOpen}
+            onOpen={() => {
+              setBotsSelectOpen(true);
+            }}
+            onClose={() => {
+              setBotsSelectOpen(false);
+            }}
+            onChange={(event: any, newValue: Bot[] | null) => {
+              if (newValue) setBots(newValue);
+            }}
+            filterSelectedOptions
+            getOptionSelected={(option, value) => option.id === value.id}
+            getOptionLabel={(option) => option.username}
+            options={allBots}
+            value={bots}
+            inputValue={botsInputValue}
+            onInputChange={(_, newInputValue) => {
+              setBotsInputValue(newInputValue);
+            }}
+            loading={botsLoading}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Selected bots"
+                variant="outlined"
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <React.Fragment>
+                      {loading ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </React.Fragment>
+                  ),
+                }}
+              />
+            )}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion square>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Tags</Typography>
+        </AccordionSummary>
+        <AccordionDetails style={{ display: "block" }}>
+          <Autocomplete
+            multiple
+            id="tags-select"
+            open={tagsSelectOpen}
+            onOpen={() => {
+              setTagsSelectOpen(true);
+            }}
+            onClose={() => {
+              setTagsSelectOpen(false);
+            }}
+            onChange={(event: any, newValue: Tag[] | null) => {
+              if (newValue) setTags(newValue);
+            }}
+            filterSelectedOptions
+            getOptionSelected={(option, value) => option.id === value.id}
+            getOptionLabel={(option) => option.name}
+            options={allTags}
+            value={tags}
+            inputValue={tagsInputValue}
+            onInputChange={(_, newInputValue) => {
+              setTagsInputValue(newInputValue);
+            }}
+            loading={tagsLoading}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Selected tags"
+                variant="outlined"
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <React.Fragment>
+                      {loading ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </React.Fragment>
+                  ),
+                }}
+              />
+            )}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion square>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Date</Typography>
+        </AccordionSummary>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Grid container justify="space-around">
+            <KeyboardDatePicker
+              style={{ marginLeft: 30, marginRight: 30 }}
+              disableToolbar
+              variant="inline"
+              format="dd/MM/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              disableFuture={true}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => setStartDate(null)}>
+                    <ClearIcon />
+                  </IconButton>
+                ),
+              }}
+              InputAdornmentProps={{
+                position: "start",
+              }}
+              label="Start date"
+              value={startDate}
+              maxDate={endDate ? endDate : new Date()}
+              onChange={handleStartDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+            <KeyboardDatePicker
+              style={{ marginLeft: 30, marginRight: 30 }}
+              disableToolbar
+              variant="inline"
+              format="dd/MM/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              disableFuture={true}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => setEndDate(null)}>
+                    <ClearIcon />
+                  </IconButton>
+                ),
+              }}
+              InputAdornmentProps={{
+                position: "start",
+              }}
+              minDate={startDate ? startDate : new Date("1900-01-01")}
+              label="End date"
+              value={endDate}
+              onChange={handleEndDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+          </Grid>
+        </MuiPickersUtilsProvider>
+      </Accordion>
+    </Drawer>
+  );
 
   return (
     <div id="main">
@@ -306,14 +519,12 @@ const Ads = () => {
           </Grid>
         </Fade>
         {loading ? (
-          Array(3)
-            .fill(null)
-            .map((_, i) => <AdCardSkeleton key={i} />)
+          <LoadSkeleton />
         ) : ads.length === 0 ? (
           <div>No results found</div>
         ) : (
           ads.map((data, i) => {
-            return source === DataSource.Google ? (
+            return adSource === DataSource.Google ? (
               <GoogleAdCard
                 ad={data as GoogleAd}
                 allTags={allTags}
@@ -331,198 +542,7 @@ const Ads = () => {
           })
         )}
       </div>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="right"
-        open={filterDrawerOpen}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerToggle}>
-            <ChevronRightIcon />
-          </IconButton>
-          <span>
-            <Typography variant="h6" style={{ fontWeight: "bold" }}>
-              Filters
-            </Typography>
-          </span>
-        </div>
-        <Divider />
-        <Accordion square>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Bots</Typography>
-          </AccordionSummary>
-          <AccordionDetails style={{ display: "block" }}>
-            <Autocomplete
-              multiple
-              id="tags-select"
-              open={botsSelectOpen}
-              onOpen={() => {
-                setBotsSelectOpen(true);
-              }}
-              onClose={() => {
-                setBotsSelectOpen(false);
-              }}
-              onChange={(event: any, newValue: Bot[] | null) => {
-                if (newValue) setBots(newValue);
-              }}
-              filterSelectedOptions
-              getOptionSelected={(option, value) => option.id === value.id}
-              getOptionLabel={(option) => option.username}
-              options={allBots}
-              value={bots}
-              inputValue={botsInputValue}
-              onInputChange={(_, newInputValue) => {
-                setBotsInputValue(newInputValue);
-              }}
-              loading={botsLoading}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Selected bots"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <React.Fragment>
-                        {loading ? (
-                          <CircularProgress color="inherit" size={20} />
-                        ) : null}
-                        {params.InputProps.endAdornment}
-                      </React.Fragment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion square>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Tags</Typography>
-          </AccordionSummary>
-          <AccordionDetails style={{ display: "block" }}>
-            <Autocomplete
-              multiple
-              id="tags-select"
-              open={tagsSelectOpen}
-              onOpen={() => {
-                setTagsSelectOpen(true);
-              }}
-              onClose={() => {
-                setTagsSelectOpen(false);
-              }}
-              onChange={(event: any, newValue: Tag[] | null) => {
-                if (newValue) setTags(newValue);
-              }}
-              filterSelectedOptions
-              getOptionSelected={(option, value) => option.id === value.id}
-              getOptionLabel={(option) => option.name}
-              options={allTags}
-              value={tags}
-              inputValue={tagsInputValue}
-              onInputChange={(_, newInputValue) => {
-                setTagsInputValue(newInputValue);
-              }}
-              loading={tagsLoading}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Selected tags"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <React.Fragment>
-                        {loading ? (
-                          <CircularProgress color="inherit" size={20} />
-                        ) : null}
-                        {params.InputProps.endAdornment}
-                      </React.Fragment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion square>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Date</Typography>
-          </AccordionSummary>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Grid container justify="space-around">
-              <KeyboardDatePicker
-                style={{ marginLeft: 30, marginRight: 30 }}
-                disableToolbar
-                variant="inline"
-                format="dd/MM/yyyy"
-                margin="normal"
-                id="date-picker-inline"
-                disableFuture={true}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton onClick={() => setStartDate(null)}>
-                      <ClearIcon />
-                    </IconButton>
-                  ),
-                }}
-                InputAdornmentProps={{
-                  position: "start",
-                }}
-                label="Start date"
-                value={startDate}
-                maxDate={endDate ? endDate : new Date()}
-                onChange={handleStartDateChange}
-                KeyboardButtonProps={{
-                  "aria-label": "change date",
-                }}
-              />
-              <KeyboardDatePicker
-                style={{ marginLeft: 30, marginRight: 30 }}
-                disableToolbar
-                variant="inline"
-                format="dd/MM/yyyy"
-                margin="normal"
-                id="date-picker-inline"
-                disableFuture={true}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton onClick={() => setEndDate(null)}>
-                      <ClearIcon />
-                    </IconButton>
-                  ),
-                }}
-                InputAdornmentProps={{
-                  position: "start",
-                }}
-                minDate={startDate ? startDate : new Date("1900-01-01")}
-                label="End date"
-                value={endDate}
-                onChange={handleEndDateChange}
-                KeyboardButtonProps={{
-                  "aria-label": "change date",
-                }}
-              />
-            </Grid>
-          </MuiPickersUtilsProvider>
-        </Accordion>
-      </Drawer>
+      <FilterDrawer />
     </div>
   );
 };
