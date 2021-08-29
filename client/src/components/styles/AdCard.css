@@ -24,8 +24,19 @@
   width: auto;
 }
 
-.adLinkContainerStyle {
-  /* height: 42%; */
+.content {
+  font-size: 18px;
+  font-weight: 600;
+  overflow: hidden;
+  line-height: 1.5rem;
+  max-height: 4.5rem;
+  -webkit-box-orient: vertical;
+  display: block;
+  display: -webkit-box;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  margin: 10px 40px 10px 10px;
 }
 
 .adFontStyle {

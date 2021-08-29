@@ -2,20 +2,17 @@ import {
   Button,
   Card,
   CardActionArea,
-  Dialog,
-  DialogContent,
   Grid,
   Typography,
 } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AdChip from "./AdChip";
 import { BotDetails, TwitterBotDetails } from "./BotDetails";
+import ImageDialog from "./ImageDialog";
 import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
-import ClampLines from "react-clamp-lines";
-import ImageDialog from "./ImageDialog";
 
 /**
  * Extracts the domain of a URL from the link.
@@ -315,7 +312,6 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
  * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Twitter Ads)
  */
 export const TwitterAdCard = (props: TwitterAdCardProp) => {
-  console.log(props);
   const { ad, allTags, onNewTagCreated } = props;
   /**
    * The state (open/closed) of the image (screenshot) popup dialog
@@ -375,11 +371,11 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
   const handleCloseTerms = () => {
     setOpenTerms(false);
   };
-  const displayTerms = (terms: string[], title: string) => {
-    setTerms(terms);
-    setTitle(title);
-    setOpenTerms(true);
-  };
+  // const displayTerms = (terms: string[], title: string) => {
+  //   setTerms(terms);
+  //   setTitle(title);
+  //   setOpenTerms(true);
+  // };
 
   return (
     <Card className="cardStyle">
@@ -417,64 +413,54 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
               xs={12}
             >
               <Grid item xs={6}>
-                <div style={{ padding: 10 }}>
+                <div>
                   {ad.content && (
-                    <div style={{ padding: "0 20px 20px 0" }}>
-                      <Typography
-                        style={{
-                          fontSize: 18,
-                          fontWeight: 600,
-                        }}
-                      >
-                        <ClampLines
-                          text={ad.content}
-                          lines={3}
-                          id={"content-" + ad.id}
-                          buttons={false}
-                        />
-                      </Typography>
+                    <div className="content" style={{ overflow: "hidden" }}>
+                      {ad.content}
                     </div>
                   )}
-                  {ad.tweetLink && (
-                    <Tooltip
-                      title={
-                        <Typography>{`https://${ad.tweetLink}`}</Typography>
-                      }
-                    >
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        href={`https://${ad.tweetLink} `}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          marginRight: 20,
-                        }}
+                  <div style={{ padding: "20px 0 10px 10px" }}>
+                    {ad.tweetLink && (
+                      <Tooltip
+                        title={
+                          <Typography>{`https://${ad.tweetLink}`}</Typography>
+                        }
                       >
-                        Tweet Link
-                      </Button>
-                    </Tooltip>
-                  )}
-                  {ad.officialLink && (
-                    <Tooltip
-                      title={
-                        <Typography>{`https://${ad.officialLink}`}</Typography>
-                      }
-                    >
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        href={`https://${ad.officialLink} `}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          marginRight: 20,
-                        }}
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          href={`https://${ad.tweetLink} `}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            marginRight: 20,
+                          }}
+                        >
+                          Tweet Link
+                        </Button>
+                      </Tooltip>
+                    )}
+                    {ad.officialLink && (
+                      <Tooltip
+                        title={
+                          <Typography>{`https://${ad.officialLink}`}</Typography>
+                        }
                       >
-                        Ad Link
-                      </Button>
-                    </Tooltip>
-                  )}
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          href={`https://${ad.officialLink} `}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            marginRight: 20,
+                          }}
+                        >
+                          Ad Link
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </div>
                 </div>
               </Grid>
               <Grid item xs={6}>
@@ -490,9 +476,10 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
                     </Typography>
                   </div>
                   <div>
-                    {uniqueBots.map((bot) => {
+                    {uniqueBots.map((bot, i) => {
                       return (
                         <Tooltip
+                          key={i}
                           title={
                             <>
                               <Typography>

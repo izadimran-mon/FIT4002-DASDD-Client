@@ -14,6 +14,7 @@ import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
 import CategoryBotStatsChart from "../components/CategoryBotStatsChart";
 import MonthPicker from "../components/MonthPicker";
 import { DataContext } from "../App";
+import { DataSource } from "../helpers/dataSourceEnum";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -102,24 +103,48 @@ const Statistics = () => {
 
     getAdStats(source).then((res) => {
       if (!res) return;
-      const data = [
-        {
-          header: "Total",
-          content: res.adTotal,
-        },
-        {
-          header: "Tagged",
-          content: res.adTagged,
-        },
-        {
-          header: "Average ads per bot",
-          content: res.adPerBot ?? "N/A",
-        },
-        {
-          header: "Total scraping uptime",
-          content: res.uptime ? res.uptime : "N/A",
-        },
-      ];
+      const data =
+        source === DataSource.Google
+          ? [
+              {
+                header: "Total",
+                content: res.adTotal,
+              },
+              {
+                header: "Tagged",
+                content: res.adTagged,
+              },
+              {
+                header: "Average ads per bot",
+                content: res.adPerBot ?? "N/A",
+              },
+              {
+                header: "Total scraping uptime",
+                content: res.uptime ? res.uptime : "N/A",
+              },
+            ]
+          : [
+              {
+                header: "Unique ads scraped",
+                content: res.adUniqueCount,
+              },
+              {
+                header: "Total ad encounters",
+                content: res.adSeenCount,
+              },
+              {
+                header: "Tagged",
+                content: res.adTagged ?? "N/A",
+              },
+              {
+                header: "Average unique ads per bot",
+                content: res.adUniquePerBot,
+              },
+              {
+                header: "Average seen ads per bot",
+                content: res.adSeenPerBot,
+              },
+            ];
 
       setAdStatData(data);
     });
@@ -208,25 +233,37 @@ const Statistics = () => {
     </Paper>
   );
 
+  console.log(adStatData);
+
   return (
     <div id="main">
       <h1>Statistics</h1>
       <Grid container spacing={3}>
-        <Grid item xs={3}>
-          {botPieChart1}
-        </Grid>
-        <Grid item xs={3}>
-          {botPieChart2}
-        </Grid>
+        {source === DataSource.Google ? (
+          <>
+            <Grid item xs={3}>
+              {botPieChart1}
+            </Grid>
+            <Grid item xs={3}>
+              {botPieChart2}
+            </Grid>
+          </>
+        ) : (
+          <Grid item xs={6}>
+            {botPieChart1}
+          </Grid>
+        )}
         <Grid item xs={6}>
           {categoryChart}
         </Grid>
         <Grid item xs={12}>
           {adsScrapedChart}
         </Grid>
-        <Grid item xs={8}>
-          {categoryBotChart}
-        </Grid>
+        {source === DataSource.Google && (
+          <Grid item xs={8}>
+            {categoryBotChart}
+          </Grid>
+        )}
       </Grid>
     </div>
   );

@@ -27,18 +27,18 @@ import { baseApi } from "../api/api";
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
 
-interface Data {
-  username: string;
-  name: string;
-  adcount: number;
-  ranking: number;
-  /*  searchterms:[string]; */
-  dob: string;
-  gender: string;
-  password: string;
-  location: [number, number];
-  type: string;
-}
+// interface Data {
+//   username: string;
+//   name: string;
+//   adcount: number;
+//   ranking: number;
+//   /*  searchterms:[string]; */
+//   dob: string;
+//   gender: string;
+//   password: string;
+//   location: [number, number];
+//   type: string;
+// }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

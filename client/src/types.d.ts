@@ -14,12 +14,15 @@ interface GoogleAd extends BaseAd {
   adLink: string;
 }
 
+type TwitterAdType = "AD_TYPE_UNSPECIFIED" | "AD_TYPE_TWEET" | "AD_TYPE_FOLLOW";
+
 interface TwitterAd extends BaseAd {
   promoterHandle: string;
   content: string;
   seenInstances: TwitterSeenInstances[];
   officialLink: string;
   tweetLink: string;
+  adType: TwitterAdType;
 }
 
 type TwitterSeenInstances = {

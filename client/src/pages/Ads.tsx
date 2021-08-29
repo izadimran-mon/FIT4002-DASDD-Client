@@ -4,11 +4,15 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
+  Checkbox,
   CircularProgress,
   createStyles,
   Divider,
   Drawer,
   Fade,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   makeStyles,
@@ -135,15 +139,6 @@ const Ads = () => {
   const [tags, setTags] = useState<Tag[]>([]);
 
   /**
-   * Open/closed state of bots filter selection dropdown
-   */
-  const [botsSelectOpen, setBotsSelectOpen] = useState(false);
-  /**
-   * Open/closed state of tags filter selection dropdown
-   */
-  const [tagsSelectOpen, setTagsSelectOpen] = useState(false);
-
-  /**
    * State for all bots
    */
   const [allBots, setAllBots] = useState<Bot[]>([]);
@@ -159,15 +154,6 @@ const Ads = () => {
    * Loading state for tags data
    */
   const [tagsLoading, setTagsLoading] = useState(false);
-
-  /**
-   * State for inputted bot name for filter
-   */
-  const [botsInputValue, setBotsInputValue] = useState("");
-  /**
-   * State for inputted tag name for filter
-   */
-  const [tagsInputValue, setTagsInputValue] = useState("");
   /**
    * Start date for date filter
    */
@@ -184,6 +170,12 @@ const Ads = () => {
   const handleEndDateChange = (date: Date | null) => {
     setEndDate(date);
   };
+
+  const [adTypeState, setAdTypeState] = useState({
+    promotedTweets: true,
+    promotedFollows: true,
+    unspecified: true,
+  });
 
   const classes = useStyles();
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -287,6 +279,13 @@ const Ads = () => {
     </>
   );
 
+  const handleAdTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAdTypeState({
+      ...adTypeState,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
   const FilterDrawer = () => (
     <Drawer
       className={classes.drawer}
@@ -323,13 +322,6 @@ const Ads = () => {
           <Autocomplete
             multiple
             id="bots-select"
-            // open={botsSelectOpen}
-            // onOpen={() => {
-            //   setBotsSelectOpen(true);
-            // }}
-            // onClose={() => {
-            //   setBotsSelectOpen(false);
-            // }}
             onChange={(event: any, newValue: Bot[] | null) => {
               if (newValue) setBots(newValue);
             }}
@@ -339,10 +331,6 @@ const Ads = () => {
             getOptionLabel={(option) => option.username}
             options={allBots}
             value={bots}
-            inputValue={botsInputValue}
-            onInputChange={(_, newInputValue) => {
-              setBotsInputValue(newInputValue);
-            }}
             loading={botsLoading}
             renderInput={(params) => (
               <TextField
@@ -381,13 +369,6 @@ const Ads = () => {
             multiple
             id="tags-select"
             aria-label="Filter tags"
-            // open={tagsSelectOpen}
-            // onOpen={() => {
-            //   setTagsSelectOpen(true);
-            // }}
-            // onClose={() => {
-            //   setTagsSelectOpen(false);
-            // }}
             onChange={(event: any, newValue: Tag[] | null) => {
               if (newValue) setTags(newValue);
             }}
@@ -396,10 +377,6 @@ const Ads = () => {
             getOptionLabel={(option) => option.name}
             options={allTags}
             value={tags}
-            inputValue={tagsInputValue}
-            onInputChange={(_, newInputValue) => {
-              setTagsInputValue(newInputValue);
-            }}
             loading={tagsLoading}
             renderInput={(params) => (
               <TextField
@@ -434,7 +411,7 @@ const Ads = () => {
           <Typography>Date</Typography>
         </AccordionSummary>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justify="space-around">
+          <Grid container justifyContent="space-around">
             <KeyboardDatePicker
               style={{ marginLeft: 30, marginRight: 30 }}
               disableToolbar
@@ -490,6 +467,56 @@ const Ads = () => {
           </Grid>
         </MuiPickersUtilsProvider>
       </Accordion>
+      {source === DataSource.Twitter && (
+        <Accordion
+          square
+          expanded={expanded === 3}
+          onChange={handleAccordionChange(3)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+          >
+            <Typography>Ad Type</Typography>
+          </AccordionSummary>
+          <AccordionDetails style={{ display: "block" }}>
+            <FormControl component="fieldset">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={adTypeState.promotedTweets}
+                      onChange={handleAdTypeChange}
+                      name="promotedTweets"
+                    />
+                  }
+                  label="Promoted tweets"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={adTypeState.promotedFollows}
+                      onChange={handleAdTypeChange}
+                      name="promotedFollows"
+                    />
+                  }
+                  label="Promoted follows"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={adTypeState.unspecified}
+                      onChange={handleAdTypeChange}
+                      name="unspecified"
+                    />
+                  }
+                  label="Unspecified"
+                />
+              </FormGroup>
+            </FormControl>
+          </AccordionDetails>
+        </Accordion>
+      )}
     </Drawer>
   );
 

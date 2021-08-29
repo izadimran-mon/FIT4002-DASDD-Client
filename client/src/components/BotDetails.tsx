@@ -46,17 +46,23 @@ interface BotDetailsProps {
 export const BotDetails = (props: BotDetailsProps) => {
   let ranking: string = politicalRanking[`${props.ranking}`];
   const [location, setLocation] = React.useState("");
-  // TODO: Geocode only when opened to prevent excessive api requests
-  // Geocode.fromLatLng(props.lat.toString(), props.long.toString()).then(
-  //   (response: { results: { formatted_address: any }[] }) => {
-  //     const address = response.results[0].formatted_address;
-  //     setLocation(address);
-  //   },
-  //   (error: any) => {
-  //     console.error(error);
-  //   }
-  // );
+
+  if (!props.open) {
+    return <div />;
+  }
+
+  // This API key has been here for a while which isn't great
   Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
+
+  Geocode.fromLatLng(props.lat.toString(), props.long.toString()).then(
+    (response: { results: { formatted_address: any }[] }) => {
+      const address = response.results[0].formatted_address;
+      setLocation(address);
+    },
+    (error: any) => {
+      console.error(error);
+    }
+  );
   return (
     <Dialog
       onClose={props.handleClose}
