@@ -4,8 +4,9 @@ import ReactDOM from "react-dom";
 
 import AdCard from "../AdCard";
 import moment from "moment";
-
+import politicalRanking from "../../helpers/politicalRankings";
 import mockData from "../testMockData/mockData";
+import Geocode from "react-geocode";
 
 let checkDate = moment(mockData.mockAdWithImg.createdAt).format(
   "YYYY-MMM-D dddd h:mma"
@@ -98,4 +99,62 @@ test("Ad card image click", async () => {
   fireEvent.click(screen.getByAltText(/Ad screenshot/i));
   const adScreenshotFullAlt = await screen.findByAltText(/Ad screenshot full/i);
   expect(adScreenshotFullAlt).toBeInTheDocument();
+});
+
+test("Ad card seen bot button click", async () => {
+  render(<AdCard ad={mockData.mockAdWithImg} allTags={mockData.mockTags} />);
+  fireEvent.click(await screen.findByText(mockData.mockAdWithImg.bot.username));
+  const botDetailsName = await screen.findByText(
+    mockData.mockAdWithImg.bot.fName + " " + mockData.mockAdWithImg.bot.lName
+  );
+
+  expect(botDetailsName).toBeInTheDocument();
+});
+
+test("Political Inclination in bot details", async () => {
+  render(<AdCard ad={mockData.mockAdWithImg} allTags={mockData.mockTags} />);
+  fireEvent.click(await screen.findByText(mockData.mockAdWithImg.bot.username));
+  const ranking =
+    politicalRanking[`${mockData.mockAdWithImg.bot.politicalRanking}`];
+  const botInclination = await screen.findByText(ranking);
+  expect(botInclination).toBeInTheDocument();
+});
+
+test("Political terms & other terms button in bot details", async () => {
+  render(<AdCard ad={mockData.mockAdWithImg} allTags={mockData.mockTags} />);
+  fireEvent.click(await screen.findByText(mockData.mockAdWithImg.bot.username));
+  const viewTermsButtons = await screen.findAllByText(/VIEW/i);
+
+  expect(viewTermsButtons).toHaveLength(2);
+});
+
+test("Gender in bot details", async () => {
+  render(<AdCard ad={mockData.mockAdWithImg} allTags={mockData.mockTags} />);
+  fireEvent.click(await screen.findByText(mockData.mockAdWithImg.bot.username));
+  const botGender = await screen.findByText(mockData.mockAdWithImg.bot.gender);
+  expect(botGender).toBeInTheDocument();
+});
+
+test("Age in bot details", async () => {
+  render(<AdCard ad={mockData.mockAdWithImg} allTags={mockData.mockTags} />);
+  fireEvent.click(await screen.findByText(mockData.mockAdWithImg.bot.username));
+
+  const botAge = await screen.findByText(
+    moment().diff(mockData.mockAdWithImg.bot.dob, "years")
+  );
+  expect(botAge).toBeInTheDocument();
+});
+
+test("Location in bot details", async () => {
+  render(<AdCard ad={mockData.mockAdWithImg} allTags={mockData.mockTags} />);
+  fireEvent.click(await screen.findByText(mockData.mockAdWithImg.bot.username));
+  Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
+  let fullLoc = await Geocode.fromLatLng(
+    mockData.mockAdWithImg.bot.locLat.toString(),
+    mockData.mockAdWithImg.bot.locLong.toString()
+  );
+  let address = fullLoc.results[0].formatted_address;
+
+  const botAdress = await screen.findByText(address);
+  expect(botAdress).toBeInTheDocument();
 });
