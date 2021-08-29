@@ -11,7 +11,7 @@ let checkDate = moment(mockData.mockAdWithImg.createdAt).format(
   "YYYY-MMM-D dddd h:mma"
 );
 
-const processLink = (link: string) => {
+const processLink = (link) => {
   if (link) {
     let link_split = link.split("/");
     let domain = link_split[2];

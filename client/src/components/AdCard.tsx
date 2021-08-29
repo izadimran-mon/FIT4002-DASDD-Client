@@ -129,6 +129,7 @@ const AdCard = (props: AdCardProp) => {
         >
           {ad.image ? (
             <CardActionArea
+              style = {{display:'flex', justifyContent:'center'}}
               className='cardActionAreaStyle'
               onClick={() => {
                 handleClickOpen();
