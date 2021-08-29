@@ -130,7 +130,7 @@ const Ads = () => {
     useLocation<stateType>()?.state?.bots || []
   ); // empty = no filter
   /**
-   * State for storing all tags
+   * State for the tags filter
    */
   const [tags, setTags] = useState<Tag[]>([]);
 
@@ -219,9 +219,21 @@ const Ads = () => {
       });
   }, [page, limit, bots, tags, source, startDate, endDate, totalNumberOfAd]);
 
+  // useEffect(() => {
+  //   setBots([]);
+  //   setTags([]);
+  // }, [source]);
+
   const handleChange = (event: any, value: number) => {
     setPage(value);
   };
+
+  const [expanded, setExpanded] = useState<number>(-1);
+
+  const handleAccordionChange =
+    (panel: number) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : -1);
+    };
 
   useEffect(() => {
     setBotsLoading(true);
@@ -296,28 +308,32 @@ const Ads = () => {
         </span>
       </div>
       <Divider />
-      <Accordion square>
+      <Accordion
+        square
+        expanded={expanded === 0}
+        onChange={handleAccordionChange(0)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
-          id="panel1a-header"
         >
           <Typography>Bots</Typography>
         </AccordionSummary>
         <AccordionDetails style={{ display: "block" }}>
           <Autocomplete
             multiple
-            id="tags-select"
-            open={botsSelectOpen}
-            onOpen={() => {
-              setBotsSelectOpen(true);
-            }}
-            onClose={() => {
-              setBotsSelectOpen(false);
-            }}
+            id="bots-select"
+            // open={botsSelectOpen}
+            // onOpen={() => {
+            //   setBotsSelectOpen(true);
+            // }}
+            // onClose={() => {
+            //   setBotsSelectOpen(false);
+            // }}
             onChange={(event: any, newValue: Bot[] | null) => {
               if (newValue) setBots(newValue);
             }}
+            aria-label="Filter bots"
             filterSelectedOptions
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.username}
@@ -349,11 +365,14 @@ const Ads = () => {
           />
         </AccordionDetails>
       </Accordion>
-      <Accordion square>
+      <Accordion
+        square
+        expanded={expanded === 1}
+        onChange={handleAccordionChange(1)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
-          id="panel1a-header"
         >
           <Typography>Tags</Typography>
         </AccordionSummary>
@@ -361,13 +380,14 @@ const Ads = () => {
           <Autocomplete
             multiple
             id="tags-select"
-            open={tagsSelectOpen}
-            onOpen={() => {
-              setTagsSelectOpen(true);
-            }}
-            onClose={() => {
-              setTagsSelectOpen(false);
-            }}
+            aria-label="Filter tags"
+            // open={tagsSelectOpen}
+            // onOpen={() => {
+            //   setTagsSelectOpen(true);
+            // }}
+            // onClose={() => {
+            //   setTagsSelectOpen(false);
+            // }}
             onChange={(event: any, newValue: Tag[] | null) => {
               if (newValue) setTags(newValue);
             }}
@@ -402,11 +422,14 @@ const Ads = () => {
           />
         </AccordionDetails>
       </Accordion>
-      <Accordion square>
+      <Accordion
+        square
+        expanded={expanded === 2}
+        onChange={handleAccordionChange(2)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
-          id="panel1a-header"
         >
           <Typography>Date</Typography>
         </AccordionSummary>
