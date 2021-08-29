@@ -15,6 +15,7 @@ import { BotDetails, TwitterBotDetails } from "./BotDetails";
 import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
 import ClampLines from "react-clamp-lines";
+import ImageDialog from "./ImageDialog";
 
 /**
  * Extracts the domain of a URL from the link.
@@ -35,36 +36,6 @@ const processLink = (link: string) => {
 
     return domain;
   }
-};
-
-interface ImageDialogProps {
-  image: string;
-  open: boolean;
-  handleClose: () => void;
-}
-
-/**
- * Popup dialog for ad image (screenshots)
- */
-const ImageDialog = (props: ImageDialogProps) => {
-  return (
-    <Dialog
-      onClose={props.handleClose}
-      aria-labelledby="simple-dialog-title"
-      open={props.open}
-    >
-      <DialogContent>
-        <img
-          style={{
-            width: "auto",
-            height: "100%",
-          }}
-          src={props.image}
-          alt="Ad screenshot full"
-        />
-      </DialogContent>
-    </Dialog>
-  );
 };
 
 type GoogleAdCardProp = {
@@ -157,7 +128,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
               handleClickOpen();
             }}
           >
-            {/* <img className="imageStyle" src={ad.image} alt="Ad screenshot" /> */}
+            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -317,7 +288,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
           </Grid>
         </Grid>
       </Grid>
-      <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
+      <ImageDialog images={[ad.image]} open={open} handleClose={handleClose} />
       <BotDetails
         name={ad.bot.fName + " " + ad.bot.lName}
         ranking={ad.bot.politicalRanking}
@@ -426,7 +397,11 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
               handleClickOpen();
             }}
           >
-            {/* <img className="imageStyle" src={ad.image} alt="Ad screenshot" /> */}
+            <img
+              className="imageStyle"
+              src={ad.seenInstances.length > 0 ? ad.seenInstances[0].image : ""}
+              alt="Ad screenshot"
+            />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -587,7 +562,11 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
           </Grid>
         </Grid>
       </Grid>
-      {/* <ImageDialog image={ad.image} open={open} handleClose={handleClose} /> */}
+      <ImageDialog
+        images={ad.seenInstances.map((i) => i.image)}
+        open={open}
+        handleClose={handleClose}
+      />
       <TwitterBotDetails
         bot={detailsBot}
         handleClose={handleCloseDetails}

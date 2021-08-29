@@ -121,7 +121,7 @@ export const BotDetails = (props: BotDetailsProps) => {
                   onClick={() => {
                     props.displayTerms(
                       politicalSearchTerms[`${props.ranking}`],
-                      "Politcal Search Terms"
+                      "Political Search Terms"
                     );
                   }}
                 >
