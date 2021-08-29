@@ -9,7 +9,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import AdChip from "./AdChip";
-import { BotDetails, TwitterBotDetails } from "./BotDetails";
+import { GoogleBotDetails, TwitterBotDetails } from "./BotDetails";
 import ImageDialog from "./ImageDialog";
 import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
@@ -286,7 +286,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
         </Grid>
       </Grid>
       <ImageDialog images={[ad.image]} open={open} handleClose={handleClose} />
-      <BotDetails
+      <GoogleBotDetails
         name={ad.bot.fName + " " + ad.bot.lName}
         ranking={ad.bot.politicalRanking}
         other={ad.bot.otherTermsCategory}

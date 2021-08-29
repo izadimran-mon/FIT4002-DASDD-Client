@@ -15,7 +15,7 @@ import politicalRanking from "../helpers/politicalRankings";
 import politicalSearchTerms from "../helpers/politicalSearchTerms";
 import Geocode from "react-geocode";
 
-interface BotDetailsProps {
+interface GoogleBotDetailsProps {
   name: string;
   /**
    * Political ranking
@@ -43,7 +43,7 @@ interface BotDetailsProps {
 /**
  * Displays details for bots
  */
-export const BotDetails = (props: BotDetailsProps) => {
+export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
   let ranking: string = politicalRanking[`${props.ranking}`];
   const [location, setLocation] = React.useState("");
 
