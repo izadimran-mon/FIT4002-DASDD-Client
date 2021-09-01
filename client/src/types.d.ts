@@ -1,40 +1,67 @@
-// interface Ad {
-//   bot: string;
-//   dateTime: Date;
-//   file: string;
-//   headline: string;
-//   category: CategoryData[];
-//   seenOn: string;
-// }
-
-interface Ad {
-  adLink: string;
-  botId: string;
-  createdAt: string;
-  headline: string;
-  html: string;
+interface BaseAd {
   id: string;
-  image: string;
-  loggedIn: boolean;
-  seenOn: string;
   tags: Tag[]; // TODO: define tag interface
-  bot: Bot;
 }
 
-interface Bot {
+interface GoogleAd extends BaseAd {
+  headline: string;
+  html: string;
+  loggedIn: boolean;
+  bot: GoogleBot;
+  seenOn: string;
+  image: string;
+  createdAt: string;
+  adLink: string;
+}
+
+type TwitterAdType = "AD_TYPE_UNSPECIFIED" | "AD_TYPE_TWEET" | "AD_TYPE_FOLLOW";
+
+interface TwitterAd extends BaseAd {
+  promoterHandle: string;
+  content: string;
+  seenInstances: TwitterSeenInstances[];
+  officialLink: string;
+  tweetLink: string;
+  adType: TwitterAdType;
+}
+
+type TwitterSeenInstances = {
+  bot: TwitterBot;
+  adId: string;
+  adSeenId: string;
+  botId: string;
+  createdAt: string;
+  image: string;
+};
+
+type TwitterBotWithSeenInstances = TwitterBot & {
+  createdAt: string[];
+  image: string[];
+};
+
+type Ad = GoogleAd | TwitterAd;
+
+interface BaseBot {
+  id: string;
+  username: string;
+  politicalRanking: number;
+}
+
+interface GoogleBot extends BaseBot {
   dob: Date;
   fName: string;
   gender: string;
-  id: string;
   lName: string;
   locLat: number;
   locLong: number;
   otherTermsCategory: number;
   password: string;
-  politicalRanking: number;
   type: string;
-  username: string;
 }
+
+interface TwitterBot extends BaseBot {}
+
+type Bot = GoogleBot | TwitterBot;
 
 interface Tag {
   id: number;
